@@ -1,0 +1,10 @@
+
+
+#----add by me----#
+Alias('nc','nextcall')
+Alias('here','context code')
+Alias('rt','regtrace')
+Alias('sm','searchmem')
+#----added by me----#
+
+
