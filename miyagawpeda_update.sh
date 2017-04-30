@@ -14,4 +14,8 @@ cat ~/peda/miyagawpeda/miyagawpeda.after.txt >> ~/peda/miyagawpeda/miyagawpeda.p
 cat ~/peda/miyagawpeda/miyagawpeda.alias.txt >> ~/peda/miyagawpeda/miyagawpeda.py
 cp -a ~/peda/miyagawpeda/miyagawpeda.py ~/peda/miyagawpeda.py
 rm -rf ~/peda/miyagawpeda/
-echo "source ~/peda/miyagawpeda.py" >> ~/.gdbinit
+if test "$(cat ~/.gdbinit | grep -E 'source.*/peda/peda.py')" ;then
+	sed -i 's@/peda/peda.py@/peda/miyagawpeda.py@g' ~/.gdbinit
+else
+	echo "source ~/peda/miyagawpeda.py" >> ~/.gdbinit
+fi
