@@ -6,6 +6,7 @@ Alias('here','context code')
 Alias('rt','regtrace')
 Alias('sm','searchmem')
 Alias('a','advance *')
+Alias('word','dword')
 #----added by me----#
 
 
