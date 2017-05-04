@@ -1,3 +1,4 @@
+source ~/peda/peda.py
 source ~/peda/miyagawpeda/miyagawpeda.py
 
 #set history save on
