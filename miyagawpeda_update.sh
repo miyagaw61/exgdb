@@ -1,6 +1,6 @@
 #!/bin/sh
 if test -e ~/peda/miyagawpeda.py ;then
-	rm -rf ~/peda/miyagawpeda.py
+	rm -rf ~/peda/miyagawpeda/miyagawpeda.py
 fi
 #git clone https://github.com/miyagaw61/miyagawpeda.git ~/peda/miyagawpeda
 line=$(cat ~/peda/peda.py | grep -n "def xprint" | sed -E "s/(.*):.*:/\1/g")
