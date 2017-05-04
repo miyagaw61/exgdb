@@ -333,6 +333,19 @@
         peda.execute('set $eip=%d' % eipbk)
         return
 
+    def word(self, *arg):
+        """
+        hogehoge
+        """
+        arg = normalize_argv(arg,2)
+        addr = arg[0]
+        i = arg[1]
+        cnt = 0
+        while(i > 0):
+            peda.execute('infox %d+%d' % (addr,cnt))
+            cnt = cnt + 4
+            i = i - 1
+
     def dword(self, *arg):
         """
         hogehoge
