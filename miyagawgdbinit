@@ -1,5 +1,4 @@
-source ~/bin/gdb/init/gdbinitsource
-source ~/peda/miyagawpeda.py
+source ~/peda/miyagawpeda/miyagawpeda.py
 
 #set history save on
 set history size 10000
