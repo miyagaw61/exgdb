@@ -16,4 +16,4 @@ cat ~/peda/miyagawpeda/peda.after.txt >> ~/peda/miyagawpeda/miyagawpeda.py
 cat ~/peda/miyagawpeda/miyagawpeda.alias.txt >> ~/peda/miyagawpeda/miyagawpeda.py
 cp -a ~/peda/miyagawpeda/miyagawpeda.py ~/peda/miyagawpeda.py
 #rm -rf ~/peda/miyagawpeda/
-cat ~/peda/miyagawpeda/miyagawgdbinit >> ~/.gdbinit
+cp ~/peda/miyagawpeda/miyagawgdbinit ~/.gdbinit
