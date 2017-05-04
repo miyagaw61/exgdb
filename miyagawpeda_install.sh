@@ -15,4 +15,4 @@ cat ~/peda/miyagawpeda/miyagawpeda.after.txt >> ~/peda/miyagawpeda/miyagawpeda.p
 cat ~/peda/miyagawpeda/miyagawpeda.alias.txt >> ~/peda/miyagawpeda/miyagawpeda.py
 cp -a ~/peda/miyagawpeda/miyagawpeda.py ~/peda/miyagawpeda.py
 #rm -rf ~/peda/miyagawpeda/
-echo "source ~/peda/miyagawpeda.py" >> ~/.gdbinit
+cat ~/peda/miyagawpeda/miyagawgdbinit >> ~/.gdbinit
