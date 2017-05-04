@@ -333,7 +333,7 @@
         peda.execute('set $eip=%d' % eipbk)
         return
 
-    def word(self, *arg):
+    def dword(self, *arg):
         """
         hogehoge
         """
@@ -346,7 +346,7 @@
             cnt = cnt + 4
             i = i - 1
 
-    def dword(self, *arg):
+    def qword(self, *arg):
         """
         hogehoge
         """
