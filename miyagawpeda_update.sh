@@ -1,8 +1,4 @@
 #!/bin/sh
-now=$(pwd)
-if test -e ~/peda/miyagawpeda/ ;then
-	git clone http://github.com/miyagaw61/miyagawpeda.git ~/peda/miyagawpeda/
-fi
 if test -e ~/peda/miyagawpeda.py ;then
 	rm -rf ~/peda/miyagawpeda/miyagawpeda.py
 fi
@@ -20,4 +16,3 @@ cat ~/peda/miyagawpeda/peda.after.txt >> ~/peda/miyagawpeda/miyagawpeda.py
 cat ~/peda/miyagawpeda/miyagawpeda.alias.txt >> ~/peda/miyagawpeda/miyagawpeda.py
 #rm -rf ~/peda/miyagawpeda/
 cp ~/peda/miyagawpeda/miyagawgdbinit ~/.gdbinit
-rm -rf ${now}
