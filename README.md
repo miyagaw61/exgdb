@@ -1,10 +1,10 @@
 miyagawpeda
 ===========
 
-miyagawpeda is extension plugin of gdb-peda by @miyagaw61.  
+miyagawpeda is extension plugins of the gdb-peda by @miyagaw61.  
 miyagawpedaは、@miyagaw61によって作成されたgdb-pedaの拡張プラグインです。
 
-how to install
+How to install
 --------------
 
 apt-get -y install gdb  
@@ -12,7 +12,7 @@ git clone https://github.com/miyagaw61/miyagawpeda.git
 cd miyagawpeda  
 ./miyagawpeda_install.sh  
 
-how to use
+How to use
 ----------
 
 * infox  
@@ -52,10 +52,16 @@ addr番地からcount個のQWORD型データ(8byte)を出力
 Usage: qword [addr] [count]
 </pre>
 
+* jj  
+次のjmp系/call命令が来るまでsiで潜り続ける
+<pre>
+Usage: cc
+</pre>
+
 * cc  
 次のcall命令が来るまでsiで潜り続ける
 <pre>
-Usage: cc
+Usgae: cc
 </pre>
 
 * ii  
@@ -73,3 +79,18 @@ Usgae: ii
 <pre>
 Usage: regrtrace
 </pre>
+
+aliases
+-------
+
+* br : break *  
+* ad : advance *  
+* a  : advance  
+* sm : searchmem  
+* as : asmsearch  
+* nc : nextcall  
+* u  : stepuntil 
+* ur : stepuntil ret  
+* uc : sterpuntil call  
+* uj : stepuntil call,jmp,je,jne,jb,ja  
+* ut : stepuntil test,cmp  

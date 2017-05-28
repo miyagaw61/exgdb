@@ -491,6 +491,18 @@
             peda.execute('si')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
+            callOrJmp = re.sub(r'.*call.*', '\\1', rip)
+            if(callOrJmp.find(':') == -1):
+                break
+
+    def jj(self, *arg):
+        """
+        Usage: jj
+        """
+        while(True):
+            peda.execute('si')
+            peda.execute('infox_new register rip')
+            rip = open('./reg/rip', 'r').read()
             callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '\\1', rip)
             if(callOrJmp.find(':') == -1):
                 break
