@@ -488,6 +488,18 @@
         Usage: cc
         """
         while(True):
+            peda.execute('ni')
+            peda.execute('infox_new register eip')
+            eip = open('./reg/eip', 'r').read()
+            callOrJmp = re.sub(r'.*call.*', '\\1', eip)
+            if(callOrJmp.find(':') == -1):
+                break
+
+    def cci(self, *arg):
+        """
+        Usage: cci
+        """
+        while(True):
             peda.execute('si')
             peda.execute('infox_new register eip')
             eip = open('./reg/eip', 'r').read()
@@ -498,6 +510,18 @@
     def jj(self, *arg):
         """
         Usage: jj
+        """
+        while(True):
+            peda.execute('ni')
+            peda.execute('infox_new register eip')
+            eip = open('./reg/eip', 'r').read()
+            callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '\\1', eip)
+            if(callOrJmp.find(':') == -1):
+                break
+
+    def jji(self, *arg):
+        """
+        Usage: jji
         """
         while(True):
             peda.execute('si')
