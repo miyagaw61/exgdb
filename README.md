@@ -2,6 +2,7 @@ miyagawpeda
 ===========
 
 miyagawpeda is gdb-peda's extension plugin by @miyagaw61.  
+miyagawpedaは、@miyagaw61によって作成されたgdb-pedaの拡張プラグインです。
 
 how to install
 --------------
@@ -13,57 +14,57 @@ cd miyagawpeda
 how to use
 ----------
 
-* infox
+* infox  
 アドレスの中身を調査する  
 <pre>
 Usage: infox [addr]
 </pre>
 
-* fullstack
+* fullstack  
 スタックをespからebpまで全て出力  
 <pre>
 Usage: fullstack
 </pre>
 
-* pc
+* pc  
 現在のeipが指している位置からcount個の命令コードを出力
 <pre>
 Usage: pc [count]
 </pre>
 
-* code
+* code  
 addr番地からcount個の命令コードを出力
 <pre>
 Usage: code [addr] [count]
 </pre>
 
-* dword
+* dword  
 addr番地からcount個のDWORD型データ（4byte)を出力  
 一語という意味のwordでもaliasがかけられている。
 <pre>
 Usage: dword [addr] [count]
 </pre>
 
-* qword
+* qword  
 addr番地からcount個のQWORD型データ(8byte)を出力
 <pre>
 Usage: qword [addr] [count]
 </pre>
 
-* cc
+* cc  
 次のcall命令が来るまでsiで潜り続ける
 <pre>
 Usage: cc
 </pre>
 
-* ii
+* ii  
 現在のeipが指している命令コードに用いられているアドレス/レジスタの内部を出力  
 使用するには事前にregmakeコマンドでレジストリデータを保存するディレクトリを作成している必要がある
 <pre>
 Usgae: ii
 </pre>
 
-* regtrace
+* regtrace  
 レジストリの変化をトレースしながらeipを進める  
 結果はカレントディレクトリ/regディレクトリの中に格納されていく  
 使用するには事前にregmakeコマンドでレジストリデータを保存するディレクトリを作成している必要がある  
