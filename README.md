@@ -7,7 +7,7 @@ miyagawpedaは、@miyagaw61によって作成されたgdb-pedaの拡張プラグ
 how to install
 --------------
 
-apt-get -y install gdb
+apt-get -y install gdb  
 git clone https://github.com/miyagaw61/miyagawpeda.git  
 cd miyagawpeda  
 ./miyagawpeda_install.sh  
