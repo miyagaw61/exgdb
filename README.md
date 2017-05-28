@@ -1,12 +1,13 @@
 miyagawpeda
 ===========
 
-miyagawpeda is gdb-peda's extension plugin by @miyagaw61.  
+miyagawpeda is extension plugin of gdb-peda by @miyagaw61.  
 miyagawpedaは、@miyagaw61によって作成されたgdb-pedaの拡張プラグインです。
 
 how to install
 --------------
 
+apt-get -y install gdb
 git clone https://github.com/miyagaw61/miyagawpeda.git  
 cd miyagawpeda  
 ./miyagawpeda_install.sh  
