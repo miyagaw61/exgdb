@@ -8,3 +8,4 @@ set print pretty on
 set print static-members off
 set charset ASCII
 
+ulimit -c unlimited
