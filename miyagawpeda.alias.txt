@@ -5,9 +5,11 @@ Alias('nc','nextcall')
 Alias('here','context code')
 Alias('rt','regtrace')
 Alias('sm','searchmem')
-Alias('a','advance *')
+Alias('as','asmsearch')
+Alias('a','advance')
+Alias('ad','advance *')
 Alias('word','dword')
-Alias('b','break *')
+Alias('br','break *')
 #----added by me----#
 
 
