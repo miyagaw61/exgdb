@@ -10,6 +10,11 @@ Alias('a','advance')
 Alias('ad','advance *')
 Alias('word','dword')
 Alias('br','break *')
+Alias('u','stepuntil')
+Alias('ur','stepuntil ret')
+Alias('uc','stepuntil call')
+Alias('uj','stepuntil jmp,je,jne,jb,ja,call')
+Alias('ut','stepuntil test,cmp')
 #----added by me----#
 
 
