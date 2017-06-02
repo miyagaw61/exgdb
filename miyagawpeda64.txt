@@ -483,29 +483,29 @@
 
         return
 
+    def uu(self, *arg):
+        """
+        stop.
+        """
+        args = normalize_argv(arg,1)
+        arg = args[0]
+        while(True):
+            peda.execute('n')
+            peda.execute('infox_new register eip')
+            eip = open('./reg/eip', 'r').read()
+            callOrJmp = re.sub(r'.*' + arg + '.*', '\\1', rip)
+            if(callOrJmp.find(':') == -1):
+                break
+
     def cc(self, *arg):
         """
         Usage: cc
         """
         while(True):
-            peda.execute('ni')
+            peda.execute('n')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
             callOrJmp = re.sub(r'.*call.*', '\\1', rip)
-            if(callOrJmp.find(':') == -1):
-                break
-
-    def uu(self, *arg):
-        """
-        error! 
-        """
-        args = normalize_argv(arg,1)
-        arg = args[0]
-        while(True):
-            peda.execute('ni')
-            peda.execute('infox_new register eip')
-            eip = open('./reg/eip', 'r').read()
-            callOrJmp = re.sub(r'.* + arg + .*', '\\1', eip)
             if(callOrJmp.find(':') == -1):
                 break
 
@@ -526,7 +526,7 @@
         Usage: jj
         """
         while(True):
-            peda.execute('ni')
+            peda.execute('n')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
             callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '\\1', rip)
