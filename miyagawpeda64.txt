@@ -500,7 +500,7 @@
         error! 
         """
         args = normalize_argv(arg,1)
-		arg = args[0]
+	    arg = args[0]
         while(True):
             peda.execute('ni')
             peda.execute('infox_new register eip')
