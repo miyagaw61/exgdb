@@ -495,6 +495,20 @@
             if(callOrJmp.find(':') == -1):
                 break
 
+    def uu(self, *arg):
+        """
+        error! 
+        """
+        args = normalize_argv(arg,1)
+		arg = args[0]
+        while(True):
+            peda.execute('ni')
+            peda.execute('infox_new register eip')
+            eip = open('./reg/eip', 'r').read()
+            callOrJmp = re.sub(r'.* + arg + .*', '\\1', eip)
+            if(callOrJmp.find(':') == -1):
+                break
+
     def cci(self, *arg):
         """
         Usage: cci
