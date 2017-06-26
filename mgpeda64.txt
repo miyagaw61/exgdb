@@ -491,8 +491,8 @@
         arg = args[0]
         while(True):
             peda.execute('ni')
-            peda.execute('infox_new register eip')
-            eip = open('./reg/eip', 'r').read()
+            peda.execute('infox_new register rip')
+            rip = open('./reg/rip', 'r').read()
             callOrJmp = re.sub(r'.*' + arg + '.*', '\\1', rip)
             if(callOrJmp.find(':') == -1):
                 break
@@ -505,8 +505,8 @@
         arg = args[0]
         while(True):
             peda.execute('si')
-            peda.execute('infox_new register eip')
-            eip = open('./reg/eip', 'r').read()
+            peda.execute('infox_new register rip')
+            rip = open('./reg/rip', 'r').read()
             callOrJmp = re.sub(r'.*' + arg + '.*', '\\1', rip)
             if(callOrJmp.find(':') == -1):
                 break
