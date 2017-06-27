@@ -483,6 +483,19 @@
 
         return
 
+    def uc(self, *arg):
+        """
+        stop.
+        """
+        (arg, ) = normalize_argv(arg,1)
+        while(True):
+            peda.execute('nextcall')
+            peda.execute('infox_new register rip')
+            rip = open('./reg/rip', 'r').read()
+            callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
+            if(callOrJmp.find(':') == -1):
+                break
+
     def uu(self, *arg):
         """
         stop.
@@ -493,7 +506,7 @@
             peda.execute('ni')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*' + arg + '.*', '\\1', rip)
+            callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
             if(callOrJmp.find(':') == -1):
                 break
 
@@ -507,7 +520,7 @@
             peda.execute('si')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*' + arg + '.*', '\\1', rip)
+            callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
             if(callOrJmp.find(':') == -1):
                 break
 
@@ -519,7 +532,7 @@
             peda.execute('ni')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*call.*', '\\1', rip)
+            callOrJmp = re.sub(r'.*call.*', '', rip)
             if(callOrJmp.find(':') == -1):
                 break
 
@@ -531,7 +544,7 @@
             peda.execute('si')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*call.*', '\\1', rip)
+            callOrJmp = re.sub(r'.*call.*', '', rip)
             if(callOrJmp.find(':') == -1):
                 break
 
@@ -543,7 +556,7 @@
             peda.execute('ni')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '\\1', rip)
+            callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
             if(callOrJmp.find(':') == -1):
                 break
 
@@ -555,7 +568,7 @@
             peda.execute('si')
             peda.execute('infox_new register rip')
             rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '\\1', rip)
+            callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
             if(callOrJmp.find(':') == -1):
                 break
 
