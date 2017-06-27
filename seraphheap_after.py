@@ -21,7 +21,8 @@ def infoh(victim):
         #print("             Heap info             ")
         #print("===================================")
         sys.stdout.write(green(to_hex(chunkaddr), "bold"))
-        sys.stdout.write("   ")
+        for i in range(12 - len(hex(chunkaddr))):
+            sys.stdout.write(" ")
         if status:
             if chunkaddr in fastchunk :
                 #print("\033[1;32mStatus : \033[1;34m Freed (fast) \033[37m")
@@ -72,7 +73,7 @@ def infoh(victim):
             #print("\033[32mbk :\033[37m 0x%x                  " % bk)
             sys.stdout.write("     ")
             sys.stdout.write(white(to_hex(fd), "bold"))
-            for i in range(12 - len(hex(fd))):
+            for i in range(19 - len(hex(fd))):
                 sys.stdout.write(" ")
             print(white(to_hex(bk), "bold"))
         else:
