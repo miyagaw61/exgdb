@@ -16,6 +16,8 @@ Alias('nr','stepuntil ret')
 Alias('nc','stepuntil call')
 Alias('nj','stepuntil jmp,je,jne,jb,ja,call')
 Alias('nt','stepuntil test,cmp')
+Alias('calc','shell calc')
+Alias('chkbmap','shell chkbmap')
 #----added by me----#
 
 
