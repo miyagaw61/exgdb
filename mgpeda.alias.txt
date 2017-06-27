@@ -3,6 +3,7 @@
 #----add by me----#
 Alias('nc','nextcall')
 Alias('here','context code')
+Alias('now','context')
 Alias('rt','regtrace')
 Alias('sm','searchmem')
 Alias('as','asmsearch')
@@ -11,10 +12,10 @@ Alias('ad','advance *')
 Alias('word','dword')
 Alias('br','break *')
 Alias('u','stepuntil')
-Alias('ur','stepuntil ret')
-Alias('uc','stepuntil call')
-Alias('uj','stepuntil jmp,je,jne,jb,ja,call')
-Alias('ut','stepuntil test,cmp')
+Alias('nr','stepuntil ret')
+Alias('nc','stepuntil call')
+Alias('nj','stepuntil jmp,je,jne,jb,ja,call')
+Alias('nt','stepuntil test,cmp')
 #----added by me----#
 
 
