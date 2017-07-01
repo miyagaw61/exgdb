@@ -2,69 +2,6 @@
 
 #----add by me----#
 
-    def rax(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rax')
-        return
-
-    def rbx(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rbx')
-        return
-
-    def rcx(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rcx')
-        return
-
-    def rdx(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rdx')
-        return
-
-    def rsi(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rsi')
-        return
-
-    def rdi(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rdi')
-        return
-
-    def rbp(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rbp')
-        return
-
-    def rsp(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rsp')
-        return
-
-    def rip(self,*arg):
-        """
-        hogehoge
-        """
-        peda.execute('xinfo register rip')
-        return
-
     def flg(self,*arg):
         """
         hogehoge
@@ -78,6 +15,11 @@
         """
         arg = normalize_argv(arg,1)
         arg = arg[0]
+        argstr = str(arg)
+        if(argstr.count("+") > 0 or argstr.count("-") > 0 or argstr.count("*") > 0 or argstr.count("/") > 0):
+            os.system("calc " + argstr + " > peda-qword-calc.tmp")
+            i = int(open("peda-qword-calc.tmp", "r").read())
+            os.system("rm -rf peda-qword-calc.tmp")
         peda.execute('pdisas $rip /%s' % arg)
         return
 
@@ -327,6 +269,11 @@
         arg = normalize_argv(arg,2)
         arg0 = arg[0]
         arg1 = arg[1]
+        arg1str = str(arg1)
+        if(arg1str.count("+") > 0 or arg1str.count("-") > 0 or arg1str.count("*") > 0 or arg1str.count("/") > 0):
+            os.system("calc " + arg1str + " > peda-qword-calc.tmp")
+            i = int(open("peda-qword-calc.tmp", "r").read())
+            os.system("rm -rf peda-qword-calc.tmp")
         ripbk = peda.getreg('rip')
         peda.execute('set $rip=%d' % arg0)
         peda.execute('pc %d' % arg1)
@@ -340,6 +287,12 @@
         arg = normalize_argv(arg,2)
         addr = arg[0]
         i = arg[1]
+        istr = str(i)
+        if(istr.count("+") > 0 or istr.count("-") > 0 or istr.count("*") > 0 or istr.count("/") > 0):
+            hoge = 1
+            os.system("calc " + istr + " > peda-qword-calc.tmp")
+            i = int(open("peda-qword-calc.tmp", "r"))
+            os.system("rm -rf peda-qword-calc.tmp")
         cnt = 0
         while(i > 0):
             peda.execute('infox %d+%d' % (addr,cnt))
@@ -353,6 +306,11 @@
         arg = normalize_argv(arg,2)
         addr = arg[0]
         i = arg[1]
+        istr = str(i)
+        if(istr.count("+") > 0 or istr.count("-") > 0 or istr.count("*") > 0 or istr.count("/") > 0):
+            os.system("calc " + istr + " > peda-qword-calc.tmp")
+            i = int(open("peda-qword-calc.tmp", "r").read())
+            os.system("rm -rf peda-qword-calc.tmp")
         cnt = 0
         while(i > 0):
             peda.execute('infox %d+%d' % (addr,cnt))
@@ -487,90 +445,172 @@
         """
         stop.
         """
-        (arg, ) = normalize_argv(arg,1)
-        while(True):
-            peda.execute('nextcall')
-            peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
-            if(callOrJmp.find(':') == -1):
-                break
+        argc = len(arg)
+        if(argc == 1):
+            (arg, ) = normalize_argv(arg,1)
+            while(True):
+                peda.execute('nextcall')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    break
+        elif(argc == 2):
+            (arg1, arg2) = normalize_argv(arg, 2)
+            i = 0
+            while(i < arg2):
+                peda.execute('nextcall')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*' + arg1 + '.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    i = i + 1
 
     def uu(self, *arg):
         """
         stop.
         """
-        args = normalize_argv(arg,1)
-        arg = args[0]
-        while(True):
-            peda.execute('ni')
-            peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
-            if(callOrJmp.find(':') == -1):
-                break
+        argc = len(arg)
+        if(argc == 1):
+            (arg, ) = normalize_argv(arg,1)
+            while(True):
+                peda.execute('ni')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    break
+        elif(argc == 2):
+            (arg1, arg2, ) = normalize_argv(arg, 2)
+            i = 0
+            while(i < arg2):
+                peda.execute('ni')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*' + arg1 + '.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    i = i + 1
 
     def uui(self, *arg):
         """
         stop.
         """
-        args = normalize_argv(arg,1)
-        arg = args[0]
-        while(True):
-            peda.execute('si')
-            peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
-            if(callOrJmp.find(':') == -1):
-                break
+        argc = len(arg)
+        if(argc == 1):
+            (arg, ) = normalize_argv(arg,1)
+            while(True):
+                peda.execute('si')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*' + arg + '.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    break
+        elif(argc == 2):
+            (arg1, arg2) = normalize_argv(arg, 2)
+            i = 0
+            while(i < arg2):
+                peda.execute('ni')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*' + arg1 + '.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    i = i + 1
 
     def cc(self, *arg):
         """
         Usage: cc
         """
-        while(True):
-            peda.execute('ni')
-            peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*call.*', '', rip)
-            if(callOrJmp.find(':') == -1):
-                break
+        argc = len(arg)
+        if(argc != 1):
+            while(True):
+                peda.execute('ni')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*call.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    break
+        else:
+            (arg1, ) = normalize_argv(arg, 1)
+            i = 0
+            while(i < arg1):
+                peda.execute('ni')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*call.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    i = i + 1
 
     def cci(self, *arg):
         """
         Usage: cci
         """
-        while(True):
-            peda.execute('si')
-            peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*call.*', '', rip)
-            if(callOrJmp.find(':') == -1):
-                break
+        argc = len(arg)
+        if(argc != 1):
+            while(True):
+                peda.execute('si')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*call.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    break
+        else:
+            (arg1, ) = normalize_argv(arg, 1)
+            i = 0
+            while(i < arg1):
+                peda.execute('si')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*call.*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    i = i + 1
 
     def jj(self, *arg):
         """
         Usage: jj
         """
-        while(True):
-            peda.execute('ni')
-            peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
-            if(callOrJmp.find(':') == -1):
-                break
+        argc = len(arg)
+        if(argc != 1):
+            while(True):
+                peda.execute('ni')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    break
+        else:
+            (arg1, ) = normalize_argv(arg, 1)
+            i = 0
+            while(i < arg1):
+                peda.execute('ni')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    i = i + 1
 
     def jji(self, *arg):
         """
         Usage: jji
         """
-        while(True):
-            peda.execute('si')
-            peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
-            if(callOrJmp.find(':') == -1):
-                break
+        argc = len(arg)
+        if(argc != 1):
+            while(True):
+                peda.execute('si')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    break
+        else:
+            (arg1, ) = normalize_argv(arg, 1)
+            i = 0
+            while(i < arg1):
+                peda.execute('si')
+                peda.execute('infox_new register rip')
+                rip = open('./reg/rip', 'r').read()
+                callOrJmp = re.sub(r'.*(call|jmp|je|jne|jb|ja).*', '', rip)
+                if(callOrJmp.find(':') == -1):
+                    i = i + 1
 
     def ii(self, *arg):
         """
@@ -603,7 +643,7 @@
             peda.execute('xinfo register ' + registerInregister)
         if(addr.find(':') == -1):
             peda.execute('infox ' + addr)
-        if inregister.find(':') == -1:
+        if(inregister.find(':') == -1):
             after = re.sub(r'\n', '', inregister)
             peda.execute("shell echo -n -e '\e[32m" + after + "\e[m: '")
             after = re.sub(r'\[(e..*)\].*', '$\\1', after)
