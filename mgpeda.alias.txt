@@ -18,6 +18,9 @@ Alias('nj','stepuntil jmp,je,jne,jb,ja,call')
 Alias('nt','stepuntil test,cmp')
 Alias('calc','shell calc')
 Alias('chkbmap','shell chkbmap')
+Alias('infoc','chunkinfo')
+Alias('hp','parseheap')
+Alias('ph','parseh')
 #----added by me----#
 
 
