@@ -320,13 +320,13 @@ def ci(victim):
                 print(blue("bk_nextsize : ", "bold") + white(hex(bk_nextsize), "bold"))
         sizeper4 = int(realsize / 4)
         sizeper8 = int(realsize / 8)
-        gdb.execute("qword " + hex(chunkaddr) + " " + hex(sizeper8))
+        gdb.execute("qword " + hex(chunkaddr+16) + " " + hex(sizeper8-2))
     except :
         print("Can't access memory")
 
 def allci():
     lst = []
     getheaplist(lst)
-    for i range(len(lst)):
-        ci(i+1)
+    for i in range(len(lst)-2):
+        gdb.execute("ci " + str(i+1))
 
