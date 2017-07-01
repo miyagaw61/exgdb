@@ -323,3 +323,10 @@ def ci(victim):
         gdb.execute("qword " + hex(chunkaddr) + " " + hex(sizeper8))
     except :
         print("Can't access memory")
+
+def allci():
+    lst = []
+    getheaplist(lst)
+    for i range(len(lst)):
+        ci(i+1)
+
