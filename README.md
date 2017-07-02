@@ -165,7 +165,7 @@ Usgae: allci
 
 * allcix  
 すべてのチャンクのcix結果を上から順に表示していく。
-![allcix](http://i.imgur.com/zcEaOA6.png)
+![allcix](http://i.imgur.com/V0qAzrO.png)
 <pre>
 Usgae: allci
 </pre>
