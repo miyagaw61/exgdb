@@ -1,8 +1,8 @@
 mgpeda
 ===========
 
-mgpeda is extension plugins for the gdb-peda by @miyagaw61.  
-mgpedaは、@miyagaw61によって作成されたgdb-pedaの拡張プラグインです。
+mgpeda is extension plugins for the gdb-peda&Pwngdb by @miyagaw61.  
+mgpedaは、@miyagaw61によって作成されたgdb-peda,Pwngdbの拡張プラグインです。
 
 How to install
 --------------
