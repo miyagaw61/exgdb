@@ -110,7 +110,7 @@ Usgae: ii
 Usage: regrtrace
 </pre>
 
-* parseh
+* parseh  
 現在のヒープの状況をパースしてリスト表示する。  
 表示されているアドレスの配色が緑色の場合はUsedチャンク、青色の場合はFreedチャンクを表す。  
 NMはnon_mainarena, IMはis_mmap, PIはprev_inuseのビット値を表す。
@@ -118,25 +118,25 @@ NMはnon_mainarena, IMはis_mmap, PIはprev_inuseのビット値を表す。
 Usgae: parseh
 </pre>
 
-* ci
+* ci  
 引数に与えたアドレスを先頭アドレスとするチャンクのチャンク情報, もしくは上からｎ番目のチャンクのチャンク情報を表示する。
 <pre>
 Usgae: ci [addr/n]
 </pre>
 
-* cix
+* cix  
 ciの拡張版で、Unlinkable情報,Dataも表示する。
 <pre>
 Usgae: ci [addr/n]
 </pre>
 
-* allci
+* allci  
 すべてのチャンクのci結果を上から順に表示していく。
 <pre>
 Usgae: allci
 </pre>
 
-* allcix
+* allcix  
 すべてのチャンクのcix結果を上から順に表示していく。
 <pre>
 Usgae: allci
