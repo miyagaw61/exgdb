@@ -50,7 +50,7 @@ Usage: infox [addr]
 スタックをespからebpまで全て出力  
 ![allstack](http://i.imgur.com/rMhRO9c.png)
 <pre>
-Usage: fullstack
+Usage: allstack
 </pre>
 
 * pc  
