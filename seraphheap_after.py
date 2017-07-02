@@ -356,9 +356,9 @@ def ci(victim):
         print("Can't access memory")
 
 def cix(victim):
-    print("===================================")
-    print("            Chunk info             ")
-    print("===================================")
+    #print("===================================")
+    #print("            Chunk info             ")
+    #print("===================================")
     global fastchunk
     if capsize == 0 :
         arch = getarch()
