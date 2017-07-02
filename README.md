@@ -13,6 +13,29 @@ git clone https://github.com/miyagaw61/mgtools.git
 cd mgtools  
 ./mpinstall  
 
+Function list
+-------------
+
+* infox  
+* allstack  
+* pc  
+* code  
+* dword  
+* qword  
+* jj  
+* jji  
+* cc  
+* cci  
+* uu  
+* uui  
+* uc  
+* ii  
+* parseh  
+* ci  
+* cix  
+* allci  
+* allcix  
+
 How to use
 ----------
 
