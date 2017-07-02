@@ -13,7 +13,7 @@ git clone https://github.com/miyagaw61/mgpeda.git
 cd mgpeda  
 ./mgpeda_install.sh  
 
-※mgtools(https://github.com/miyagaw61/mgtools.git)を別途導入すると、各関数への引数として数式を渡すことが可能になります。  
+※mgtools( https://github.com/miyagaw61/mgtools.git )を別途導入すると、各関数への引数として数式を渡すことが可能になります。  
 
 Function list
 -------------
