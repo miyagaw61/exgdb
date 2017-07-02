@@ -26,9 +26,18 @@
         (victim,) = normalize_argv(arg,1)
         angelheap.ci(victim)
 
+    def cix(self,*arg):
+        """ Print chunk information of victim"""
+        (victim,) = normalize_argv(arg,1)
+        angelheap.cix(victim)
+
     def allci(self):
         """ Print chunk information of victim"""
         angelheap.allci()
+
+    def allcix(self):
+        """ Print chunk information of victim"""
+        angelheap.allcix()
 
 #added by me
 
