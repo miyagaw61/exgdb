@@ -150,7 +150,7 @@ Usage: ci [addr/n]
 </pre>
 
 * cix  
-ciの拡張版で、Unlinkable情報,Dataも表示する。
+ciの拡張版で、Dataも表示する。
 ![cix](http://i.imgur.com/pO4443S.png)
 <pre>
 Usage: ci [addr/n]
