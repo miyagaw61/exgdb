@@ -98,31 +98,31 @@ Usage: jji
 * cc  
 次のcall命令が来るまでniで進み続ける
 <pre>
-Usgae: cc
+Usage: cc
 </pre>
 
 * cci  
 次のcall命令が来るまでsiで潜り続ける
 <pre>
-Usgae: cci
+Usage: cci
 </pre>
 
 * uu  
 引数に与えた文字が含まれる命令が来るまでniで進み続ける
 <pre>
-Usgae: uu [str]
+Usage: uu [str]
 </pre>
 
 * uui  
 引数に与えた文字が含まれる命令が来るまでsiで潜り続ける
 <pre>
-Usgae: uui [str]
+Usage: uui [str]
 </pre>
 
 * uc  
 引数に与えた文字が含まれるcall命令が来るまでnextcallで進み続ける
 <pre>
-Usgae: uc [str]
+Usage: uc [str]
 </pre>
 
 * ii  
@@ -130,7 +130,7 @@ Usgae: uc [str]
 使用するには事前にregmakeコマンドでレジストリデータを保存するディレクトリを作成している必要がある
 ![ii](http://i.imgur.com/PJuQdM1.png)
 <pre>
-Usgae: ii
+Usage: ii
 </pre>
 
 * parseh  
@@ -139,28 +139,28 @@ Usgae: ii
 NMはnon_mainarena, IMはis_mmap, PIはprev_inuseのビット値を表す。
 ![parseh](http://i.imgur.com/ryqUG6x.png)
 <pre>
-Usgae: parseh
+Usage: parseh
 </pre>
 
 * ci  
 引数に与えたアドレスを先頭アドレスとするチャンクのチャンク情報, もしくは上からｎ番目のチャンクのチャンク情報を表示する。
 ![ci](http://i.imgur.com/Wfj7WAq.png)
 <pre>
-Usgae: ci [addr/n]
+Usage: ci [addr/n]
 </pre>
 
 * cix  
 ciの拡張版で、Unlinkable情報,Dataも表示する。
 ![cix](http://i.imgur.com/pO4443S.png)
 <pre>
-Usgae: ci [addr/n]
+Usage: ci [addr/n]
 </pre>
 
 * allci  
 すべてのチャンクのci結果を上から順に表示していく。
 ![allci](http://i.imgur.com/XVVRbGA.png)
 <pre>
-Usgae: allci
+Usage: allci
 </pre>
 
 * allcix  
@@ -169,7 +169,7 @@ Usgae: allci
 ヒープ領域を一語ずつ全て、ヒープ情報付きで表示することができる。  
 ![allcix](http://i.imgur.com/V0qAzrO.png)
 <pre>
-Usgae: allci
+Usage: allcix
 </pre>
 
 aliases
