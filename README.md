@@ -18,6 +18,7 @@ How to use
 
 * infox  
 アドレスの中身を調査する  
+![infox](http://i.imgur.com/6uTRYLj.png)
 <pre>
 Usage: infox [addr]
 </pre>
@@ -141,12 +142,6 @@ Usgae: allci
 <pre>
 Usgae: allci
 </pre>
-
-Screenshot
-----------
-
-* infox  
-![infox](http://i.imgur.com/6uTRYLj.png)
 
 aliases
 -------
