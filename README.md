@@ -76,7 +76,7 @@ Usage: dword [addr] [count]
 
 * qword  
 addr番地からcount個のQWORD型データ(8byte)を出力
-![qword](http://i.imgur.com/50DfKf7.png)
+![qword](http://i.imgur.com/7m4bb6s.png)
 <pre>
 Usage: qword [addr] [count]
 </pre>
