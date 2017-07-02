@@ -513,7 +513,7 @@ def cixoff(victim):
         else :
             #print("\033[1;32mStatus : \033[1;34m Freed \033[37m")
             usedflag = False
-            unlinkable(chunkaddr,fd,bk)
+            #unlinkable(chunkaddr,fd,bk)
         pi = size & 1
         im = size & 2
         nm = size & 4
