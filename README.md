@@ -146,7 +146,7 @@ Screenshot
 ----------
 
 * infox  
-[infox](http://i.imgur.com/6uTRYLj.png)
+![infox](http://i.imgur.com/6uTRYLj.png)
 
 aliases
 -------
