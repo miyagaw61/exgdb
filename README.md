@@ -8,10 +8,12 @@ How to install
 --------------
 
 apt-get -y install gdb  
-cd $HOME  
-git clone https://github.com/miyagaw61/mgtools.git  
-cd mgtools  
-./mpinstall  
+cd $HOME/Downloads  
+git clone https://github.com/miyagaw61/mgpeda.git  
+cd mgpeda  
+./mgpeda_install.sh  
+
+※mgtools(https://github.com/miyagaw61/mgtools.git)を別途導入すると、各関数への引数として数式を渡すことが可能になります。  
 
 Function list
 -------------
