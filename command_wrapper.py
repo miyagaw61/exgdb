@@ -26,11 +26,6 @@
         (victim,) = normalize_argv(arg,1)
         angelheap.ci(victim)
 
-    def cioff(self,*arg):
-        """ Print chunk information of victim"""
-        (victim,) = normalize_argv(arg,1)
-        angelheap.ci(victim)
-
     def cix(self,*arg):
         """ Print chunk information of victim"""
         (victim, ) = normalize_argv(arg,1)
