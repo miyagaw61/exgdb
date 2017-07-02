@@ -165,6 +165,8 @@ Usgae: allci
 
 * allcix  
 すべてのチャンクのcix結果を上から順に表示していく。
+ただし、先頭のChunk infoテキストとUnlinkable情報を省くことによって、  
+ヒープ領域を一語ずつ全て、ヒープ情報付きで表示することができる。  
 ![allcix](http://i.imgur.com/V0qAzrO.png)
 <pre>
 Usgae: allci
