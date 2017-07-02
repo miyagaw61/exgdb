@@ -142,6 +142,12 @@ Usgae: allci
 Usgae: allci
 </pre>
 
+Screenshot
+----------
+
+* infox 
+[infox](http://i.imgur.com/6uTRYLj.png)
+
 aliases
 -------
 
@@ -158,3 +164,4 @@ aliases
 * nj : stepuntil call,jmp,je,jne,jb,ja  
 * nt : stepuntil test,cmp  
 * ph : parseh
+
