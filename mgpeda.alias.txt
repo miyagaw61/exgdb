@@ -21,7 +21,7 @@ Alias('chkbmap','shell chkbmap')
 Alias('infoc','chunkinfo')
 Alias('hp','parseheap')
 Alias('ph','parseh')
-Alias('allstack','fullstack')
+Alias('fullstack','allstack')
 Alias('fullci','allci')
 Alias('fullcix','allcix')
 #----added by me----#

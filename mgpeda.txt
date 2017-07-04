@@ -1,6 +1,43 @@
 
-
 #----add by me----#
+
+
+
+
+
+
+
+    def my_normalize_argv(args, size=0):
+        """
+        Normalize argv to list with predefined length
+        """
+        args = list(args)
+        for (idx, val) in enumerate(args):
+            if to_int(val) is not None:
+                args[idx] = to_int(val)
+            if size and idx == size:
+                return args[:idx]
+
+        if size == 0:
+            return args
+        for i in range(len(args), size):
+            args += [None]
+        return args
+
+    def str_normalize_argv(args, size=0):
+        """
+        Normalize argv to list with predefined length
+        """
+        args = list(args)
+        for (idx, val) in enumerate(args):
+            if size and idx == size:
+                return args[:idx]
+
+        if size == 0:
+            return args
+        for i in range(len(args), size):
+            args += [None]
+        return args
 
     def flg(self,*arg):
         """
@@ -38,7 +75,7 @@
             peda.execute('n $ecx')
         return
 
-    def fullstack(self,*arg):
+    def allstack(self,*arg):
         """
         hogehoge
         """
@@ -54,6 +91,19 @@
         arg += 1
         arg = int(arg)
         peda.execute('stack %s' % arg)
+        return
+    
+    def gdbgrep(self,*arg):
+        """
+        hogehoge
+        """
+        cmd = arg[0]
+        arg1 = arg[1]
+        regex_arg = re.compile(r".*" + arg1 + ".*")
+        out = gdb.execute(cmd, to_string=True)
+        res = regex_arg.findall(out)
+        for i in range(len(res)):
+            print(res[i])
         return
     
     def infox(self, *arg):
