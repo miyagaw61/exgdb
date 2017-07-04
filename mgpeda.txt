@@ -1,12 +1,6 @@
 
 #----add by me----#
 
-
-
-
-
-
-
     def my_normalize_argv(args, size=0):
         """
         Normalize argv to list with predefined length
@@ -51,17 +45,12 @@
         hogehoge
         """
         arch = getarch()
-        arg = normalize_argv(arg,1)
-        arg = arg[0]
+        (arg, ) = normalize_argv(arg,1)
         argstr = str(arg)
-        if(argstr.count("+") > 0 or argstr.count("-") > 0 or argstr.count("*") > 0 or argstr.count("/") > 0):
-            os.system("calc " + argstr + " > peda-qword-calc.tmp")
-            i = int(open("peda-qword-calc.tmp", "r").read())
-            os.system("rm -rf peda-qword-calc.tmp")
         if(arch == "x86-64"):
-            peda.execute('pdisas $rip /%s' % arg)
+            peda.execute('pdisas $rip /%s' % gdb.parse_and_eval(argstr))
         else:
-            peda.execute('pdisas $eip /%s' % arg)
+            peda.execute('pdisas $eip /%s' % gdb.parse_and_eval(argstr))
         return
 
     def lpout(self,*arg):
@@ -101,9 +90,37 @@
         arg1 = arg[1]
         regex_arg = re.compile(r".*" + arg1 + ".*")
         out = gdb.execute(cmd, to_string=True)
+        if(os.path.exists("peda-out.tmp")):
+            os.system("rm -rf peda-out.tmp")
+        fd = open("peda-out.tmp", "w")
+        fd.write(out)
+        fd.close()
+        os.system("cp -a peda-out.tmp peda-out.tmp1")
+        os.system("xxd -p peda-out.tmp1 | perl -pe 's@\n@@g' | perl -pe 's@1b5b6d@@g' | xxd -r -p > peda-out.tmp2")
+        os.system("xxd -p peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33346d@@g' | xxd -r -p > peda-out.tmp1")
+        os.system("xxd -p peda-out.tmp1 | perl -pe 's@\n@@g' | perl -pe 's@1b5b306d@@g' | xxd -r -p > peda-out.tmp2")
+        os.system("xxd -p peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33316d@@g' | xxd -r -p > peda-out.tmp1")
+        out = open("peda-out.tmp1", "r").read()
         res = regex_arg.findall(out)
         for i in range(len(res)):
-            print(res[i])
+            os.system("cat peda-out.tmp1 | grep -n \'" + res[i] + "\' > peda-one.tmp")
+            num = open("peda-one.tmp", "r").read()
+            num = num[0:1]
+            os.system("head -n " + num + " peda-out.tmp | tail -n 1 > peda-res.tmp")
+            ans = open("peda-res.tmp", "r").read()
+            sys.stdout.write(ans)
+        if(os.path.exists("peda-out.tmp")):
+            os.system("rm -rf peda-out.tmp")
+        if(os.path.exists("peda-out.tmp1")):
+            os.system("rm -rf peda-out.tmp1")
+        if(os.path.exists("peda-out.tmp2")):
+            os.system("rm -rf peda-out.tmp2")
+        if(os.path.exists("peda-one.tmp")):
+            os.system("rm -rf peda-one.tmp")
+        if(os.path.exists("peda-num.tmp")):
+            os.system("rm -rf peda-num.tmp")
+        if(os.path.exists("peda-res.tmp")):
+            os.system("rm -rf peda-res.tmp")
         return
     
     def infox(self, *arg):
@@ -316,10 +333,6 @@
         arg0 = arg[0]
         arg1 = arg[1]
         arg1str = str(arg1)
-        if(arg1str.count("+") > 0 or arg1str.count("-") > 0 or arg1str.count("*") > 0 or arg1str.count("/") > 0):
-            os.system("calc " + arg1str + " > peda-qword-calc.tmp")
-            i = int(open("peda-qword-calc.tmp", "r").read())
-            os.system("rm -rf peda-qword-calc.tmp")
         if(arch == "x86-64"):
             ripbk = peda.getreg('rip')
             peda.execute('set $rip=%d' % arg0)
@@ -340,11 +353,7 @@
         addr = arg[0]
         i = arg[1]
         istr = str(i)
-        if(istr.count("+") > 0 or istr.count("-") > 0 or istr.count("*") > 0 or istr.count("/") > 0):
-            hoge = 1
-            os.system("calc " + istr + " > peda-qword-calc.tmp")
-            i = int(open("peda-qword-calc.tmp", "r"))
-            os.system("rm -rf peda-qword-calc.tmp")
+        i = gdb.parse_and_eval(istr)
         cnt = 0
         while(i > 0):
             peda.execute('infox %d+%d' % (addr,cnt))
@@ -359,10 +368,7 @@
         addr = arg[0]
         i = arg[1]
         istr = str(i)
-        if(istr.count("+") > 0 or istr.count("-") > 0 or istr.count("*") > 0 or istr.count("/") > 0):
-            os.system("calc " + istr + " > peda-qword-calc.tmp")
-            i = int(open("peda-qword-calc.tmp", "r").read())
-            os.system("rm -rf peda-qword-calc.tmp")
+        i = gdb.parse_and_eval(istr)
         cnt = 0
         while(i > 0):
             peda.execute('infox %d+%d' % (addr,cnt))
