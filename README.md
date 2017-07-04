@@ -83,6 +83,14 @@ addr番地からcount個のQWORD型データ(8byte)を出力
 Usage: qword [addr] [count]
 </pre>
 
+* gdbgrep  
+cmdコマンドの出力をregexp正規表現でgrepして抽出する。  
+cmdコマンドの出力が多すぎるとかなり処理が重くなってしまうので注意。  
+![gdbgrep](http://i.imgur.com/ee4PmRT.png)
+<pre>
+Usage: gdbgrep [cmd] [regexp]
+</pre>
+
 * jj  
 次のjmp系/call命令が来るまでniで進み続ける
 ![jj1](http://i.imgur.com/k51hUKf.png)
