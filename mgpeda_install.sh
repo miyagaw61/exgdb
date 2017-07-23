@@ -45,10 +45,11 @@ cat "$(pwd)"/command_wrapper.py >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper
 cat $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 rm $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py
 cp -a $HOME/Pwngdb/angelheap/gdbinit.py $HOME/Pwngdb/angelheap/mgpeda/
-echo -n "Do you wanna overwrite mggdbinit -> $HOME/.gdbinit ? [y/n] "
+echo -n "cp -a mggdbinit $HOME/.gdbinit [y/n] : "
 read ans
 case $ans in
 	Y | YES | y | yes)
+		cp -a $HOME/.gdbinit $HOME/.gdbinit.bak
 		cp -a "$(pwd)"/mggdbinit $HOME/.gdbinit ;;
 	N | NO | n | no)
 		echo "You have to write mggdbinit -> $HOME/.gdbinit" ;;
