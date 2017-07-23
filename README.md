@@ -86,6 +86,7 @@ Usage: qword [addr] [count]
 * gdbgrep  
 cmdコマンドの出力をregexp正規表現でgrepして抽出する。  
 cmdコマンドの出力が多すぎるとかなり処理が重くなってしまうので注意。  
+※現在挙動が不安定です。後々修正します。
 ![gdbgrep](http://i.imgur.com/ee4PmRT.png)
 <pre>
 Usage: gdbgrep [cmd] [regexp]
