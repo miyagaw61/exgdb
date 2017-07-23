@@ -24,7 +24,7 @@ cat $HOME/peda/mgpeda/mgpeda.txt >> $HOME/peda/mgpeda/mgpeda.py
 #fi
 cat $HOME/peda/mgpeda/peda.after.txt >> $HOME/peda/mgpeda/mgpeda.py
 cat $HOME/peda/mgpeda/mgpeda.alias.txt >> $HOME/peda/mgpeda/mgpeda.py
-cat $HOME/peda/mgpeda/mgpeda.py | perl -pe "s@if not self._is_running()@if(1==2)@g" > $HOME/peda/mgpeda/mgpeda.tmp
+cat $HOME/peda/mgpeda/mgpeda.py | perl -pe "s@if not self._is_running\(\)@if\(1==2\)@g" > $HOME/peda/mgpeda/mgpeda.tmp
 mv $HOME/peda/mgpeda/mgpeda.tmp $HOME/peda/mgpeda/mgpeda.py
 
 if test ! -e $HOME/Pwngdb/angelheap/mgpeda/ ;then
