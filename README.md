@@ -83,12 +83,13 @@ addr番地からcount個のQWORD型データ(8byte)を出力
 Usage: qword [addr] [count]
 </pre>
 
-* gdbgrep  
+* xgrep  
 cmdコマンドの出力をregexp正規表現でgrepして抽出する。  
+grepというaliasがかけられている。
 ※このコマンドを使用するためには別途 https://github.com/miyagaw61/mgtools を導入する必要あり
 ![gdbgrep](http://i.imgur.com/ee4PmRT.png)
 <pre>
-Usage: gdbgrep [cmd] [regexp]
+Usage: xgrep [cmd] [regexp]
 </pre>
 
 * jj  
@@ -198,4 +199,6 @@ aliases
 * nj : stepuntil call,jmp,je,jne,jb,ja  
 * nt : stepuntil test,cmp  
 * ph : parseh
+* grep : xgrep
+
 
