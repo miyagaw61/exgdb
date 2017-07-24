@@ -10,7 +10,7 @@ if test ! -e $HOME/peda/mgpeda/ ;then
 	mkdir $HOME/peda/mgpeda/
 fi
 #cp -a "$(pwd)"/mgpeda64.txt $HOME/peda/mgpeda/
-cp -a "$(pwd)"/mgpeda.txt $HOME/peda/mgpeda/
+cp -a "$(pwd)"/mgpeda_code.py $HOME/peda/mgpeda/
 #cp -a "$(pwd)"/mgpeda32.txt $HOME/peda/mgpeda/
 cp -a "$(pwd)"/mgpeda.alias.txt $HOME/peda/mgpeda/
 head -n $((${line} - 1)) $HOME/peda/peda.py | tail -n $((${line} - 1)) > $HOME/peda/mgpeda/peda.before.txt
@@ -18,12 +18,13 @@ head -n $(cat $HOME/peda/peda.py | wc -l) $HOME/peda/peda.py | tail -n $(($(cat 
 cp -a $HOME/peda/mgpeda/peda.before.txt $HOME/peda/mgpeda/mgpeda.py
 #if test "$(uname -a | grep 'x86_64')" ;then
 	#cat $HOME/peda/mgpeda/mgpeda64.txt >> $HOME/peda/mgpeda/mgpeda.py
-cat $HOME/peda/mgpeda/mgpeda.txt >> $HOME/peda/mgpeda/mgpeda.py
+cat $HOME/peda/mgpeda/mgpeda_code.py >> $HOME/peda/mgpeda/mgpeda.py
 #else
 #	cat $HOME/peda/mgpeda/mgpeda32.txt >> $HOME/peda/mgpeda/mgpeda.py
 #fi
 cat $HOME/peda/mgpeda/peda.after.txt >> $HOME/peda/mgpeda/mgpeda.py
 cat $HOME/peda/mgpeda/mgpeda.alias.txt >> $HOME/peda/mgpeda/mgpeda.py
+
 cat $HOME/peda/mgpeda/mgpeda.py | perl -pe "s@if not self._is_running\(\)@if\(1==2\)@g" > $HOME/peda/mgpeda/mgpeda.tmp
 mv $HOME/peda/mgpeda/mgpeda.tmp $HOME/peda/mgpeda/mgpeda.py
 
@@ -36,7 +37,7 @@ cat $HOME/Pwngdb/angelheap/angelheap.py | grep -A$(cat $HOME/Pwngdb/angelheap/an
 cat "$(pwd)"/seraphheap_after.py >> $HOME/Pwngdb/angelheap/mgpeda/angelheap.py
 line=$(cat $HOME/Pwngdb/angelheap/command_wrapper.py | grep -n "class AngelHeapCmdWrapper" | sed -E "s/(.*):.*:/\1/g")
 echo "import sys" > $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
-echo 'sys.path.append("/home/miyagaw61/Pwngdb/")' >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
+echo 'sys.path.append("/home/miyagaw61/Pwngdb")' >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 echo "import pwngdb" >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 
 head -n $((${line} - 1)) $HOME/Pwngdb/angelheap/command_wrapper.py | tail -n $((${line} - 1)) >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
