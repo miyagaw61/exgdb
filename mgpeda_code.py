@@ -97,9 +97,9 @@
         fd.close()
         os.system("cp -a peda-out.tmp peda-out.tmp1")
         os.system("xxd -p peda-out.tmp1 | perl -pe 's@\n@@g' | perl -pe 's@1b5b6d@@g' | xxd -r -p > peda-out.tmp2")
-        os.system("xxd -p peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33346d@@g' | xxd -r -p > peda-out.tmp1")
-        os.system("xxd -p peda-out.tmp1 | perl -pe 's@\n@@g' | perl -pe 's@1b5b306d@@g' | xxd -r -p > peda-out.tmp2")
-        os.system("xxd -p peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33316d@@g' | xxd -r -p > peda-out.tmp1")
+        os.system("cat peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33346d@@g' | xxd -r -p > peda-out.tmp1")
+        os.system("cat peda-out.tmp1 | perl -pe 's@\n@@g' | perl -pe 's@1b5b306d@@g' | xxd -r -p > peda-out.tmp2")
+        os.system("cat peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33316d@@g' | xxd -r -p > peda-out.tmp1")
         out = open("peda-out.tmp1", "r").read()
         res = regex_arg.findall(out)
         for i in range(len(res)):
