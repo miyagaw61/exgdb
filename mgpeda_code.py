@@ -924,6 +924,14 @@
             after = re.sub(r'\[(e..*)\].*', '$\\1', after)
             peda.execute('infox ' + after)
 
+    def kdbg(self, *arg):
+        """
+        Usage: kerneldbg [tty]
+        """
+        arg = arg[0]
+        gdb.execute("file vmlinux")
+        gdb.execute("target remote /dev/pts/" + str(arg))
+        return
 
 ###--------added by me--------------------------------###
 
