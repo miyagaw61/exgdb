@@ -89,7 +89,7 @@
         cmd = arg[0]
         arg1 = arg[1]
         regex_arg = re.compile(r".*" + arg1 + ".*")
-        regex_num = re.compile(r"^\d.*:")
+        regex_num = re.compile(r"^\d*:")
         out = gdb.execute(cmd, to_string=True)
         if(os.path.exists("peda-out.tmp")):
             os.system("rm -rf peda-out.tmp")
@@ -923,6 +923,7 @@
             peda.execute("shell echo -n -e '\e[32m" + after + "\e[m: '")
             after = re.sub(r'\[(e..*)\].*', '$\\1', after)
             peda.execute('infox ' + after)
+
 
 ###--------added by me--------------------------------###
 
