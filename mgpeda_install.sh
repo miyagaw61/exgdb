@@ -1,5 +1,5 @@
 #!/bin/sh
-if test -e ./mgpeda_install.sh ;then
+if test ! -e ./mgpeda_install.sh ;then
     echo "Please < cd /hoge/mgpeda ; ./mgpeda_install.sh >"
     exit 0
 fi
