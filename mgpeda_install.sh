@@ -1,4 +1,8 @@
 #!/bin/sh
+if test -e ./mgpeda_install.sh ;then
+    echo "Please < cd /hoge/mgpeda ; ./mgpeda_install.sh >"
+    exit 0
+fi
 if test ! -e $HOME/peda/ ;then
 	git clone https://github.com/longld/peda.git $HOME/peda  
 fi
