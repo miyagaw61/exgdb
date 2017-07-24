@@ -89,38 +89,37 @@
         cmd = arg[0]
         arg1 = arg[1]
         regex_arg = re.compile(r".*" + arg1 + ".*")
+        regex_num = re.compile(r"^\d.*:")
         out = gdb.execute(cmd, to_string=True)
         if(os.path.exists("peda-out.tmp")):
             os.system("rm -rf peda-out.tmp")
-        fd = open("peda-out.tmp", "w")
+        fd = open("peda-out-color.tmp", "w")
         fd.write(out)
         fd.close()
-        os.system("cp -a peda-out.tmp peda-out.tmp1")
-        os.system("xxd -p peda-out.tmp1 | perl -pe 's@\n@@g' | perl -pe 's@1b5b6d@@g' | xxd -r -p > peda-out.tmp2")
-        os.system("xxd -p peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33346d@@g' | xxd -r -p > peda-out.tmp1")
-        os.system("xxd -p peda-out.tmp1 | perl -pe 's@\n@@g' | perl -pe 's@1b5b306d@@g' | xxd -r -p > peda-out.tmp2")
-        os.system("xxd -p peda-out.tmp2 | perl -pe 's@\n@@g' | perl -pe 's@1b5b3b33316d@@g' | xxd -r -p > peda-out.tmp1")
-        out = open("peda-out.tmp1", "r").read()
+####################################
+        #os.system("wcat peda-out-color.tmp > peda-out-noncolor.tmp")
+        #os.system("cp -a peda-out-noncolor.tmp peda-out.tmp")
+        gdb.execute("shell wcat peda-out-color.tmp > peda-out-noncolor.tmp")
+        gdb.execute("shell cp -a peda-out-noncolor.tmp peda-out.tmp")
+        out = open("peda-out.tmp", "r").read()
         res = regex_arg.findall(out)
         for i in range(len(res)):
-            os.system("cat peda-out.tmp1 | grep -n \'" + res[i] + "\' > peda-one.tmp")
+            #os.system("cat peda-out-noncolor.tmp | grep -n \"" + res[i] + "\" > peda-one.tmp")
+            gdb.execute("shell cat peda-out-noncolor.tmp | grep -n \"" + res[i] + "\" > peda-one.tmp")
             num = open("peda-one.tmp", "r").read()
-            num = num[0:1]
-            os.system("head -n " + num + " peda-out.tmp | tail -n 1 > peda-res.tmp")
-            ans = open("peda-res.tmp", "r").read()
-            sys.stdout.write(ans)
+            num = regex_num.findall(num)[0][0:-1]
+            gdb.execute("shell head -n " + num + " peda-out-color.tmp | tail -n 1")
+            #os.system("head -n " + num + " peda-out-color.tmp | tail -n 1 > peda-res.tmp")
+            #ans = open("peda-res.tmp", "r").read()
+            #sys.stdout.write(ans)
+        if(os.path.exists("peda-out-color.tmp")):
+            os.system("rm -rf peda-out-color.tmp")
         if(os.path.exists("peda-out.tmp")):
             os.system("rm -rf peda-out.tmp")
-        if(os.path.exists("peda-out.tmp1")):
-            os.system("rm -rf peda-out.tmp1")
-        if(os.path.exists("peda-out.tmp2")):
-            os.system("rm -rf peda-out.tmp2")
         if(os.path.exists("peda-one.tmp")):
             os.system("rm -rf peda-one.tmp")
-        if(os.path.exists("peda-num.tmp")):
-            os.system("rm -rf peda-num.tmp")
-        if(os.path.exists("peda-res.tmp")):
-            os.system("rm -rf peda-res.tmp")
+        #if(os.path.exists("peda-res.tmp")):
+        #    os.system("rm -rf peda-res.tmp")
         return
     
     def infox(self, *arg):
