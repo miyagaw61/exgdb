@@ -5,14 +5,12 @@ source ~/Pwngdb/pwngdb.py
 #source ~/Pwngdb/angelheap/gdbinit.py
 source ~/Pwngdb/angelheap/mgpeda/gdbinit.py
 
-#set history save on
-set history size 10000
 set history filename ~/.gdb_history
+set history save on
+set history size 10000
 set print pretty on
 set print static-members off
 set charset ASCII
-
-ulimit -c unlimited
 
 define hook-run
 python
