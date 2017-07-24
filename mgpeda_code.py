@@ -82,7 +82,7 @@
         peda.execute('stack %s' % arg)
         return
     
-    def gdbgrep(self,*arg):
+    def xgrep(self,*arg):
         """
         hogehoge
         """

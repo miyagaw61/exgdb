@@ -24,6 +24,7 @@ Alias('ph','parseh')
 Alias('fullstack','allstack')
 Alias('fullci','allci')
 Alias('fullcix','allcix')
+Alias('grep','xgrep')
 #----added by me----#
 
 
