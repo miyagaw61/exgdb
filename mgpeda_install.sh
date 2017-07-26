@@ -1,4 +1,5 @@
 #!/bin/sh
+
 if test ! -e ./mgpeda_install.sh ;then
     echo "Please < cd /hoge/mgpeda ; ./mgpeda_install.sh >"
     exit 0
@@ -30,6 +31,14 @@ cat $HOME/peda/mgpeda/peda.after.txt >> $HOME/peda/mgpeda/mgpeda.py
 cat $HOME/peda/mgpeda/mgpeda.alias.txt >> $HOME/peda/mgpeda/mgpeda.py
 
 cat $HOME/peda/mgpeda/mgpeda.py | perl -pe "s@if not self._is_running\(\)@if\(1==2\)@g" > $HOME/peda/mgpeda/mgpeda.tmp
+cat $HOME/peda/mgpeda/mgpeda.tmp | perl -pe "s@if not pid@if\(1==2\)@g" > $HOME/peda/mgpeda/mgpeda.py
+cat $HOME/peda/mgpeda/mgpeda.py | perl -pe "s@if self._is_running\(\):@if\(1==1\):@g" > $HOME/peda/mgpeda/mgpeda.tmp
+ 
+### getpid=$(cat getpid.txt)
+### cat $HOME/peda/mgpeda/mgpeda.tmp | perl -pe "s@if not pid@"$getpid"@g" > $HOME/peda/mgpeda/mgpeda.tmp2
+### cat $HOME/peda/mgpeda/mgpeda.tmp2 | perl -pe "s@TMPSPACE@ @g" > $HOME/peda/mgpeda/mgpeda.tmp
+### cat $HOME/peda/mgpeda/mgpeda.tmp | perl -pe "s@TMP2SPACE@        @g" > $HOME/peda/mgpeda/mgpeda.tmp2
+### cat $HOME/peda/mgpeda/mgpeda.tmp2 | perl -pe "s@TMP3SPACE@            @g" > $HOME/peda/mgpeda/mgpeda.py
 mv $HOME/peda/mgpeda/mgpeda.tmp $HOME/peda/mgpeda/mgpeda.py
 
 if test ! -e $HOME/Pwngdb/angelheap/mgpeda/ ;then
