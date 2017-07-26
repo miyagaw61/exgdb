@@ -70,14 +70,14 @@ Usage: code [addr] [count]
 </pre>
 
 * dword  
-addr番地からcount個のDWORD型データ（4byte)を出力  
+addr番地からcount個のDWORD型データ（4byte)を出力(32bitバイナリ解析時のtelescopeと同一の挙動)  
 ![dword](http://i.imgur.com/KRAniQl.png)
 <pre>
 Usage: dword [addr] [count]
 </pre>
 
 * qword  
-addr番地からcount個のQWORD型データ(8byte)を出力
+addr番地からcount個のQWORD型データ(8byte)を出力(8byte版telescope)  
 ![qword](http://i.imgur.com/7m4bb6s.png)
 <pre>
 Usage: qword [addr] [count]
@@ -129,9 +129,7 @@ Usage: uu [str]
 <pre>
 Usage: uui [str]
 </pre>
-
-* uc  
-引数に与えた文字が含まれるcall命令が来るまでnextcallで進み続ける
+* uc  引数に与えた文字が含まれるcall命令が来るまでnextcallで進み続ける
 <pre>
 Usage: uc [str]
 </pre>
