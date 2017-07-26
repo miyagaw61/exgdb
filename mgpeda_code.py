@@ -344,35 +344,35 @@
             peda.execute('set $eip=%d' % eipbk)
         return
 
-    def dword(self, *arg):
-        """
-        hogehoge
-        """
-        arg = normalize_argv(arg,2)
-        addr = arg[0]
-        i = arg[1]
-        istr = str(i)
-        i = gdb.parse_and_eval(istr)
-        cnt = 0
-        while(i > 0):
-            peda.execute('infox %d+%d' % (addr,cnt))
-            cnt = cnt + 4
-            i = i - 1
+    #def dword(self, *arg):
+    #    """
+    #    hogehoge
+    #    """
+    #    arg = normalize_argv(arg,2)
+    #    addr = arg[0]
+    #    i = arg[1]
+    #    istr = str(i)
+    #    i = gdb.parse_and_eval(istr)
+    #    cnt = 0
+    #    while(i > 0):
+    #        peda.execute('infox %d+%d' % (addr,cnt))
+    #        cnt = cnt + 4
+    #        i = i - 1
 
-    def qword(self, *arg):
-        """
-        hogehoge
-        """
-        arg = normalize_argv(arg,2)
-        addr = arg[0]
-        i = arg[1]
-        istr = str(i)
-        i = gdb.parse_and_eval(istr)
-        cnt = 0
-        while(i > 0):
-            peda.execute('infox %d+%d' % (addr,cnt))
-            cnt = cnt + 8
-            i = i - 1
+    #def qword(self, *arg):
+    #    """
+    #    hogehoge
+    #    """
+    #    arg = normalize_argv(arg,2)
+    #    addr = arg[0]
+    #    i = arg[1]
+    #    istr = str(i)
+    #    i = gdb.parse_and_eval(istr)
+    #    cnt = 0
+    #    while(i > 0):
+    #        peda.execute('infox %d+%d' % (addr,cnt))
+    #        cnt = cnt + 8
+    #        i = i - 1
 
     def regtrace(self, *arg):
         """
@@ -931,6 +931,112 @@
         arg = arg[0]
         gdb.execute("file vmlinux")
         gdb.execute("target remote /dev/pts/" + str(arg))
+        return
+
+    def dword(self, *arg):
+        """
+        Display memory content at an address with smart dereferences
+        Usage:
+            MYNAME [linecount] (analyze at current $SP)
+            MYNAME address [linecount]
+        """
+
+        (address, count) = normalize_argv(arg, 2)
+
+        if(1==1):
+            sp = peda.getreg("sp")
+        else:
+            sp = None
+
+        if count is None:
+            count = 8
+            if address is None:
+                address = sp
+            elif address < 0x1000:
+                count = address
+                address = sp
+
+        if not address:
+            return
+
+        step = peda.intsize()
+        step = 4
+        if not peda.is_address(address): # cannot determine address
+            for i in range(count):
+                if not peda.execute("x/%sx 0x%x" % ("g" if step == 8 else "w", address + i*step)):
+                    break
+            return
+
+        result = []
+        for i in range(count):
+            value = address + i*step
+            if peda.is_address(value):
+                result += [peda.examine_mem_reference(value)]
+            else:
+                result += [None]
+        idx = 0
+        text = ""
+        for chain in result:
+            text += "%04d| " % (idx)
+            text += format_reference_chain(chain)
+            text += "\n"
+            idx += step
+
+        pager(text)
+
+        return
+
+    def qword(self, *arg):
+        """
+        Display memory content at an address with smart dereferences
+        Usage:
+            MYNAME [linecount] (analyze at current $SP)
+            MYNAME address [linecount]
+        """
+
+        (address, count) = normalize_argv(arg, 2)
+
+        if(1==1):
+            sp = peda.getreg("sp")
+        else:
+            sp = None
+
+        if count is None:
+            count = 8
+            if address is None:
+                address = sp
+            elif address < 0x1000:
+                count = address
+                address = sp
+
+        if not address:
+            return
+
+        step = peda.intsize()
+        step = 8
+        if not peda.is_address(address): # cannot determine address
+            for i in range(count):
+                if not peda.execute("x/%sx 0x%x" % ("g" if step == 8 else "w", address + i*step)):
+                    break
+            return
+
+        result = []
+        for i in range(count):
+            value = address + i*step
+            if peda.is_address(value):
+                result += [peda.examine_mem_reference(value)]
+            else:
+                result += [None]
+        idx = 0
+        text = ""
+        for chain in result:
+            text += "%04d| " % (idx)
+            text += format_reference_chain(chain)
+            text += "\n"
+            idx += step
+
+        pager(text)
+
         return
 
 ###--------added by me--------------------------------###
