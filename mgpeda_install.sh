@@ -59,6 +59,7 @@ cat "$(pwd)"/command_wrapper.py >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper
 cat $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 rm $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py
 cp -a $HOME/Pwngdb/angelheap/gdbinit.py $HOME/Pwngdb/angelheap/mgpeda/
+cp  -a $HOME/Pwngdb/pwngdb.py $HOME/Pwngdb/angelheap/mgpeda
 echo -n "cp -a mggdbinit $HOME/.gdbinit [y/n] : "
 read ans
 case $ans in
