@@ -68,7 +68,9 @@ echo -n "cp -a ./mggdbinit $HOME/.gdbinit [y/n] : "
 read ans
 case $ans in
 	Y | YES | y | yes)
-		cp -a $HOME/.gdbinit $HOME/.gdbinit.bak
+        if test -e $HOME/.gdbinit ;then
+            cp -a $HOME/.gdbinit $HOME/.gdbinit.bak
+        fi
 		cp -a "$(pwd)"/mggdbinit $HOME/.gdbinit ;;
 	N | NO | n | no)
 		echo "You have to write mggdbinit -> $HOME/.gdbinit" ;;
