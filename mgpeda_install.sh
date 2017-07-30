@@ -4,6 +4,10 @@ if test ! -e ./mgpeda_install.sh ;then
     echo "Please < cd /hoge/mgpeda ; ./mgpeda_install.sh >"
     exit 0
 fi
+if test ! "$(which gdb)" ;then
+    touch $HOME/.gdbinit
+    apt-get -y install gdb
+fi
 if test ! -e $HOME/peda/ ;then
 	git clone https://github.com/longld/peda.git $HOME/peda  
 fi
@@ -60,7 +64,7 @@ cat $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py >> $HOME/Pwngdb/angel
 rm $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py
 cp -a $HOME/Pwngdb/angelheap/gdbinit.py $HOME/Pwngdb/angelheap/mgpeda/
 cp  -a $HOME/Pwngdb/pwngdb.py $HOME/Pwngdb/angelheap/mgpeda
-echo -n "cp -a mggdbinit $HOME/.gdbinit [y/n] : "
+echo -n "cp -a ./mggdbinit $HOME/.gdbinit [y/n] : "
 read ans
 case $ans in
 	Y | YES | y | yes)
