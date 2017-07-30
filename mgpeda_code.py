@@ -45,7 +45,8 @@
         hogehoge
         """
         arch = getarch()
-        (arg, ) = normalize_argv(arg,1)
+        #(arg, ) = normalize_argv(arg,1)
+        arg = arg[0]
         argstr = str(arg)
         if(arch == "x86-64"):
             peda.execute('pdisas $rip /%s' % gdb.parse_and_eval(argstr))
@@ -559,10 +560,13 @@
         """
         stop.
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         argc = len(arg)
         if(argc == 1):
-            (arg, ) = normalize_argv(arg,1)
+            #(arg, ) = normalize_argv(arg,1)
+            arg = arg[0]
             if(arch == "x86-64"):
                 while(True):
                     peda.execute('nextcall')
@@ -580,7 +584,9 @@
                     if(callOrJmp.find(':') == -1):
                         break
         elif(argc == 2):
-            (arg1, arg2) = normalize_argv(arg, 2)
+            #(arg1, arg2) = normalize_argv(arg, 2)
+            arg1 = arg[0]
+            arg2 = arg[1]
             i = 0
             if(arch == "X86-64"):
                 while(i < arg2):
@@ -603,11 +609,14 @@
         """
         stop.
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         argc = len(arg)
         if(arch == "x86-64"):
             if(argc == 1):
-                (arg, ) = normalize_argv(arg,1)
+                #(arg, ) = normalize_argv(arg,1)
+                arg = arg[0]
                 while(True):
                     peda.execute('ni')
                     peda.execute('infox_new register rip')
@@ -616,7 +625,9 @@
                     if(callOrJmp.find(':') == -1):
                         break
             elif(argc == 2):
-                (arg1, arg2, ) = normalize_argv(arg, 2)
+                #(arg1, arg2, ) = normalize_argv(arg, 2)
+                arg1 = arg[0]
+                arg2 = arg[1]
                 i = 0
                 while(i < arg2):
                     peda.execute('ni')
@@ -627,7 +638,8 @@
                         i = i + 1
         else:
             if(argc == 1):
-                (arg, ) = normalize_argv(arg,1)
+                #(arg, ) = normalize_argv(arg,1)
+                arg = arg[0]
                 while(True):
                     peda.execute('ni')
                     peda.execute('infox_new register eip')
@@ -636,7 +648,9 @@
                     if(callOrJmp.find(':') == -1):
                         break
             elif(argc == 2):
-                (arg1, arg2, ) = normalize_argv(arg, 2)
+                #(arg1, arg2, ) = normalize_argv(arg, 2)
+                arg1 = arg[0]
+                arg2 = arg[1]
                 i = 0
                 while(i < arg2):
                     peda.execute('ni')
@@ -650,11 +664,14 @@
         """
         stop.
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         argc = len(arg)
         if(arch == "x86-64"):
             if(argc == 1):
-                (arg, ) = normalize_argv(arg,1)
+                #(arg, ) = normalize_argv(arg,1)
+                arg = arg[0]
                 while(True):
                     peda.execute('si')
                     peda.execute('infox_new register rip')
@@ -663,7 +680,9 @@
                     if(callOrJmp.find(':') == -1):
                         break
             elif(argc == 2):
-                (arg1, arg2) = normalize_argv(arg, 2)
+                #(arg1, arg2) = normalize_argv(arg, 2)
+                arg1 = arg[0]
+                arg2 = arg[1]
                 i = 0
                 while(i < arg2):
                     peda.execute('ni')
@@ -674,7 +693,8 @@
                         i = i + 1
         else:
             if(argc == 1):
-                (arg, ) = normalize_argv(arg,1)
+                #(arg, ) = normalize_argv(arg,1)
+                arg = arg[0]
                 while(True):
                     peda.execute('si')
                     peda.execute('infox_new register eip')
@@ -683,7 +703,9 @@
                     if(callOrJmp.find(':') == -1):
                         break
             elif(argc == 2):
-                (arg1, arg2) = normalize_argv(arg, 2)
+                #(arg1, arg2) = normalize_argv(arg, 2)
+                arg1 = arg[0]
+                arg2 = arg[1]
                 i = 0
                 while(i < arg2):
                     peda.execute('ni')
@@ -697,6 +719,8 @@
         """
         Usage: cc
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         argc = len(arg)
         if(arch == "x86-64"):
@@ -709,7 +733,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('ni')
@@ -728,7 +753,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('ni')
@@ -742,6 +768,8 @@
         """
         Usage: cc
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         argc = len(arg)
         if(arch == "x86-64"):
@@ -754,7 +782,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('si')
@@ -773,7 +802,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('si')
@@ -787,6 +817,8 @@
         """
         Usage: jj
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         argc = len(arg)
         if(arch == "x86-64"):
@@ -799,7 +831,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('ni')
@@ -818,7 +851,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('ni')
@@ -832,6 +866,8 @@
         """
         Usage: jj
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         argc = len(arg)
         if(arch == "x86-64"):
@@ -844,7 +880,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('si')
@@ -863,7 +900,8 @@
                     if(callOrJmp.find(':') == -1):
                         break
             else:
-                (arg1, ) = normalize_argv(arg, 1)
+                #(arg1, ) = normalize_argv(arg, 1)
+                arg1 = arg[0]
                 i = 0
                 while(i < arg1):
                     peda.execute('si')
@@ -877,6 +915,8 @@
         """
         Usage: ii
         """
+        if not (os.path.exists("reg")):
+           gdb.execute("regmake") 
         arch = getarch()
         if(arch == "x86-64"):
             peda.execute('infox_new register rip')
