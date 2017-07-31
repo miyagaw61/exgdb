@@ -69,18 +69,10 @@ addr番地からcount個の命令コードを出力
 Usage: code [addr] [count]
 </pre>
 
-* dword  
-addr番地からcount個のDWORD型データ（4byte)を出力(32bitバイナリ解析時のtelescopeと同一の挙動)  
-![dword](http://i.imgur.com/KRAniQl.png)
+* dtel
+double型版telescope
 <pre>
-Usage: dword [addr] [count]
-</pre>
-
-* qword  
-addr番地からcount個のQWORD型データ(8byte)を出力(8byte版telescope)  
-![qword](http://i.imgur.com/7m4bb6s.png)
-<pre>
-Usage: qword [addr] [count]
+Usage: dtel [addr] [count]
 </pre>
 
 * xgrep  
