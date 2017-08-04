@@ -59,7 +59,7 @@ echo "import pwngdb" >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 
 head -n $((${line} - 1)) $HOME/Pwngdb/angelheap/command_wrapper.py | tail -n $((${line} - 1)) >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 head -n $(cat $HOME/Pwngdb/angelheap/command_wrapper.py | wc -l) $HOME/Pwngdb/angelheap/command_wrapper.py | tail -n $(($(cat $HOME/Pwngdb/angelheap/command_wrapper.py | wc -l) - ${line} + 1)) >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py
-cat "$(pwd)"/command_wrapper.py >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
+cat "$(pwd)"/command_wrapper_for_mgpeda.py >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 cat $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py >> $HOME/Pwngdb/angelheap/mgpeda/command_wrapper.py
 rm $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py
 cp -a $HOME/Pwngdb/angelheap/gdbinit.py $HOME/Pwngdb/angelheap/mgpeda/
