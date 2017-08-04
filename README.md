@@ -13,7 +13,8 @@ git clone https://github.com/miyagaw61/mgpeda.git
 cd mgpeda  
 ./mgpeda_install.sh  
 
-※最後の"cp -a mggdbinit $HOME/.gdbinit [y/n]"という質問にyと答えると、現在の.gdbinitが上書きされてしまいます。（一応$HOME/.gdbinit.bakという名前でバックアップはとるようになっています）
+※最後の"cp -a mggdbinit $HOME/.gdbinit [y/n]"という質問にyと答えると、現在の.gdbinitが上書きされてしまいます。nと答えた場合は自分で追記してください。（一応$HOME/.gdbinit.bakという名前でバックアップはとるようになっています）
+※うまくいかない場合は~/.gdbinitの最後のendを削除してendを一つにするとうまくいく場合もあるようです。
 
 Function list
 -------------
