@@ -129,8 +129,7 @@ Usage: uc [str]
 
 * ii  
 現在のeipが指している命令コードに用いられているアドレス/レジスタの内部を出力  
-使用するには事前にregmakeコマンドでレジストリデータを保存するディレクトリを作成している必要がある
-![ii](http://i.imgur.com/PJuQdM1.png)
+![ii](http://i.imgur.com/edwifWC.png)
 <pre>
 Usage: ii
 </pre>
