@@ -103,9 +103,13 @@
         gdb.execute("shell cp -a peda-out-noncolor.tmp peda-out.tmp")
         out = open("peda-out.tmp", "r").read()
         res = regex_arg.findall(out)
+        regex_tmp1 = re.compile(r"\[")
+        regex_tmp2 = re.compile(r"\]")
         for i in range(len(res)):
             #os.system("cat peda-out-noncolor.tmp | grep -n \"" + res[i] + "\" > peda-one.tmp")
-            gdb.execute("shell cat peda-out-noncolor.tmp | grep -n \"" + res[i] + "\" > peda-one.tmp")
+            tmp = regex_tmp1.sub("\\\[", res[i])
+            tmp = regex_tmp2.sub("\\\]", tmp)
+            gdb.execute("shell cat peda-out-noncolor.tmp | grep -n \"" + tmp + "\" > peda-one.tmp")
             num = open("peda-one.tmp", "r").read()
             num = regex_num.findall(num)[0][0:-1]
             gdb.execute("shell head -n " + num + " peda-out-color.tmp | tail -n 1")
