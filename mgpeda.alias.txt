@@ -24,6 +24,7 @@ Alias('fullstack','allstack')
 Alias('fullci','allci')
 Alias('fullcix','allcix')
 Alias('grep','xgrep')
+Alias('f','nii')
 #----added by me----#
 
 
