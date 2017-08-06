@@ -80,7 +80,7 @@ Usage: dtel [addr] [count]
 cmdコマンドの出力をregexp正規表現でgrepして抽出する。  
 grepというaliasがかけられている。
 ※このコマンドを使用するためには別途 https://github.com/miyagaw61/mgtools を導入する必要あり
-![xgrep](http://i.imgur.com/Jv19q6W.png)
+![xgrep](http://i.imgur.com/jy2xbEq.png)
 <pre>
 Usage: xgrep [cmd] [regexp]
 </pre>
@@ -129,7 +129,7 @@ Usage: uc [str]
 
 * ii  
 現在のeipが指している命令コードに用いられているアドレス/レジスタの内部を出力  
-![ii](http://i.imgur.com/edwifWC.png)
+![ii](http://i.imgur.com/IePbIFI.png)
 <pre>
 Usage: ii
 </pre>
