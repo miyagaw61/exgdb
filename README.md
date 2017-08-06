@@ -80,7 +80,7 @@ Usage: dtel [addr] [count]
 cmdコマンドの出力をregexp正規表現でgrepして抽出する。  
 grepというaliasがかけられている。
 ※このコマンドを使用するためには別途 https://github.com/miyagaw61/mgtools を導入する必要あり
-![gdbgrep](http://i.imgur.com/ee4PmRT.png)
+![xgrep](http://i.imgur.com/Jv19q6W.png)
 <pre>
 Usage: xgrep [cmd] [regexp]
 </pre>
