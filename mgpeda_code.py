@@ -919,52 +919,166 @@
         arch = getarch()
         if(arch == "x86-64"):
             peda.execute('infox_new register rip')
-            rip = open('./reg/rip', 'r').read()
-            beforeRegisterX = re.sub(r'.*(r.x).*,.*', '\\1', rip)
-            beforeRegisterP = re.sub(r'.*(r.p).*,.*', '\\1', rip)
-            beforeRegisterI = re.sub(r'.*(r.i).*,.*', '\\1', rip)
-            afterRegisterX = re.sub(r'.*,.*(r.x).*', '\\1', rip)
-            afterRegisterP = re.sub(r'.*,.*(r.p).*', '\\1', rip)
-            afterRegisterI = re.sub(r'.*,.*(r.i).*', '\\1', rip)
-            inregister = re.sub(r'.*(\[.*\]).*', '\\1', rip)
-            registerInregister = re.sub(r'.*\[.*(r..).*\].*', '\\1', rip)
-            addr = re.sub(r'.*0x.*(0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f]+).*', '\\1', rip)
+            nowrip = open('./reg/rip', 'r').read()
+            #beforeRegisterX = re.sub(r'.*(r.x).*.*', '\\1', nowrip)
+            #beforeRegisterP = re.sub(r'.*(r.p).*.*', '\\1', nowrip)
+            #beforeRegisterI = re.sub(r'.*(r.i).*.*', '\\1', nowrip)
+            rax = re.sub(r'.*(rax).*', '\\1', nowrip)
+            rbx = re.sub(r'.*(rbx).*', '\\1', nowrip)
+            rcx = re.sub(r'.*(rcx).*', '\\1', nowrip)
+            rdx = re.sub(r'.*(rdx).*', '\\1', nowrip)
+            rsi = re.sub(r'.*(rsi).*', '\\1', nowrip)
+            rdi = re.sub(r'.*(rdi).*', '\\1', nowrip)
+            rbp = re.sub(r'.*(rbp).*', '\\1', nowrip)
+            rsp = re.sub(r'.*(rsp).*', '\\1', nowrip)
+            rip = re.sub(r'.*(rip).*', '\\1', nowrip)
+            r8 = re.sub(r'.*(r8).*', '\\1', nowrip)
+            r9 = re.sub(r'.*(r9).*', '\\1', nowrip)
+            r10 = re.sub(r'.*(r10).*', '\\1', nowrip)
+            r11 = re.sub(r'.*(r11).*', '\\1', nowrip)
+            r12 = re.sub(r'.*(r12).*', '\\1', nowrip)
+            r13 = re.sub(r'.*(r13).*', '\\1', nowrip)
+            r14 = re.sub(r'.*(r14).*', '\\1', nowrip)
+            r15 = re.sub(r'.*(r15).*', '\\1', nowrip)
+            eax = re.sub(r'.*(eax).*', '\\1', nowrip)
+            ebx = re.sub(r'.*(ebx).*', '\\1', nowrip)
+            ecx = re.sub(r'.*(ecx).*', '\\1', nowrip)
+            edx = re.sub(r'.*(edx).*', '\\1', nowrip)
+            esi = re.sub(r'.*(esi).*', '\\1', nowrip)
+            edi = re.sub(r'.*(edi).*', '\\1', nowrip)
+            ebp = re.sub(r'.*(ebp).*', '\\1', nowrip)
+            esp = re.sub(r'.*(esp).*', '\\1', nowrip)
+            eip = re.sub(r'.*(eip).*', '\\1', nowrip)
+            #afterRegisterX = re.sub(r'.*,.*(r.x).*', '\\1', nowrip)
+            #afterRegisterP = re.sub(r'.*,.*(r.p).*', '\\1', nowrip)
+            #afterRegisterI = re.sub(r'.*,.*(r.i).*', '\\1', nowrip)
+            inregister = re.sub(r'.*(\[.*\]).*', '\\1', nowrip)
+            #registerInregister = re.sub(r'.*\[.*(r..).*\].*', '\\1', nowrip)
+            addr = re.sub(r'.*0x.*(0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f]+).*', '\\1', nowrip)
+            if(rax.find(':') == -1):
+                peda.execute('xinfo register ' + rax)
+            if(rbx.find(':') == -1):
+                peda.execute('xinfo register ' + rbx)
+            if(rcx.find(':') == -1):
+                peda.execute('xinfo register ' + rcx)
+            if(rdx.find(':') == -1):
+                peda.execute('xinfo register ' + rdx)
+            if(rsi.find(':') == -1):
+                peda.execute('xinfo register ' + rsi)
+            if(rdi.find(':') == -1):
+                peda.execute('xinfo register ' + rdi)
+            if(rbp.find(':') == -1):
+                peda.execute('xinfo register ' + rbp)
+            if(rsp.find(':') == -1):
+                peda.execute('xinfo register ' + rsp)
+            if(rip.find(':') == -1):
+                peda.execute('xinfo register ' + rip)
+            if(r8.find(':') == -1):
+                peda.execute('xinfo register ' + r8)
+            if(r9.find(':') == -1):
+                peda.execute('xinfo register ' + r9)
+            if(r10.find(':') == -1):
+                peda.execute('xinfo register ' + r10)
+            if(r11.find(':') == -1):
+                peda.execute('xinfo register ' + r11)
+            if(r12.find(':') == -1):
+                peda.execute('xinfo register ' + r12)
+            if(r13.find(':') == -1):
+                peda.execute('xinfo register ' + r13)
+            if(r14.find(':') == -1):
+                peda.execute('xinfo register ' + r14)
+            if(r15.find(':') == -1):
+                peda.execute('xinfo register ' + r15)
+            if(eax.find(':') == -1):
+                peda.execute('xinfo register ' + eax)
+            if(ebx.find(':') == -1):
+                peda.execute('xinfo register ' + ebx)
+            if(ecx.find(':') == -1):
+                peda.execute('xinfo register ' + ecx)
+            if(edx.find(':') == -1):
+                peda.execute('xinfo register ' + edx)
+            if(esi.find(':') == -1):
+                peda.execute('xinfo register ' + esi)
+            if(edi.find(':') == -1):
+                peda.execute('xinfo register ' + edi)
+            if(ebp.find(':') == -1):
+                peda.execute('xinfo register ' + ebp)
+            if(esp.find(':') == -1):
+                peda.execute('xinfo register ' + esp)
+            if(eip.find(':') == -1):
+                peda.execute('xinfo register ' + eip)
+            if(addr.find(':') == -1):
+                peda.execute('infox ' + addr)
+            if(inregister.find(':') == -1):
+                after = re.sub(r'\n', '', inregister)
+                peda.execute("shell echo -n -e '\e[32m" + after + "\e[m: '")
+                after = re.sub(r'\[(r..*)\].*', '$\\1', after)
+                after2 = re.sub(r'\[(e..*)\].*', '$\\1', after)
+                if(len(after) < len(after2)):
+                    after = after2
+                peda.execute('infox ' + after)
+            return
         else:
             peda.execute('infox_new register eip')
-            eip = open('./reg/eip', 'r').read()
-            beforeRegisterX = re.sub(r'.*(e.x).*,.*', '\\1', eip)
-            beforeRegisterP = re.sub(r'.*(e.p).*,.*', '\\1', eip)
-            beforeRegisterI = re.sub(r'.*(e.i).*,.*', '\\1', eip)
-            afterRegisterX = re.sub(r'.*,.*(e.x).*', '\\1', eip)
-            afterRegisterP = re.sub(r'.*,.*(e.p).*', '\\1', eip)
-            afterRegisterI = re.sub(r'.*,.*(e.i).*', '\\1', eip)
-            inregister = re.sub(r'.*(\[.*\]).*', '\\1', eip)
-            registerInregister = re.sub(r'.*\[.*(e..).*\].*', '\\1', eip)
-            addr = re.sub(r'.*0x.*(0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f]+).*', '\\1', eip)
-        if(beforeRegisterX.find(':') == -1):
-            peda.execute('xinfo register ' + beforeRegisterX)
-        if(beforeRegisterP.find(':') == -1):
-            peda.execute('xinfo register ' + beforeRegisterP)
-        if(beforeRegisterI.find(':') == -1):
-            peda.execute('xinfo register ' + beforeRegisterI)
-        if(afterRegisterX.find(':') == -1):
-            peda.execute('xinfo register ' + afterRegisterX)
-        if(afterRegisterP.find(':') == -1):
-            peda.execute('xinfo register ' + afterRegisterP)
-        if(afterRegisterI.find(':') == -1):
-            peda.execute('xinfo register ' + afterRegisterI)
-        if(registerInregister.find(':') == -1):
-            peda.execute('xinfo register ' + registerInregister)
-        if(addr.find(':') == -1):
-            peda.execute('infox ' + addr)
-        if(inregister.find(':') == -1):
-            after = re.sub(r'\n', '', inregister)
-            peda.execute("shell echo -n -e '\e[32m" + after + "\e[m: '")
-            if(arch == "x86-64"):
-                after = re.sub(r'\[(r..*)\].*', '$\\1', after)
-            else:
+            noweip = open('./reg/eip', 'r').read()
+            #beforeRegisterX = re.sub(r'.*(e.x).*.*', '\\1', noweip)
+            #beforeRegisterP = re.sub(r'.*(e.p).*.*', '\\1', noweip)
+            #beforeRegisterI = re.sub(r'.*(e.i).*.*', '\\1', noweip)
+            eax = re.sub(r'.*(eax).*', '\\1', noweip)
+            ebx = re.sub(r'.*(ebx).*', '\\1', noweip)
+            ecx = re.sub(r'.*(ecx).*', '\\1', noweip)
+            edx = re.sub(r'.*(edx).*', '\\1', noweip)
+            esi = re.sub(r'.*(esi).*', '\\1', noweip)
+            edi = re.sub(r'.*(edi).*', '\\1', noweip)
+            ebp = re.sub(r'.*(ebp).*', '\\1', noweip)
+            esp = re.sub(r'.*(esp).*', '\\1', noweip)
+            eip = re.sub(r'.*(eip).*', '\\1', noweip)
+            #afterRegisterX = re.sub(r'.*,.*(e.x).*', '\\1', noweip)
+            #afterRegisterP = re.sub(r'.*,.*(e.p).*', '\\1', noweip)
+            #afterRegisterI = re.sub(r'.*,.*(e.i).*', '\\1', noweip)
+            inregister = re.sub(r'.*(\[.*\]).*', '\\1', noweip)
+            #registerInregister = re.sub(r'.*\[.*(e..).*\].*', '\\1', noweip)
+            addr = re.sub(r'.*0x.*(0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f]+).*', '\\1', noweip)
+            #if(beforeRegisterX.find(':') == -1):
+            #    peda.execute('xinfo register ' + beforeRegisterX)
+            #if(beforeRegisterP.find(':') == -1):
+            #    peda.execute('xinfo register ' + beforeRegisterP)
+            #if(beforeRegisterI.find(':') == -1):
+            #    peda.execute('xinfo register ' + beforeRegisterI)
+            if(eax.find(':') == -1):
+                peda.execute('xinfo register ' + eax)
+            if(ebx.find(':') == -1):
+                peda.execute('xinfo register ' + ebx)
+            if(ecx.find(':') == -1):
+                peda.execute('xinfo register ' + ecx)
+            if(edx.find(':') == -1):
+                peda.execute('xinfo register ' + edx)
+            if(esi.find(':') == -1):
+                peda.execute('xinfo register ' + esi)
+            if(edi.find(':') == -1):
+                peda.execute('xinfo register ' + edi)
+            if(ebp.find(':') == -1):
+                peda.execute('xinfo register ' + ebp)
+            if(esp.find(':') == -1):
+                peda.execute('xinfo register ' + esp)
+            if(eip.find(':') == -1):
+                peda.execute('xinfo register ' + eip)
+            #if(afterRegisterX.find(':') == -1):
+            #    peda.execute('xinfo register ' + afterRegisterX)
+            #if(afterRegisterP.find(':') == -1):
+            #    peda.execute('xinfo register ' + afterRegisterP)
+            #if(afterRegisterI.find(':') == -1):
+            #    peda.execute('xinfo register ' + afterRegisterI)
+            #if(registerInregister.find(':') == -1):
+            #    peda.execute('xinfo register ' + registerInregister)
+            if(addr.find(':') == -1):
+                peda.execute('infox ' + addr)
+            if(inregister.find(':') == -1):
+                after = re.sub(r'\n', '', inregister)
+                peda.execute("shell echo -n -e '\e[32m" + after + "\e[m: '")
                 after = re.sub(r'\[(e..*)\].*', '$\\1', after)
-            peda.execute('infox ' + after)
+                peda.execute('infox ' + after)
+            return
 
     def kdbg(self, *arg):
         """
@@ -1026,6 +1140,13 @@
         pager(text)
 
         return
+
+    def nii(self, *arg):
+        """
+        Usage: ii
+        """
+        gdb.execute("nexti")
+        gdb.execute("ii")
 
 ###--------added by me--------------------------------###
 
