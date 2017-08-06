@@ -1,6 +1,5 @@
 
 #----add by me----#
-
     def my_normalize_argv(args, size=0):
         """
         Normalize argv to list with predefined length
@@ -933,14 +932,14 @@
         else:
             peda.execute('infox_new register eip')
             eip = open('./reg/eip', 'r').read()
-            beforeRegisterX = re.sub(r'.*(r.x).*,.*', '\\1', eip)
-            beforeRegisterP = re.sub(r'.*(r.p).*,.*', '\\1', eip)
-            beforeRegisterI = re.sub(r'.*(r.i).*,.*', '\\1', eip)
-            afterRegisterX = re.sub(r'.*,.*(r.x).*', '\\1', eip)
-            afterRegisterP = re.sub(r'.*,.*(r.p).*', '\\1', eip)
-            afterRegisterI = re.sub(r'.*,.*(r.i).*', '\\1', eip)
+            beforeRegisterX = re.sub(r'.*(e.x).*,.*', '\\1', eip)
+            beforeRegisterP = re.sub(r'.*(e.p).*,.*', '\\1', eip)
+            beforeRegisterI = re.sub(r'.*(e.i).*,.*', '\\1', eip)
+            afterRegisterX = re.sub(r'.*,.*(e.x).*', '\\1', eip)
+            afterRegisterP = re.sub(r'.*,.*(e.p).*', '\\1', eip)
+            afterRegisterI = re.sub(r'.*,.*(e.i).*', '\\1', eip)
             inregister = re.sub(r'.*(\[.*\]).*', '\\1', eip)
-            registerInregister = re.sub(r'.*\[.*(r..).*\].*', '\\1', eip)
+            registerInregister = re.sub(r'.*\[.*(e..).*\].*', '\\1', eip)
             addr = re.sub(r'.*0x.*(0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f]+).*', '\\1', eip)
         if(beforeRegisterX.find(':') == -1):
             peda.execute('xinfo register ' + beforeRegisterX)
@@ -961,7 +960,10 @@
         if(inregister.find(':') == -1):
             after = re.sub(r'\n', '', inregister)
             peda.execute("shell echo -n -e '\e[32m" + after + "\e[m: '")
-            after = re.sub(r'\[(e..*)\].*', '$\\1', after)
+            if(arch == "x86-64"):
+                after = re.sub(r'\[(r..*)\].*', '$\\1', after)
+            else:
+                after = re.sub(r'\[(e..*)\].*', '$\\1', after)
             peda.execute('infox ' + after)
 
     def kdbg(self, *arg):
