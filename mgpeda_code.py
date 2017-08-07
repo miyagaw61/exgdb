@@ -1,5 +1,6 @@
 
 #----add by me----#
+
     def my_normalize_argv(args, size=0):
         """
         Normalize argv to list with predefined length
@@ -23,7 +24,7 @@
         """
         args = list(args)
         for (idx, val) in enumerate(args):
-            if size and idx == size:
+           if size and idx == size:
                 return args[:idx]
 
         if size == 0:
