@@ -11,10 +11,10 @@
         (victim,) = normalize_argv(arg,1)
         angelheap.getinfoh(victim)
 
-    def parseh(self):
+    def ph(self):
         """ Print chunk information of victim"""
-        #(victim,) = normalize_argv(arg,1)
-        angelheap.parseh()
+        #(arg,) = normalize_argv(arg,1)
+        angelheap.ph()
 
     def getheaplist(self, *arg):
         """ Print chunk information of victim"""
