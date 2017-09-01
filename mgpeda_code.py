@@ -182,6 +182,18 @@
         msg(text)
         return
 
+    def ix(self, *arg):
+        """
+        Usage:
+            ix [address] [count]
+        """
+        if(len(arg) == 1):
+            (address,) = normalize_argv(arg, 1)
+            peda.execute("telescope " + str(address) + " 1")
+        if(len(arg) == 2):
+            (address, count) = normalize_argv(arg, 2)
+            peda.execute("telescope " + str(address) + " " + str(count))
+
 #    def infox_ip(self, *arg):
 #        """
 #        Display detail information of address/registers
