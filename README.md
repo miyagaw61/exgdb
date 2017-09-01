@@ -136,13 +136,13 @@ Usage: uc [str]
 Usage: ii
 ```
 
-* parseh  
+* ph  
 現在のヒープの状況をパースしてリスト表示する。  
 表示されているアドレスの配色が緑色の場合はUsedチャンク、青色の場合はFreedチャンクを表す。  
 NMはnon_mainarena, IMはis_mmap, PIはprev_inuseのビット値を表す。
-![parseh](http://i.imgur.com/ryqUG6x.png)
+![ph](http://i.imgur.com/pP9N1MF.png)
 ```
-Usage: parseh
+Usage: ph
 ```
 
 * ci  
