@@ -8,6 +8,8 @@ if test ! "$(which gdb)" ;then
     touch $HOME/.gdbinit
     apt-get -y install gdb
 fi
+apt-get -y install libc6-dbg
+apt-get -y install libc6-dbg:i386
 if test ! -e $HOME/peda/ ;then
 	git clone https://github.com/longld/peda.git $HOME/peda  
 fi
