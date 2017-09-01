@@ -19,7 +19,7 @@ cd mgpeda
 Function list
 -------------
 
-* infox  
+* ix  
 * allstack  
 * pc  
 * code  
@@ -42,136 +42,138 @@ Function list
 How to use
 ----------
 
-* infox  
+* ix  
 アドレスの中身を調査する  
-![infox](http://i.imgur.com/6uTRYLj.png)
-<pre>
-Usage: infox [addr]
-</pre>
+(telescopeコマンドの改良版。  
+一つのアドレスのみを調べたい場合に、"telescope [address] 1"の"1"の入力を省略可能。)  
+![ix](http://i.imgur.com/QdUut21.png)
+```
+Usage: ix [addr] [count]
+```
 
 * allstack  
 スタックをespからebpまで全て出力  
 ![allstack](http://i.imgur.com/rMhRO9c.png)
-<pre>
+```
 Usage: allstack
-</pre>
+```
 
 * pc  
 現在のeipが指している位置からcount個の命令コードを出力
 ![pc](http://i.imgur.com/12HCezL.png)
-<pre>
+```
 Usage: pc [count]
-</pre>
+```
 
 * code  
 addr番地からcount個の命令コードを出力
 ![code](http://i.imgur.com/h4GPE1O.png)
-<pre>
+```
 Usage: code [addr] [count]
-</pre>
+```
 
 * dtel
 double型版telescope
-<pre>
+```
 Usage: dtel [addr] [count]
-</pre>
+```
 
 * xgrep  
 cmdコマンドの出力をregexp正規表現でgrepして抽出する。  
 grepというaliasがかけられている。  
 ※このコマンドを使用するためには別途 https://github.com/miyagaw61/mgtools を導入する必要あり  
 ![xgrep](http://i.imgur.com/jy2xbEq.png)
-<pre>
+```
 Usage: xgrep [cmd] [regexp]
-</pre>
+```
 
 * jj  
 次のjmp系/call命令が来るまでniで進み続ける
 ![jj1](http://i.imgur.com/k51hUKf.png)
 ![jj2](http://i.imgur.com/wKimY6o.png)
-<pre>
+```
 Usage: jj
-</pre>
+```
 
 * jji  
 次のjmp系/call命令が来るまでsiで潜り続ける
-<pre>
+```
 Usage: jji
-</pre>
+```
 
 * cc  
 次のcall命令が来るまでniで進み続ける
-<pre>
+```
 Usage: cc
-</pre>
+```
 
 * cci  
 次のcall命令が来るまでsiで潜り続ける
-<pre>
+```
 Usage: cci
-</pre>
+```
 
 * uu  
 引数に与えた文字が含まれる命令が来るまでniで進み続ける
-<pre>
+```
 Usage: uu [str]
-</pre>
+```
 
 * uui  
 引数に与えた文字が含まれる命令が来るまでsiで潜り続ける
-<pre>
+```
 Usage: uui [str]
-</pre>
+```
 * uc  引数に与えた文字が含まれるcall命令が来るまでnextcallで進み続ける
-<pre>
+```
 Usage: uc [str]
-</pre>
+```
 
 * ii  
 現在のeipが指している命令コードに用いられているアドレス/レジスタの内部を出力  
 ![ii](http://i.imgur.com/IePbIFI.png)
-<pre>
+```
 Usage: ii
-</pre>
+```
 
 * parseh  
 現在のヒープの状況をパースしてリスト表示する。  
 表示されているアドレスの配色が緑色の場合はUsedチャンク、青色の場合はFreedチャンクを表す。  
 NMはnon_mainarena, IMはis_mmap, PIはprev_inuseのビット値を表す。
 ![parseh](http://i.imgur.com/ryqUG6x.png)
-<pre>
+```
 Usage: parseh
-</pre>
+```
 
 * ci  
 引数に与えたアドレスを先頭アドレスとするチャンクのチャンク情報, もしくは上からｎ番目のチャンクのチャンク情報を表示する。
 ![ci](http://i.imgur.com/Wfj7WAq.png)
-<pre>
+```
 Usage: ci [addr/n]
-</pre>
+```
 
 * cix  
 ciの拡張版で、Dataも表示する。
 ![cix](http://i.imgur.com/pO4443S.png)
-<pre>
+```
 Usage: ci [addr/n]
-</pre>
+```
 
 * allci  
 すべてのチャンクのci結果を上から順に表示していく。
 ![allci](http://i.imgur.com/XVVRbGA.png)
-<pre>
+```
 Usage: allci
-</pre>
+```
 
 * allcix  
 すべてのチャンクのcix結果を上から順に表示していく。  
 ただし、先頭のChunk infoテキストとUnlinkable情報を省くことによって、  
 ヒープ領域を一語ずつ全て、ヒープ情報付きで表示することができる。  
 ![allcix](http://i.imgur.com/V0qAzrO.png)
-<pre>
+```
 Usage: allcix
-</pre>
+```
 
 aliases
 -------
