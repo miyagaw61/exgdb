@@ -538,6 +538,7 @@ def cix(victim):
         else :
             used_flag = 0
             unlinkable(chunkaddr,fd,bk)
+            print("==================================================================")
         aligned_size = size & 0xfffffffffffffff8
         NM = size & 4
         IM = size & 2
