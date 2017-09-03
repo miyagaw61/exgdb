@@ -318,7 +318,7 @@ def getheaplist(lst):
         lst.append(addr)
 
 
-def ci(victim):
+def ci_old(victim):
     print("===================================")
     print("            Chunk info             ")
     print("===================================")
@@ -431,7 +431,168 @@ def ci(victim):
     except :
         print("Can't access memory")
 
+def white(x):
+    return "\033[1;37m" + x + "\033[37m"
+
+def ci(victim):
+    global fastchunk
+    if capsize == 0 :
+        arch = getarch()
+    chunkaddr = victim
+    try :
+        if not get_heap_info() :
+            print("Can't find heap info")
+            return
+        cmd = "x/" + word + hex(chunkaddr)
+        prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*1)
+        size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*2)
+        fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*3)
+        bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + (size & 0xfffffffffffffff8) + capsize)
+        nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        status = nextsize & 1    
+        #print("==================================")
+        #print("            Chunk info            ")
+        #print("==================================")
+        used_flag = 0
+        if status:
+            if chunkaddr in fastchunk :
+                #print("\033[1;32mStatus : \033[1;34m Freed (fast) \033[37m")
+                used_flag = 0
+            else :
+                #print("\033[1;32mStatus : \033[31m Used \033[37m")
+                used_flag = 1
+        else :
+            #print("\033[1;32mStatus : \033[1;34m Freed \033[37m")
+            used_flag = 0
+            unlinkable(chunkaddr,fd,bk)
+        #print("\033[32mprev_size :\033[37m 0x%x                  " % prev_size)
+        #print("\033[32msize :\033[37m 0x%x                  " % (size & 0xfffffffffffffff8))
+        aligned_size = size & 0xfffffffffffffff8
+        NM = size & 4
+        IM = size & 2
+        PI = size & 1
+        if(used_flag == 1):
+            print(green(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)) + green(" (prev_size)", "bold"))
+            print(green(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|" + str(NM) + "|" + str(IM) + "|" + str(PI) + "|", "bold") + green(" (size)", "bold"))
+        else:
+            print(blue(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size), "bold") + blue(" (prev_size)", "bold"))
+            print(blue(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size), "bold") + yellow("|" + str(NM) + "|" + str(IM) + "|" + str(PI) + "|", "bold") + blue(" (size)", "bold"))
+        #print("\033[32mprev_inused :\033[37m %x                    " % (size & 1) )
+        #print("\033[32mis_mmap :\033[37m %x                    " % (size & 2) )
+        #print("\033[32mnon_mainarea :\033[37m %x                     " % (size & 4) )
+        if not status :
+            #print("\033[32mfd :\033[37m 0x%x                  " % fd)
+            #print("\033[32mbk :\033[37m 0x%x                  " % bk)
+            print(blue(hex(chunkaddr + capsize*2), "bold") + " --> " + white(hex(fd)) + blue(" (fd)", "bold"))
+            print(blue(hex(chunkaddr + capsize*3), "bold") + " --> " + white(hex(bk)) + blue(" (bk)", "bold"))
+        next_size_flag = False
+        if size >= 512*(capsize/4) :
+            next_size_flag = True
+            cmd = "x/" + word + hex(chunkaddr + capsize*4)
+            fd_nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            cmd = "x/" + word + hex(chunkaddr + capsize*5)
+            bk_nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            #print("\033[32mfd_nextsize :\033[37m 0x%x  " % fd_nextsize)
+            #print("\033[32mbk_nextsize :\033[37m 0x%x  " % bk_nextsize) 
+            if(used_flag == 1):
+                print(green(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)) + green(" (fd_nextsize)", "bold"))
+                print(green(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)) + green(" (bk_nextsize)", "bold"))
+            else:
+                print(blue(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)) + blue(" (fd_nextsize)", "bold"))
+                print(blue(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)) + blue(" (bk_nextsize)", "bold"))
+    except :
+        print("Can't access memory")
+
 def cix(victim):
+    global fastchunk
+    if capsize == 0 :
+        arch = getarch()
+    chunkaddr = victim
+    try :
+        if not get_heap_info() :
+            print("Can't find heap info")
+            return
+        cmd = "x/" + word + hex(chunkaddr)
+        prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*1)
+        size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*2)
+        fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*3)
+        bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + (size & 0xfffffffffffffff8) + capsize)
+        nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        status = nextsize & 1
+        #print("==================================")
+        #print("            Chunk info            ")
+        #print("==================================")
+        used_flag = 0
+        if status:
+            if chunkaddr in fastchunk :
+                #print("\033[1;32mStatus : \033[1;34m Freed (fast) \033[37m")
+                used_flag = 0
+            else :
+                #print("\033[1;32mStatus : \033[31m Used \033[37m")
+                used_flag = 1
+        else :
+            #print("\033[1;32mStatus : \033[1;34m Freed \033[37m")
+            used_flag = 0
+            unlinkable(chunkaddr,fd,bk)
+        #print("\033[32mprev_size :\033[37m 0x%x                  " % prev_size)
+        #print("\033[32msize :\033[37m 0x%x                  " % (size & 0xfffffffffffffff8))
+        aligned_size = size & 0xfffffffffffffff8
+        NM = size & 4
+        IM = size & 2
+        PI = size & 1
+        if(used_flag == 1):
+            print(green(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)) + green(" (prev_size)", "bold"))
+            print(green(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|" + str(NM) + "|" + str(IM) + "|" + str(PI) + "|", "bold") + green(" (size)", "bold"))
+        else:
+            print(blue(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size), "bold") + blue(" (prev_size)", "bold"))
+            print(blue(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size), "bold") + yellow("|" + str(NM) + "|" + str(IM) + "|" + str(PI) + "|", "bold") + blue(" (size)", "bold"))
+        #print("\033[32mprev_inused :\033[37m %x                    " % (size & 1) )
+        #print("\033[32mis_mmap :\033[37m %x                    " % (size & 2) )
+        #print("\033[32mnon_mainarea :\033[37m %x                     " % (size & 4) )
+        if not status :
+            #print("\033[32mfd :\033[37m 0x%x                  " % fd)
+            #print("\033[32mbk :\033[37m 0x%x                  " % bk)
+            print(blue(hex(chunkaddr + capsize*2), "bold") + " --> " + white(hex(fd)) + blue(" (fd)", "bold"))
+            print(blue(hex(chunkaddr + capsize*3), "bold") + " --> " + white(hex(bk)) + blue(" (bk)", "bold"))
+        next_size_flag = False
+        if size >= 512*(capsize/4) :
+            next_size_flag = True
+            cmd = "x/" + word + hex(chunkaddr + capsize*4)
+            fd_nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            cmd = "x/" + word + hex(chunkaddr + capsize*5)
+            bk_nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            #print("\033[32mfd_nextsize :\033[37m 0x%x  " % fd_nextsize)
+            #print("\033[32mbk_nextsize :\033[37m 0x%x  " % bk_nextsize) 
+            if(used_flag == 1):
+                print(green(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)) + green(" (fd_nextsize)", "bold"))
+                print(green(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)) + green(" (bk_nextsize)", "bold"))
+            else:
+                print(blue(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)) + blue(" (fd_nextsize)", "bold"))
+                print(blue(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)) + blue(" (bk_nextsize)", "bold"))
+        # for cix
+        if used_flag:
+            if next_size_flag:
+                gdb.execute("ix" + " " + hex(chunkaddr+capsize*4) + " " + hex(int(aligned_size/capsize-2)))
+            else:
+                gdb.execute("ix " + hex(chunkaddr+capsize*2) + " " + hex(int(aligned_size/capsize-2)))
+        else:
+            if next_size_flag:
+                gdb.execute("ix" + " " + hex(chunkaddr+capsize*6) + " " + hex(int(aligned_size/capsize-2)))
+            else:
+                gdb.execute("ix" + " " + hex(chunkaddr+capsize*4) + " " + hex(int(aligned_size/capsize-2)))
+    except :
+        print("Can't access memory")
+
+
+def cix_old(victim):
     print("===================================")
     print("            Chunk info             ")
     print("===================================")
@@ -527,8 +688,8 @@ def cix(victim):
             cmd = "x/" + word + hex(chunkaddr + capsize*5)
             bk_nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
             if usedflag:
-            #    #print(green("fd_nextsize : ", "bold") + white(hex(fd_nextsize), "bold"))
-            #    #print(green("bk_nextsize : ", "bold") + white(hex(bk_nextsize), "bold"))
+                #print(green("fd_nextsize : ", "bold") + white(hex(fd_nextsize), "bold"))
+                #print(green("bk_nextsize : ", "bold") + white(hex(bk_nextsize), "bold"))
                 sys.stdout.write(green(hex(chunkaddr+capsize*4), "bold") + " --> ")
                 print(white(hex(fd_nextsize), "bold") + green(" (fd_nextsize)", "bold"))
                 sys.stdout.write(green(hex(chunkaddr+capsize*5), "bold") + " --> ")
