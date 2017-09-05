@@ -434,6 +434,8 @@ def ci_old(victim):
 def white(x):
     return "\033[1;37m" + x + "\033[37m"
 
+import __main__
+__main__.unlinkable_flag = 1
 def ci(victim):
     global fastchunk
     if capsize == 0 :
@@ -468,7 +470,10 @@ def ci(victim):
         else :
             #print("\033[1;32mStatus : \033[1;34m Freed \033[37m")
             used_flag = 0
-            unlinkable(chunkaddr,fd,bk)
+            if(__main__.unlinkable_flag == 1):
+                unlinkable(chunkaddr,fd,bk)
+                print("==================================================================")
+            __main__.unlinkable_flag = 1
         #print("\033[32mprev_size :\033[37m 0x%x                  " % prev_size)
         #print("\033[32msize :\033[37m 0x%x                  " % (size & 0xfffffffffffffff8))
         aligned_size = size & 0xfffffffffffffff8
@@ -479,8 +484,8 @@ def ci(victim):
             print(green(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)) + green(" (prev_size)", "bold"))
             print(green(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|" + str(NM) + "|" + str(IM) + "|" + str(PI) + "|", "bold") + green(" (size)", "bold"))
         else:
-            print(blue(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size), "bold") + blue(" (prev_size)", "bold"))
-            print(blue(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size), "bold") + yellow("|" + str(NM) + "|" + str(IM) + "|" + str(PI) + "|", "bold") + blue(" (size)", "bold"))
+            print(blue(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)) + blue(" (prev_size)", "bold"))
+            print(blue(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|" + str(NM) + "|" + str(IM) + "|" + str(PI) + "|", "bold") + blue(" (size)", "bold"))
         #print("\033[32mprev_inused :\033[37m %x                    " % (size & 1) )
         #print("\033[32mis_mmap :\033[37m %x                    " % (size & 2) )
         #print("\033[32mnon_mainarea :\033[37m %x                     " % (size & 4) )
@@ -537,8 +542,10 @@ def cix(victim):
                 used_flag = 1
         else :
             used_flag = 0
-            unlinkable(chunkaddr,fd,bk)
-            print("==================================================================")
+            if(__main__.unlinkable_flag == 1):
+                unlinkable(chunkaddr,fd,bk)
+                print("==================================================================")
+            __main__.unlinkable_flag = 1
         aligned_size = size & 0xfffffffffffffff8
         NM = size & 4
         IM = size & 2
@@ -839,11 +846,16 @@ def allci():
     lst = []
     getheaplist(lst)
     for i in range(len(lst)-2):
-        gdb.execute("ci " + str(i+1))
+        __main__.unlinkable_flag = 0
+        gdb.execute("ci " + hex(lst[i]))
+        if lst[i+2] != -1:
+            print("================================")
 
 def allcix():
     lst = []
     getheaplist(lst)
     for i in range(len(lst)-2):
-        gdb.execute("cixoff " + str(i+1))
-
+        __main__.unlinkable_flag = 0
+        gdb.execute("cix " + hex(lst[i]))
+        #if lst[i+2] != -1:
+        #    print("==================================================================")
