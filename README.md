@@ -2,7 +2,7 @@ mgpeda
 ===========
 
 extension plugins for the gdb-peda&Pwngdb.  
-gdb-peda,Pwngdbの拡張プラグインです。
+gdb-peda,Pwngdbの拡張プラグインです。  
 **元々のpedaのソースコードは改造していないため、環境を壊すことはありません。**  
 **mgpedaを使いたくなくなったら~/.gdbinitからsource ~/peda/mgpeda/mgpeda.pyとsource ~/Pwngdb/angelheap/mgpeda/gdbinit.pyを削除するだけで大丈夫です。**  
 
