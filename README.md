@@ -1,8 +1,10 @@
 mgpeda
 ===========
 
-mgpeda is extension plugins for the gdb-peda&Pwngdb by @miyagaw61.  
-mgpedaは、@miyagaw61によって作成されたgdb-peda,Pwngdbの拡張プラグインです。
+extension plugins for the gdb-peda&Pwngdb.  
+gdb-peda,Pwngdbの拡張プラグインです。
+**元々のpedaのソースコードは改造していないため、環境を壊すことはありません。**  
+**mgpedaを使いたくなくなったら~/.gdbinitからsource ~/peda/mgpeda/mgpeda.pyとsource ~/Pwngdb/angelheap/mgpeda/gdbinit.pyを削除するだけで大丈夫です。**  
 
 How to install
 --------------
@@ -159,14 +161,14 @@ ciの拡張版で、Dataも表示する。
 Usage: ci [addr/n]
 ```
 
-* allci (修正中not available)   
+* allci  
 すべてのチャンクのci結果を上から順に表示していく。
 ![allci](http://i.imgur.com/XVVRbGA.png)
 ```
 Usage: allci
 ```
 
-* allcix (修正中not abailable)  
+* allcix  
 すべてのチャンクのcix結果を上から順に表示していく。  
 ただし、先頭のChunk infoテキストとUnlinkable情報を省くことによって、  
 ヒープ領域を一語ずつ全て、ヒープ情報付きで表示することができる。  
