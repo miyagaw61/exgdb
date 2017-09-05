@@ -159,14 +159,14 @@ ciの拡張版で、Dataも表示する。
 Usage: ci [addr/n]
 ```
 
-* allci  
+* allci (修正中not available)   
 すべてのチャンクのci結果を上から順に表示していく。
 ![allci](http://i.imgur.com/XVVRbGA.png)
 ```
 Usage: allci
 ```
 
-* allcix  
+* allcix (修正中not abailable)  
 すべてのチャンクのcix結果を上から順に表示していく。  
 ただし、先頭のChunk infoテキストとUnlinkable情報を省くことによって、  
 ヒープ領域を一語ずつ全て、ヒープ情報付きで表示することができる。  
