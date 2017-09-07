@@ -67,6 +67,7 @@ rm $HOME/Pwngdb/angelheap/mgpeda/command_wrapper_after.py
 cp -a $HOME/Pwngdb/angelheap/gdbinit.py $HOME/Pwngdb/angelheap/mgpeda/
 cp  -a $HOME/Pwngdb/pwngdb.py $HOME/Pwngdb/angelheap/mgpeda
 echo "peda.execute(\"set prompt \\\001%s\\\002\" % red(\"\\\002gdb-peda\$ \\\001\",\"light\")) # custom prompt" >> ~/peda/mgpeda/mgpeda.py
+sed -i -e "s/─/=/g" $HOME/peda/lib/utils.py
 echo -n "cp -a ./mggdbinit $HOME/.gdbinit [y/n] : "
 read ans
 case $ans in
