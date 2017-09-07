@@ -514,11 +514,11 @@ def ci(victim):
             #print("\033[32mfd_nextsize :\033[37m 0x%x  " % fd_nextsize)
             #print("\033[32mbk_nextsize :\033[37m 0x%x  " % bk_nextsize) 
             if(used_flag == 1):
-                print(green("fd_N|", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                print(green("bk_N|", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                print(green("fdNS|", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                print(green("bkNS|", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
             else:
-                print(blue("fd_N", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                print(blue("bk_N", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                print(blue("fdNS", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                print(blue("bkNS", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
     except :
         print("Can't access memory")
 
@@ -585,15 +585,15 @@ def cix(victim):
             cmd = "x/" + word + hex(chunkaddr + capsize*5)
             bk_nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
             if(used_flag == 1):
-                print(green("fd_N|", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                print(green("bk_N|", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                print(green("fdNS|", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                print(green("bkNS|", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
             else:
                 if(fast_flag == 0):
-                    print(blue("fd_N", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                    print(blue("bk_N", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                    print(blue("fdNS", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                    print(blue("bkNS", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
                 else:
-                    print(blue("fd_N") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                    print(blue("bk_N") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                    print(blue("fdNS") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                    print(blue("bkNS") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
         if used_flag:
             if next_size_flag:
                 gdb.execute("ix " + hex(chunkaddr+capsize*4) + " " + hex(int(aligned_size/capsize-2)))
