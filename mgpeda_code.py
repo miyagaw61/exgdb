@@ -172,7 +172,7 @@
             warning_msg("not a register nor an address")
         else:
             # Address
-            chain = peda.examine_mem_reference(address, depth=0)
+            chain = peda.examine_mem_reference(address)
             #text += '\n'
             #text += 'info: '
             text += format_reference_chain(chain) # + "\n"
