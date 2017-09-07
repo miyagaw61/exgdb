@@ -242,13 +242,13 @@ def ph(arena=None):
     chunkaddr = heapbase
     addr_str = yellow("addr", "bold")
     prev_str = yellow("prev", "bold")
-    size_str = yellow("size", "bold")
+    size_str = yellow("size", "bold")+purple("|")+red("NM", "bold")+purple("|")+green("IM", "bold")+purple("|")+blue("PI", "bold")+purple("|")
     fd_str = yellow("fd", "bold")
     bk_str = yellow("bk", "bold")
     NM = red("NM", "bold")
     IM = green("IM", "bold")
     PI = blue("PI", "bold")
-    print('{:<32}{:<22}{:<22}{:<48}{:<30}{:<28}'.format(addr_str, prev_str, size_str, NM+"/"+IM+"/"+PI, fd_str, bk_str))
+    print('{:<32}{:<31}{:<114}{:<30}{:<28}'.format(addr_str, prev_str, size_str, fd_str, bk_str))
     while chunkaddr != top["addr"] :
         try :
             cmd = "x/" + word + hex(chunkaddr)
@@ -264,20 +264,20 @@ def ph(arena=None):
             status = nextsize & 1 
             NM = str(size & 4)
             if(NM == "0"):
-                NM = red("0")
+                NM = red("0", "bold")
             else:
                 NM = red("1", "bold")
             IM = str(size & 2)
             if(IM == "0"):
-                IM = green("0")
+                IM = green("0", "bold")
             else:
                 IM = green("1", "bold")
             PI = str(size & 1)
             if(PI == "0"):
-                PI = blue("0")
+                PI = blue("0", "bold")
             else:
                 PI = blue("1", "bold")
-            bits = NM + "  " + IM + "  " + PI
+            bits = purple("|") + NM + purple("|") + IM + purple("|") + PI + purple("|")
             size = size & 0xfffffffffffffff8
             if size == 0 :
                 print("\033[31mCorrupt ?! \033[0m(size == 0) (0x%x)" % chunkaddr)
@@ -286,15 +286,15 @@ def ph(arena=None):
                 if chunkaddr in fastchunk :
                     msg = "\033[1;34m Freed \033[0m"
                     chunkaddr_str = blue(hex(chunkaddr), "bold")
-                    print('{:<32}0x{:<8x}0x{:<8x}{:<10}{:>18}{:>18}'.format(chunkaddr_str, prev_size, size, bits, hex(fd), "None"))
+                    print('{:<32}0x{:<17x}{:<102}{:<18}{:<18}'.format(chunkaddr_str, prev_size, hex(size)+bits, hex(fd), "None"))
                 else :
                     msg = "\033[31m Used \033[0m"
                     chunkaddr_str = green(hex(chunkaddr), "bold")
-                    print('{:<32}0x{:<8x}0x{:<8x}{:<10}{:>18}{:>18}'.format(chunkaddr_str, prev_size, size, bits, "None", "None"))
+                    print('{:<32}0x{:<17x}{:<102}{:<18}{:<18}'.format(chunkaddr_str, prev_size, hex(size)+bits, "None", "None"))
             else :
                 msg = "\033[1;34m Freed \033[0m"
                 chunkaddr_str = blue(hex(chunkaddr), "bold")
-                print('{:<32}0x{:<8x}0x{:<8x}{:<10}{:>18}{:>18}'.format(chunkaddr_str, prev_size, size, bits, hex(fd), hex(bk)))
+                print('{:<32}0x{:<17x}{:<102}{:<18}{:<18}'.format(chunkaddr_str, prev_size, hex(size)+bits, hex(fd), hex(bk)))
             chunkaddr = chunkaddr + (size & 0xfffffffffffffff8)
 
             if chunkaddr > top["addr"] :
@@ -442,6 +442,10 @@ def ci(victim):
         arch = getarch()
     chunkaddr = victim
     try :
+        if(victim < 100):
+            lst = []
+            getheaplist(lst)
+            chunkaddr = lst[victim]
         if not get_heap_info() :
             print("Can't find heap info")
             return
@@ -531,6 +535,10 @@ def cix(victim):
         if not get_heap_info() :
             print("Can't find heap info")
             return
+        if(victim < 100):
+            lst = []
+            getheaplist(lst)
+            chunkaddr = lst[victim]
         cmd = "x/" + word + hex(chunkaddr)
         prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
         cmd = "x/" + word + hex(chunkaddr + capsize*1)
