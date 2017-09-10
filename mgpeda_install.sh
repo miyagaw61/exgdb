@@ -11,7 +11,8 @@ fi
 #apt-get -y install libc6-dbg
 #apt-get -y install libc6-dbg:i386
 if test ! -e $HOME/peda/ ;then
-	git clone https://github.com/scwuaptx/peda.git $HOME/peda  
+	#git clone https://github.com/scwuaptx/peda.git $HOME/peda  
+    git clone https://github.com/longld/peda $HOME/peda
 fi
 if test ! -e $HOME/Pwngdb/ ;then
 	git clone https://github.com/scwuaptx/Pwngdb.git $HOME/Pwngdb
