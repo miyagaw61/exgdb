@@ -242,7 +242,7 @@ def ph(arena=None):
     chunkaddr = heapbase
     addr_str = yellow("addr", "bold")
     prev_str = yellow("prev", "bold")
-    size_str = yellow("size", "bold")+purple("|")+red("NM", "bold")+purple("|")+green("IM", "bold")+purple("|")+blue("PI", "bold")+purple("|")
+    size_str = yellow("size", "bold")+yellow("|")+red("NM", "bold")+yellow("|")+green("IM", "bold")+yellow("|")+blue("PI", "bold")+yellow("|")
     fd_str = yellow("fd", "bold")
     bk_str = yellow("bk", "bold")
     NM = red("NM", "bold")
@@ -277,7 +277,7 @@ def ph(arena=None):
                 PI = blue("0", "bold")
             else:
                 PI = blue("1", "bold")
-            bits = purple("|") + NM + purple("|") + IM + purple("|") + PI + purple("|")
+            bits = yellow("|") + NM + yellow("|") + IM + yellow("|") + PI + yellow("|")
             size = size & 0xfffffffffffffff8
             if size == 0 :
                 print("\033[31mCorrupt ?! \033[0m(size == 0) (0x%x)" % chunkaddr)
@@ -486,15 +486,15 @@ def ci(victim):
         IM = size & 2
         PI = size & 1
         if(used_flag == 1):
-            print(green("prev| ", "bold") + purple(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
-            print(green("size| ", "bold") + purple(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + purple("|") + red(str(NM), "bold") + purple("|") + green(str(IM), "bold") + purple("|") + blue(str(PI), "bold") + purple("|"))
+            print(green("prev| ", "bold") + yellow(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
+            print(green("size| ", "bold") + yellow(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|") + red(str(NM), "bold") + yellow("|") + green(str(IM), "bold") + yellow("|") + blue(str(PI), "bold") + yellow("|"))
         else:
             if(fast_flag == 0):
-                print(blue("prev| ", "bold") + purple(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
-                print(blue("size| ", "bold") + purple(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + purple("|") + red(str(NM), "bold") + purple("|") + green(str(IM), "bold") + purple("|") + blue(str(PI), "bold") + purple("|"))
+                print(blue("prev| ", "bold") + yellow(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
+                print(blue("size| ", "bold") + yellow(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|") + red(str(NM), "bold") + yellow("|") + green(str(IM), "bold") + yellow("|") + blue(str(PI), "bold") + yellow("|"))
             else:
-                print(blue("prev| ") + purple(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
-                print(blue("size| ") + purple(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + purple("|") + red(str(NM), "bold") + purple("|") + green(str(IM), "bold") + purple("|") + blue(str(PI), "bold") + purple("|"))
+                print(blue("prev| ") + yellow(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
+                print(blue("size| ") + yellow(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|") + red(str(NM), "bold") + yellow("|") + green(str(IM), "bold") + yellow("|") + blue(str(PI), "bold") + yellow("|"))
         #print("\033[32mprev_inused :\033[37m %x                    " % (size & 1) )
         #print("\033[32mis_mmap :\033[37m %x                    " % (size & 2) )
         #print("\033[32mnon_mainarea :\033[37m %x                     " % (size & 4) )
@@ -510,11 +510,11 @@ def ci(victim):
                     fd_str += green(" [Unlinkable: *" + hex(unlinkable_result[0]) + "]")
                     bk_str += green(" [Unlinkable: *" + hex(unlinkable_result[1]) + "]")
             if(fast_flag == 0):
-                print(blue(" fd | ", "bold") + purple(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
-                print(blue(" bk | ", "bold") + purple(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
+                print(blue(" fd | ", "bold") + yellow(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
+                print(blue(" bk | ", "bold") + yellow(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
             else:
-                print(blue(" fd | ") + purple(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
-                print(blue(" bk | ") + purple(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
+                print(blue(" fd | ") + yellow(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
+                print(blue(" bk | ") + yellow(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
         next_size_flag = False
         if size >= 512*(capsize/4) :
             next_size_flag = True
@@ -525,11 +525,11 @@ def ci(victim):
             #print("\033[32mfd_nextsize :\033[37m 0x%x  " % fd_nextsize)
             #print("\033[32mbk_nextsize :\033[37m 0x%x  " % bk_nextsize) 
             if(used_flag == 1):
-                print(green("fdNS|", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                print(green("bkNS|", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                print(green("fdNS|", "bold") + yellow(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                print(green("bkNS|", "bold") + yellow(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
             else:
-                print(blue("fdNS", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                print(blue("bkNS", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                print(blue("fdNS", "bold") + yellow(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                print(blue("bkNS", "bold") + yellow(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
         if(unlinkable_flag == 1):
             sys.stdout.write(green("FD->bk: "))
             gdb.execute("infox " + hex(unlinkable_result[0]))
@@ -580,15 +580,15 @@ def cix(victim):
         IM = size & 2
         PI = size & 1
         if(used_flag == 1):
-            print(green("prev| ", "bold") + purple(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
-            print(green("size| ", "bold") + purple(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + purple("|") + red(str(NM), "bold") + purple("|") + green(str(IM), "bold") + purple("|") + blue(str(PI), "bold") + purple("|"))
+            print(green("prev| ", "bold") + yellow(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
+            print(green("size| ", "bold") + yellow(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|") + red(str(NM), "bold") + yellow("|") + green(str(IM), "bold") + yellow("|") + blue(str(PI), "bold") + yellow("|"))
         else:
             if(fast_flag == 0):
-                print(blue("prev| ", "bold") + purple(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
-                print(blue("size| ", "bold") + purple(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + purple("|") + red(str(NM), "bold") + purple("|") + green(str(IM), "bold") + purple("|") + blue(str(PI), "bold") + purple("|"))
+                print(blue("prev| ", "bold") + yellow(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
+                print(blue("size| ", "bold") + yellow(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|") + red(str(NM), "bold") + yellow("|") + green(str(IM), "bold") + yellow("|") + blue(str(PI), "bold") + yellow("|"))
             else:
-                print(blue("prev| ") + purple(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
-                print(blue("size| ") + purple(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + purple("|") + red(str(NM), "bold") + purple("|") + green(str(IM), "bold") + purple("|") + blue(str(PI), "bold") + purple("|"))
+                print(blue("prev| ") + yellow(hex(chunkaddr), "bold") + " --> " + white(hex(prev_size)))
+                print(blue("size| ") + yellow(hex(chunkaddr+capsize), "bold") + " --> " + white(hex(aligned_size)) + yellow("|") + red(str(NM), "bold") + yellow("|") + green(str(IM), "bold") + yellow("|") + blue(str(PI), "bold") + yellow("|"))
         if not status :
             fd_str = white(hex(fd))
             bk_str = white(hex(bk))
@@ -597,11 +597,11 @@ def cix(victim):
                     fd_str += green(" [Unlinkable: *" + hex(unlinkable_result[0]) + "]")
                     bk_str += green(" [Unlinkable: *" + hex(unlinkable_result[1]) + "]")
             if(fast_flag == 0):
-                print(blue(" fd | ", "bold") + purple(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
-                print(blue(" bk | ", "bold") + purple(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
+                print(blue(" fd | ", "bold") + yellow(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
+                print(blue(" bk | ", "bold") + yellow(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
             else:
-                print(blue(" fd | ") + purple(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
-                print(blue(" bk | ") + purple(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
+                print(blue(" fd | ") + yellow(hex(chunkaddr + capsize*2), "bold") + " --> " + fd_str)
+                print(blue(" bk | ") + yellow(hex(chunkaddr + capsize*3), "bold") + " --> " + bk_str)
         next_size_flag = False
         if size >= 512*(capsize/4) :
             next_size_flag = True
@@ -610,15 +610,15 @@ def cix(victim):
             cmd = "x/" + word + hex(chunkaddr + capsize*5)
             bk_nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
             if(used_flag == 1):
-                print(green("fdNS|", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                print(green("bkNS|", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                print(green("fdNS|", "bold") + yellow(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                print(green("bkNS|", "bold") + yellow(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
             else:
                 if(fast_flag == 0):
-                    print(blue("fdNS", "bold") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                    print(blue("bkNS", "bold") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                    print(blue("fdNS", "bold") + yellow(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                    print(blue("bkNS", "bold") + yellow(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
                 else:
-                    print(blue("fdNS") + purple(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
-                    print(blue("bkNS") + purple(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
+                    print(blue("fdNS") + yellow(hex(chunkaddr + capsize*4), "bold") + " --> " + white(hex(fd_nextsize)))
+                    print(blue("bkNS") + yellow(hex(chunkaddr + capsize*5), "bold") + " --> " + white(hex(bk_nextsize)))
         if used_flag:
             if next_size_flag:
                 gdb.execute("ix " + hex(chunkaddr+capsize*4) + " " + hex(int(aligned_size/capsize-2)))
