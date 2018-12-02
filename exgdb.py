@@ -132,6 +132,15 @@ class ExgdbMethods():
         return bytes_list
 
 class ExgdbCmdMethods(object):
+    def _is_running(self):
+        """
+        Customized _is_running function from https://github.com/longld/peda
+        This always return 1
+        """
+        return 1
+
+    setattr(ExgdbCmd, "_is_running", _is_running)
+
     def ctn(self):
         """
         Continue
