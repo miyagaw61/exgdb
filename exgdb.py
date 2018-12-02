@@ -699,11 +699,8 @@ class ExgdbCmdMethods(object):
 
     def context(self, *arg):
         """
-        Display various information of current execution context
-        Usage:
-            MYNAME [reg,code,stack,all] [code/stack length]
+        Customized context command from https://github.com/longld/peda
         """
-
         (opt, count) = normalize_argv(arg, 2)
 
         if to_int(count) is None:
