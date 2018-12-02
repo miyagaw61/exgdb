@@ -174,9 +174,23 @@ class ExgdbCmdMethods(object):
 
         if n == None:
             n = 1
-        gdb.execute("nexti " + str(n))
+        gdb.execute("next " + str(n))
 
     n = next
+
+    def nexti(self, *arg):
+        """
+        Next n times
+        Usage:
+            MYNAME [n]
+        """
+        (n, ) = utils.normalize_argv(arg, 1)
+
+        if n == None:
+            n = 1
+        gdb.execute("nexti " + str(n))
+
+    ni = nexti
 
     def step(self, *arg):
         """
@@ -188,9 +202,23 @@ class ExgdbCmdMethods(object):
 
         if n == None:
             n = 1
-        gdb.execute("stepi " + str(n))
+        gdb.execute("step " + str(n))
 
     s = step
+
+    def stepi(self, *arg):
+        """
+        Nexti n times
+        Usage:
+            MYNAME [n]
+        """
+        (n, ) = utils.normalize_argv(arg, 1)
+
+        if n == None:
+            n = 1
+        gdb.execute("stepi " + str(n))
+
+    si = stepi
 
     def afterpc(self, *arg):
         """

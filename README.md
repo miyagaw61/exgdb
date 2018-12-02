@@ -7,8 +7,10 @@ EXGDB - Extension for GDB
 
 * `ctn, c` -- Execute continue command
 * `brk, b` -- Execute break command
-* `next, n` -- Execute nexti command
-* `step, s` -- Execute stepi command
+* `next, n` -- Execute next command
+* `step, s` -- Execute step command
+* `nexti, ni` -- Execute nexti command
+* `stepi, si` -- Execute stepi command
 * `afterpc, af` -- Show instructions after now program-counter
 * `beforepc, bef` -- Show instructions before now program-counter
 * `grp` -- Grep strings
