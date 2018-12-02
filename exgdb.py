@@ -831,6 +831,7 @@ def init():
     exgdbcmd.commands = cmds
     ExgdbCmdWrapper()
     for cmd in exgdbcmd.commands :
-        ExgdbAlias(cmd,"exgdb %s" % cmd)
+        if not cmd in ["next", "step", "nexti", "stepi", "n", "s", "ni", "si"]:
+            ExgdbAlias(cmd,"exgdb %s" % cmd)
 
 init()
