@@ -9,26 +9,67 @@ pd = PEDA()
 pc = PEDACmd()
 
 class Exgdb():
+    def __init__(self):
+        pass
+
+class ExgdbCmd():
+    def __init__(self):
+        pass
+
+def import_other_plugin():
+    cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
+    for cmd in cmds:
+        if not cmd.startswith("_"):
+            cmd_obj = getattr(PEDA, cmd)
+            setattr(Exgdb, cmd, cmd_obj)
+
+    cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
+    for cmd in cmds:
+        if not cmd.startswith("_"):
+            cmd_obj = getattr(PEDACmd, cmd)
+            setattr(ExgdbCmd, cmd, cmd_obj)
+
+    cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
+    for cmd in cmds:
+        if not cmd.startswith("_"):
+            cmd_obj = getattr(PEDACmd, cmd)
+            setattr(ExgdbCmd, cmd, cmd_obj)
+
+    cmds = [cmd for cmd in dir(PwnCmd) if callable(getattr(PwnCmd, cmd))]
+    for cmd in cmds:
+        if not cmd.startswith("_"):
+            cmd_obj = getattr(PwnCmd, cmd)
+            setattr(ExgdbCmd, cmd, cmd_obj)
+
+    cmds = [cmd for cmd in dir(AngelHeapCmd) if callable(getattr(AngelHeapCmd, cmd))]
+    for cmd in cmds:
+        if not cmd.startswith("_"):
+            cmd_obj = getattr(AngelHeapCmd, cmd)
+            setattr(ExgdbCmd, cmd, cmd_obj)
+
+import_other_plugin()
+
+e = Exgdb()
+c = ExgdbCmd()
+
+class ExgdbMethods():
+    global e
+    global c
     def read_int(self, address, intsize=None):
         """
         Customized read_int from https://github.com/longld/peda
         """
         if not intsize:
-            intsize = self.intsize()
+            intsize = e.intsize()
         value = self.readmem(address, intsize)
-        if value == 0:
-            return 0
         if value:
-            value = to_int("0x" + codecs.encode(value[::-1], 'hex'))
+            value = codecs.encode(value[::-1], 'hex')
+            value = value.decode("utf-8")
+            value = "0x" + value
+            value = to_int(value)
             return value
         else:
             return None
-
-    def read_long(self, address):
-        """
-        Read a long long value from memory
-        """
-        return self.read_int(address, 8)
 
     def read_int_bytes(self, address, intsize=None):
         """
@@ -88,11 +129,7 @@ class Exgdb():
             bytes_list.append(byte)
         return bytes_list
 
-class ExgdbCmd(object):
-    commands = []
-    def __init__(self):
-        self.commands = [cmd for cmd in dir(self) if callable(getattr(self, cmd)) ]  
-
+class ExgdbCmdMethods(object):
     def ctn(self):
         """
         Continue
@@ -112,11 +149,9 @@ class ExgdbCmd(object):
             MYNAME symbol
         """
         (sym, ) = utils.normalize_argv(arg, 1)
-        pd.set_breakpoint(sym)
+        e.set_breakpoint(sym)
 
     b = brk
-    setattr(PEDACmd, "brk", brk)
-    setattr(PEDACmd, "b", brk)
 
     def next(self, *arg):
         """
@@ -131,8 +166,6 @@ class ExgdbCmd(object):
         gdb.execute("nexti " + str(n))
 
     n = next
-    setattr(PEDACmd, "next", next)
-    setattr(PEDACmd, "n", next)
 
     def step(self, *arg):
         """
@@ -147,8 +180,6 @@ class ExgdbCmd(object):
         gdb.execute("stepi " + str(n))
 
     s = step
-    setattr(PEDACmd, "step", step)
-    setattr(PEDACmd, "s", step)
 
     def afterpc(self, *arg):
         """
@@ -156,7 +187,7 @@ class ExgdbCmd(object):
         Usage:
             MYNAME n
         """
-        arch = pd.getarch()
+        arch = e.getarch()
         (expr, ) = utils.normalize_argv(arg,1)
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
@@ -164,11 +195,9 @@ class ExgdbCmd(object):
             ip = "$rip"
         else:
             ip = "$eip"
-        pd.execute('pdisas %s /%s' % (ip, n))
+        e.execute('pdisas %s /%s' % (ip, n))
 
     afpc = afterpc
-    setattr(PEDACmd, "afterpc", afterpc)
-    setattr(PEDACmd, "af", afterpc)
 
     def beforepc(self, *arg):
         """
@@ -176,24 +205,22 @@ class ExgdbCmd(object):
         Usage:
             MYNAME n
         """
-        arch = pd.getarch()
+        arch = e.getarch()
         (expr, ) = utils.normalize_argv(arg,1)
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
         if arch[1] == 64:
-            ip = pd.getreg("rip")
+            ip = e.getreg("rip")
         else:
-            ip = pd.getreg("eip")
+            ip = e.getreg("eip")
         if n == 1:
-            pd.execute('pdisas %s /%s' % (ip, n))
+            e.execute('pdisas %s /%s' % (ip, n))
         else:
-            addr = pd.prev_inst(ip, n)[1][0]
-            pd.execute('pdisas %s /%s' % (addr, n))
+            addr = e.prev_inst(ip, n)[1][0]
+            e.execute('pdisas %s /%s' % (addr, n))
 
     befpc = beforepc
-    setattr(PEDACmd, "beforepc", beforepc)
-    setattr(PEDACmd, "bef", beforepc)
 
     def afteraddr(self, *arg):
         """
@@ -201,20 +228,18 @@ class ExgdbCmd(object):
         Usage:
             MYNAME addr n
         """
-        arch = pd.getarch()
+        arch = e.getarch()
         (addr, expr) = utils.normalize_argv(arg,2)
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
         if arch[1] == 64:
-            ip = pd.getreg("rip")
+            ip = e.getreg("rip")
         else:
-            ip = pd.getreg("eip")
-        pd.execute('pdisas %s /%s' % (addr, n))
+            ip = e.getreg("eip")
+        e.execute('pdisas %s /%s' % (addr, n))
 
     afad = afteraddr
-    setattr(PEDACmd, "afteraddr", afteraddr)
-    setattr(PEDACmd, "afad", afteraddr)
 
     def beforeaddr(self, *arg):
         """
@@ -222,24 +247,22 @@ class ExgdbCmd(object):
         Usage:
             MYNAME addr n
         """
-        arch = pd.getarch()
+        arch = e.getarch()
         (addr, expr) = utils.normalize_argv(arg,2)
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
         if arch[1] == 64:
-            ip = pd.getreg("rip")
+            ip = e.getreg("rip")
         else:
-            ip = pd.getreg("eip")
+            ip = e.getreg("eip")
         if n == 1:
-            pd.execute('pdisas %s /%s' % (ip, n))
+            e.execute('pdisas %s /%s' % (ip, n))
         else:
-            addr = pd.prev_inst(ip, n)[1][0]
-            pd.execute('pdisas %s /%s' % (addr, n))
+            addr = e.prev_inst(ip, n)[1][0]
+            e.execute('pdisas %s /%s' % (addr, n))
 
     befad = beforeaddr
-    setattr(PEDACmd, "beforeaddr", beforeaddr)
-    setattr(PEDACmd, "befad", beforeaddr)
 
     def grp(self, *arg):
         """
@@ -249,7 +272,6 @@ class ExgdbCmd(object):
         """
         try:
             (cmd, regex) = utils.normalize_argv(arg, 2)
-            print(utils.__file__)
             print(cmd)
             print(regex)
             cmd = str(cmd)
@@ -263,30 +285,26 @@ class ExgdbCmd(object):
             traceback.print_exc()
             return False
 
-    setattr(PEDACmd, "grp", grp)
-
     def allstack(self):
         """
         Show all stack
         Usage:
             MYNAME
         """
-        arch = pd.getarch()
+        arch = e.getarch()
         if arch[1] == 64:
-            sp = pd.getreg("rsp")
-            bp = pd.getreg("rbp")
+            sp = e.getreg("rsp")
+            bp = e.getreg("rbp")
         else:
-            sp = pd.getreg("esp")
-            bp = pd.getreg("ebp")
+            sp = e.getreg("esp")
+            bp = e.getreg("ebp")
         arg = bp - sp
-        intsize = pd.intsize()
+        intsize = e.intsize()
         arg = arg/intsize
         arg += 1
         arg = utils.to_i(arg)
-        pd.execute("stack %s" % arg)
+        e.execute("stack %s" % arg)
         return
-
-    setattr(PEDACmd, "allstack", allstack)
 
     def lpout(self):
         """
@@ -301,8 +319,6 @@ class ExgdbCmd(object):
             peda.execute("nexti $ecx")
         return
 
-    setattr(PEDACmd, "lpout", lpout)
-
     def nuntil(self, *arg):
         """
         Execute nexti until regex
@@ -312,16 +328,16 @@ class ExgdbCmd(object):
         (regex, callonlyflag) = utils.normalize_argv(arg, 2)
         regex = str(regex)
         r = re.compile(regex)
-        arch = pd.getarch()
+        arch = e.getarch()
         ctx = config.Option.get("context")
         config.Option.set("context", "code")
         if callonlyflag == True or callonlyflag == "True":
-            cmd = pc.nextcall
+            cmd = c.nextcall
         else:
-            cmd = pc.next
-        pc.next()
+            cmd = c.next
+        c.next()
         while True:
-            (addr, code) = pd.current_inst(pd.getreg("pc"))
+            (addr, code) = e.current_inst(e.getreg("pc"))
             regexed_code = r.findall(code)
             if len(regexed_code) > 0:
                 config.Option.set("context", ctx)
@@ -329,8 +345,6 @@ class ExgdbCmd(object):
                 break
             else:
                 cmd()
-
-    setattr(PEDACmd, "nuntil", nuntil)
 
     def suntil(self, *arg):
         """
@@ -348,17 +362,17 @@ class ExgdbCmd(object):
             depth = 1
         now_depth = 0
         if callonlyflag == True or callonlyflag == "True":
-            cmd = pc.nextcall
+            cmd = c.nextcall
         else:
-            cmd = pc.next
-        next_when_call = pc.next
-        step_when_call = pc.step
-        arch = pd.getarch()
+            cmd = c.next
+        next_when_call = c.next
+        step_when_call = c.step
+        arch = e.getarch()
         ctx = config.Option.get("context")
         config.Option.set("context", "code")
-        pc.step()
+        c.step()
         while True:
-            (addr, code) = pd.current_inst(pd.getreg("pc"))
+            (addr, code) = e.current_inst(e.getreg("pc"))
             regexed_code = r.findall(code)
             if len(regexed_code) > 0:
                 config.Option.set("context", ctx)
@@ -369,17 +383,15 @@ class ExgdbCmd(object):
                 ret_code = r_ret.findall(code)
                 if len(call_code) > 0:
                     if now_depth < depth:
-                        pc.step()
+                        c.step()
                         now_depth = now_depth + 1
                         continue
                 elif len(ret_code) > 0:
                     if now_depth <= depth:
                         now_depth = now_depth - 1
-                        pc.next()
+                        c.next()
                         continue
                 cmd()
-
-    setattr(PEDACmd, "suntil", suntil)
 
     def nextcalluntil(self, *arg):
         """
@@ -389,9 +401,7 @@ class ExgdbCmd(object):
         """
         (regex, ) = utils.normalize_argv(arg, 1)
         regex = str(regex)
-        pc.nuntil(regex, True)
-
-    setattr(PEDACmd, "nextcalluntil", nextcalluntil)
+        c.nuntil(regex, True)
 
     def stepcalluntil(self, *arg):
         """
@@ -404,9 +414,7 @@ class ExgdbCmd(object):
         depth = utils.to_int(depth)
         if depth == None:
             depth = 1
-        pc.suntil(regex, depth, True)
-
-    setattr(PEDACmd, "stepcalluntil", stepcalluntil)
+        c.suntil(regex, depth, True)
 
     def nuntilxor(self):
         """
@@ -414,9 +422,7 @@ class ExgdbCmd(object):
         Usage:
             MYNAME
         """
-        pc.nuntil("xor")
-
-    setattr(PEDACmd, "nuntilxor", nuntilxor)
+        c.nuntil("xor")
 
     def suntilxor(self, *arg):
         """
@@ -428,9 +434,7 @@ class ExgdbCmd(object):
         depth = utils.to_int(depth)
         if depth == None:
             depth = 1
-        pc.suntil("xor", depth)
-
-    setattr(PEDACmd, "suntilxor", suntilxor)
+        c.suntil("xor", depth)
 
     def infonow(self):
         """
@@ -438,7 +442,7 @@ class ExgdbCmd(object):
         Usage:
             MYNAME
         """
-        (addr, code) = pd.current_inst(pd.getreg("pc"))
+        (addr, code) = e.current_inst(e.getreg("pc"))
 
         # " ANY_REG" or ",ANY_REG"
         for reg in REGISTERS[8]:
@@ -447,12 +451,12 @@ class ExgdbCmd(object):
             if reg_A in code or reg_B in code:
                 reg = reg.replace(" ", "")
                 print(green("%s" % reg.upper(), "bold"), end=": ")
-                pc.infox(gdb.parse_and_eval("$%s" % reg))
+                c.infox(gdb.parse_and_eval("$%s" % reg))
         for reg in REGISTERS[16]:
             regexed_code = re.findall("[ ,]%s" % reg, code)
             if len(regexed_code) > 0:
                 print(green("%s" % reg.upper(), "bold"), end=": ")
-                pc.infox(gdb.parse_and_eval("$%s" % reg))
+                c.infox(gdb.parse_and_eval("$%s" % reg))
         for i in (32, 64):
             for reg in REGISTERS[i]:
                 reg_A = " " + reg
@@ -463,14 +467,14 @@ class ExgdbCmd(object):
                         now_code_str = gdb.execute("pdisass $rip /1", to_string=True)
                         print(now_code_str[6:])
                     else:
-                        pc.infox(gdb.parse_and_eval("$%s" % reg))
+                        c.infox(gdb.parse_and_eval("$%s" % reg))
 
         # addrs that 0xNNNNNN and more except "[ANY_REG+0xNNNNNN]" from code strings
         addrs = re.findall("[^+](0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]+)", code)
         if len(addrs) > 0:
             for addr in addrs:
                 #print(green("%s" % addr, "bold"), end=": ")
-                pc.infox(addr)
+                c.infox(addr)
 
         # "[ANY_EXPR]"
         addrs = re.findall(r"\[[^ ]*\]", code)
@@ -479,19 +483,19 @@ class ExgdbCmd(object):
                 displayed_addr = addr
                 for reg in REGISTERS[8]:
                     if reg in addr:
-                        pc.infox("register", reg)
+                        c.infox("register", reg)
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
                 for reg in REGISTERS[16]:
                     regexed_code = re.findall("[ ,]%s" % reg, code)
                     if len(regexed_code) > 0:
-                        pc.infox("register", reg)
+                        c.infox("register", reg)
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
                 for i in (32, 64):
                     for reg in REGISTERS[i]:
                         if reg in addr:
-                            pc.infox("register", reg)
+                            c.infox("register", reg)
                             addr = addr.replace(reg, "$" + reg)
                             displayed_addr = displayed_addr.replace(reg, reg.upper())
                 addr = addr.replace("[", "")
@@ -502,11 +506,9 @@ class ExgdbCmd(object):
                 addr = re.findall("0x[0-9a-f]+", addr)[0]
 
                 print(green("%s" % displayed_addr, "bold"), end=": ")
-                pc.infox(addr)
+                c.infox(addr)
 
     inow = infonow
-    setattr(PEDACmd, "infonow", infonow)
-    setattr(PEDACmd, "inow", infonow)
 
     def infox(self, *arg):
         """
@@ -527,15 +529,15 @@ class ExgdbCmd(object):
 
         def get_reg_text(r, v):
             text = green("%s" % r.upper().ljust(3), "bold") + ": "
-            chain = pd.examine_mem_reference(v)
+            chain = e.examine_mem_reference(v)
             text += utils.format_reference_chain(chain)
             text += "\n"
             return text
 
-        (arch, bits) = pd.getarch()
+        (arch, bits) = e.getarch()
         if str(address).startswith("r"):
             # Register
-            regs = pd.getregs(" ".join(arg[1:]))
+            regs = e.getregs(" ".join(arg[1:]))
             if regname is None:
                 for r in REGISTERS[bits]:
                     if r in regs:
@@ -553,17 +555,15 @@ class ExgdbCmd(object):
             warning_utils.msg("not a register nor an address")
         else:
             # Address
-            chain = pd.examine_mem_reference(address)
+            chain = e.examine_mem_reference(address)
             #text += '\n'
             #text += 'info: '
             text += utils.format_reference_chain(chain) # + "\n"
-            vmrange = pd.get_vmrange(address)
+            vmrange = e.get_vmrange(address)
             if vmrange:
                 (start, end, perm, name) = vmrange
         utils.msg(text)
         return
-
-    setattr(PEDACmd, "infox", infox)
 
     def contextmode(self, *arg):
         """
@@ -577,83 +577,11 @@ class ExgdbCmd(object):
             return
         config.Option.set("context", opt)
 
-    setattr(PEDACmd, "contextmode", contextmode)
+    ####################################################################################################################
 
-class ExgdbCmdWrapper(gdb.Command):
-    """ Exgdb command wrapper """
-    def __init__(self):
-        super(ExgdbCmdWrapper,self).__init__("exgdb",gdb.COMMAND_USER)
-
-    def invoke(self,args,from_tty):
-        global exgdbcmd
-        self.dont_repeat()
-        arg = args.split()
-        if len(arg) > 0 :
-            cmd = arg[0]
-            if cmd in exgdbcmd.commands :
-                func = getattr(exgdbcmd,cmd)
-                func(*arg[1:])
-            else :
-                print("Unknown command")
-        else :
-            print("Unknown command")
-        return 
-
-class ExgdbAlias(gdb.Command):
-    """ Exgdb Alias """
-    def __init__(self,alias,command):
-        self.command = command
-        super(ExgdbAlias,self).__init__(alias,gdb.COMMAND_NONE)
-
-    def invoke(self,args,from_tty):
-        self.dont_repeat()
-        gdb.execute("%s %s" % (self.command,args))
-
-def init():
-    global exgdbcmd
-    exgdbcmd = ExgdbCmd()
-    ExgdbCmdWrapper()
-    for cmd in exgdbcmd.commands :
-        ExgdbAlias(cmd,"exgdb %s" % cmd)
-
-def import_other_plugin():
-    cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PEDA, cmd)
-            setattr(Exgdb, cmd, cmd_obj)
-
-    cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PEDACmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
-
-    cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PEDACmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
-
-    cmds = [cmd for cmd in dir(PwnCmd) if callable(getattr(PwnCmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PwnCmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
-
-    cmds = [cmd for cmd in dir(AngelHeapCmd) if callable(getattr(AngelHeapCmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(AngelHeapCmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
-
-init()
-import_other_plugin()
-
-class ExgdbOverwriteCmd():
     def parseheap(self, *arg):
         """
-        Customized parseheap command from https://github.com/longld/peda
+        Customized parseheap command from https://github.com/scwuaptx/Pwngdb
         """
         (arena, ) = utils.normalize_argv(arg, 1)
         if capsize == 0 :
@@ -738,10 +666,10 @@ class ExgdbOverwriteCmd():
     def patch(self, *arg):
         (addr, value, size) = utils.normalize_argv(arg, 3)
         if type(value) == str:
-            pc.patch(addr, value)
+            c.patch(addr, value)
         elif type(value) == list:
             for (i, x) in enumerate(value):
-                pc.patch(addr+i, x)
+                c.patch(addr+i, x)
         elif type(value) == int:
             if size == None:
                 print("Please specify size.")
@@ -753,19 +681,120 @@ class ExgdbOverwriteCmd():
                 return False
             n = size - length
             for i in range(n):
-                pc.patch(addr+i, 0)
+                c.patch(addr+i, 0)
             for (i, x) in enumerate(bytes_list):
-                pc.patch(addr+i, bytes_list[i])
+                c.patch(addr+i, bytes_list[i])
             return True
 
-def overwrite_cmd():
-    global exgdbcmd
-    cmds = [cmd for cmd in dir(ExgdbOverwriteCmd) if callable(getattr(ExgdbOverwriteCmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(ExgdbOverwriteCmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
-            exgdbcmd.commands.append(cmd)
-            ExgdbAlias(cmd,"exgdb %s" % cmd)
+    def context(self, *arg):
+        """
+        Display various information of current execution context
+        Usage:
+            MYNAME [reg,code,stack,all] [code/stack length]
+        """
 
-overwrite_cmd()
+        (opt, count) = normalize_argv(arg, 2)
+
+        if to_int(count) is None:
+            count = 8
+        if opt is None:
+            opt = config.Option.get("context")
+        if opt == "all":
+            opt = "register,code,stack"
+
+        opt = opt.replace(" ", "").split(",")
+
+        if not opt:
+            return
+
+        #if not self._is_running():
+        if False:
+            return
+
+        clearscr = config.Option.get("clearscr")
+        if clearscr == "on":
+            clearscreen()
+
+        status = peda.get_status()
+        # display registers
+        if "reg" in opt or "register" in opt:
+            self.context_register()
+
+        if "infonow" in opt:
+            print(red("======================================inow======================================", "bold"))
+            c.infonow()
+            print(red("================================================================================", "bold"))
+            self.context_code(8)
+            if not "stack" in opt:
+                msg("[%s]" % ("-"*78), "blue", "light")
+                msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+
+        # display assembly code
+        if "code" in opt:
+            self.context_code(count)
+
+        # display stack content, forced in case SIGSEGV
+        if "stack" in opt or "SIGSEGV" in status:
+            self.context_stack(count)
+            #if "infonow" in opt:
+            #    msg("[%s]" % ("-"*78), "blue", "light")
+            #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+
+        if "reg" in opt or "code" in opt or "stack" in opt:
+            msg("[%s]" % ("-"*78), "blue", "light")
+            msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+
+        # display stopped reason
+        if "SIG" in status:
+            msg("Stopped reason: %s" % red(status))
+
+        return
+
+    setattr(PEDACmd, "context", context)
+
+class ExgdbCmdWrapper(gdb.Command):
+    """ Exgdb command wrapper """
+    def __init__(self):
+        super(ExgdbCmdWrapper,self).__init__("exgdb",gdb.COMMAND_USER)
+
+    def invoke(self,args,from_tty):
+        global exgdbcmd
+        self.dont_repeat()
+        arg = args.split()
+        if len(arg) > 0 :
+            cmd = arg[0]
+            if cmd in exgdbcmd.commands :
+                func = getattr(exgdbcmd,cmd)
+                func(*arg[1:])
+            else :
+                print("Unknown command")
+        else :
+            print("Unknown command")
+        return 
+
+class ExgdbAlias(gdb.Command):
+    """ Exgdb Alias """
+    def __init__(self,alias,command):
+        self.command = command
+        super(ExgdbAlias,self).__init__(alias,gdb.COMMAND_NONE)
+
+    def invoke(self,args,from_tty):
+        self.dont_repeat()
+        gdb.execute("%s %s" % (self.command,args))
+
+def init():
+    global exgdbcmd
+    cmds = [cmd for cmd in dir(ExgdbMethods) if callable(getattr(ExgdbMethods, cmd)) and not cmd.startswith("_")]
+    exgdbcmd_cmds = []
+    for cmd in cmds:
+        setattr(Exgdb, cmd, getattr(ExgdbMethods, cmd))
+    cmds = [cmd for cmd in dir(ExgdbCmdMethods) if callable(getattr(ExgdbCmdMethods, cmd)) and not cmd.startswith("_")]
+    for cmd in cmds:
+        setattr(ExgdbCmd, cmd, getattr(ExgdbCmdMethods, cmd))
+    exgdbcmd = ExgdbCmd()
+    exgdbcmd.commands = cmds
+    ExgdbCmdWrapper()
+    for cmd in exgdbcmd.commands :
+        ExgdbAlias(cmd,"exgdb %s" % cmd)
+
+init()
