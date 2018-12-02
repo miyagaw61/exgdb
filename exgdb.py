@@ -8,6 +8,49 @@ from enert import *
 pd = PEDA()
 pc = PEDACmd()
 
+def concat_quote(args):
+    tmp_args = []
+    flg = False
+    n = 0
+    for (i, x) in enumerate(args):
+        if type(x) != str:
+            continue
+        if x[0] == "\"":
+            flg = True
+            n = i
+            tmp_args.append(args[i][1:])
+            continue
+        if flg:
+            tmp_args[n] = "%s %s" % (tmp_args[n], args[i])
+        else:
+            tmp_args.append(args[i])
+        if x[-1] == "\"":
+            flg = False
+            tmp_args[n] = tmp_args[n][:-1]
+    return tmp_args
+
+utils.concat_quote = concat_quote
+
+def normalize_argv(args, size=0):
+    """
+    Customized normalize_argv from https://github.com/longld/peda
+    """
+    args = list(args)
+    args = utils.concat_quote(args)
+    for (idx, val) in enumerate(args):
+        if to_int(val) is not None:
+            args[idx] = to_int(val)
+        if size and idx == size:
+            return args[:idx]
+
+    if size == 0:
+        return args
+    for i in range(len(args), size):
+        args += [None]
+    return args
+
+utils.normalize_argv = normalize_argv
+
 class Exgdb():
     def __init__(self):
         pass
