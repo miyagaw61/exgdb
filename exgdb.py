@@ -35,17 +35,19 @@ def import_other_plugin():
             cmd_obj = getattr(PEDACmd, cmd)
             setattr(ExgdbCmd, cmd, cmd_obj)
 
-    cmds = [cmd for cmd in dir(PwnCmd) if callable(getattr(PwnCmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PwnCmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
+    if PwnCmd:
+        cmds = [cmd for cmd in dir(PwnCmd) if callable(getattr(PwnCmd, cmd))]
+        for cmd in cmds:
+            if not cmd.startswith("_"):
+                cmd_obj = getattr(PwnCmd, cmd)
+                setattr(ExgdbCmd, cmd, cmd_obj)
 
-    cmds = [cmd for cmd in dir(AngelHeapCmd) if callable(getattr(AngelHeapCmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(AngelHeapCmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
+    if AngelHeapCmd:
+        cmds = [cmd for cmd in dir(AngelHeapCmd) if callable(getattr(AngelHeapCmd, cmd))]
+        for cmd in cmds:
+            if not cmd.startswith("_"):
+                cmd_obj = getattr(AngelHeapCmd, cmd)
+                setattr(ExgdbCmd, cmd, cmd_obj)
 
 import_other_plugin()
 
