@@ -354,8 +354,6 @@ class ExgdbCmdMethods(object):
         """
         try:
             (cmd, regex) = utils.normalize_argv(arg, 2)
-            print(cmd)
-            print(regex)
             cmd = str(cmd)
             regex = str(regex)
             output = gdb.execute(cmd, to_string=True)
