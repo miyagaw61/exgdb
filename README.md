@@ -72,7 +72,7 @@ Exgdb - Extension for GDB
 
 ## Installation:
 
-    $ git clone https://github.com/miyagaw61/exgdb.git /path/to/exgdb
-    $ git clone https://github.com/miyagaw61/expeda.git /path/to/exgdb/plugins/expeda
-    $ git clone https://github.com/scwuaptx/Pwngdb.git /path/to/exgdb/plugins/Pwngdb
-    $ echo "source /path/to/exgdb/gdbinit.py" >> ~/.gdbinit
+    git clone https://github.com/miyagaw61/exgdb.git /path/to/exgdb
+    git clone https://github.com/miyagaw61/expeda.git /path/to/exgdb/plugins/expeda
+    git clone https://github.com/scwuaptx/Pwngdb.git /path/to/exgdb/plugins/Pwngdb
+    echo "source /path/to/exgdb/gdbinit.py" >> ~/.gdbinit
