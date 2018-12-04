@@ -10,6 +10,10 @@ EXGDBDIR = os.path.dirname(THISFILE)
 LIB = EXGDBDIR + "/lib"
 PLUGINS = EXGDBDIR + "/plugins"
 
+if not os.path.exists(EXGDBDIR + "/exgdb.py"):
+    print("Please put exgdbctl(this script) exgdb.git directory")
+    exit()
+
 lib_dict = {
         "peda": "https://github.com/longld/peda",
         "expeda": "https://github.com/miyagaw61/expeda",
@@ -19,6 +23,7 @@ plugin_list = [key for key in lib_dict.keys()]
 
 sys.path.insert(0, LIB)
 from enert import *
+
 usage = """%s <command> [<args>]
 command: list
          install <peda/expeda/Pwngdb>
