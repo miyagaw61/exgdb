@@ -65,8 +65,8 @@ Exgdb - Extension for GDB
     exgdb-peda$ cat tmp.py
     while True:
         c.next()
-        eax = e.getreg("eax")
-        if eax == 0:
+        rax = e.getreg("rax")
+        if rax == 0:
             break
     exgdb-peda$ source tmp.py
 
