@@ -25,8 +25,10 @@ Exgdb - Extension for GDB
 * `nextcalluntil` -- Execute nextcall command until given regexp
 * `stepcalluntil` -- Execute nextcall and step command until given regexp and given depth
 * `infonow, inow` -- Show detail information of the instruction now specified program-counter
-* `infox` -- Customized xinfo command of peda
 * `contextmode` -- Set context mode
+* `infox` -- Customized xinfo command of peda
+* `patch` -- Customized patch command of peda
+* `parseheap` -- Customized parseheap command of Pwngdb
 * ... and all commands of peda and Pwngdb.
 
 ## Usage as a library:
