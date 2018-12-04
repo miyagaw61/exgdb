@@ -22,7 +22,7 @@ Exgdb - Extension for GDB
 * `infonow, inow` -- Show detail information of the instruction now specified program-counter
 * `infox` -- Customed xinfo command
 * `contextmode` -- Set context mode
-* ... and all commands of peda.
+* ... and all commands of peda and Pwngdb.
 
 ## Usage as a library:
 
