@@ -8,6 +8,15 @@ Exgdb - Extension for GDB
 * `Exgdb` -- This has many methods to coding debug automation script
 * `ExgdbCmd` -- This has many methods that can execute as gdb command
 
+## Methods of Exgdb:
+
+
+* `read_int` -- Customized read_int of peda
+* `read_int_bytes` -- Read bytes as intsize list
+* `read_byte` -- Read one byte
+* `read_bytes` -- Read bytes as any size list
+* ... and all commands of peda and Pwngdb.
+
 ## Methods of ExgdbCmd:
 
 * `ctn, c` -- Execute continue command
