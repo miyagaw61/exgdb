@@ -1,1 +1,10 @@
-This is a directory for plugins
+This is a directory for plugins.
+
+You can put the following directories.
+
+- peda (https://github.com/longld/peda)
+- expeda (https://github.com/miyagaw61/expeda)
+- Pwngdb (https://github.com/scwuaptx/Pwngdb)
+
+You absolutely need peda or expeda.
+peda is not recommended. Please use expeda instead of peda.
