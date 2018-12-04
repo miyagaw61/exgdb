@@ -12,9 +12,9 @@ from collections import OrderedDict
 import datetime
 import ssl
 import socket
-import better_exceptions
+#import better_exceptions
 import platform
-from backports import shutil_get_terminal_size
+#from backports import shutil_get_terminal_size
 from argparse import *
 from distutils.dir_util import copy_tree
 
@@ -247,11 +247,11 @@ def restore():
 def lines_delete(n):
     sys.stdout.write(csi + str(n) + 'M')
 
-def get_term_size():
-    lst = []
-    lst.append(shutil_get_terminal_size.get_terminal_size()[1])
-    lst.append(shutil_get_terminal_size.get_terminal_size()[0])
-    return lst
+#def get_term_size():
+#    lst = []
+#    lst.append(shutil_get_terminal_size.get_terminal_size()[1])
+#    lst.append(shutil_get_terminal_size.get_terminal_size()[0])
+#    return lst
 
 def clear():
     shell('clear').call()
