@@ -76,3 +76,18 @@ Exgdb - Extension for GDB
     git clone https://github.com/miyagaw61/expeda.git /path/to/exgdb/plugins/expeda
     git clone https://github.com/scwuaptx/Pwngdb.git /path/to/exgdb/plugins/Pwngdb
     echo "source /path/to/exgdb/gdbinit.py" >> ~/.gdbinit
+
+## Plugin Manager:
+
+### Installation:
+
+    sudo ln -s $(realpath /path/to/exgdbctl) /usr/local/bin/exgdbctl
+
+### Usage:
+
+    usage: exgdbctl <command> [<args>]
+    command: list
+             install <peda/expeda/Pwngdb>
+             update  <peda/expeda/Pwngdb>
+             enable  <peda/expeda/Pwngdb>
+             disable <peda/expeda/Pwngdb>

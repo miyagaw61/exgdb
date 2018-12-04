@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+
+THISFILE = os.path.abspath(os.path.expanduser(__file__))
+if os.path.islink(THISFILE):
+    THISFILE = os.readlink(THISFILE)
+EXGDBDIR = os.path.dirname(THISFILE)
+LIB = EXGDBDIR + "/lib"
+PLUGINS = EXGDBDIR + "/plugins"
+
+lib_dict = {
+        "peda": "https://github.com/longld/peda",
+        "expeda": "https://github.com/miyagaw61/expeda",
+        "Pwngdb": "https://github.com/scwuaptx/Pwngdb"
+        }
+plugin_list = [key for key in lib_dict.keys()]
+
+sys.path.insert(0, LIB)
+from enert import *
+usage = """%s <command> [<args>]
+command: list
+         install <peda/expeda/Pwngdb>
+         update  <peda/expeda/Pwngdb>
+         enable  <peda/expeda/Pwngdb>
+         disable <peda/expeda/Pwngdb>""" % os.path.basename(sys.argv[0])
+parser = mkparser(usage, ["list", "install", "update", "enable", "disable"])
+args = parser.parse_args(sys.argv[1:])
+
+if len(args.args) > 0:
+    plugin_name = args.args[0]
+    if not plugin_name in plugin_list:
+        print("invalid plugin name: %s" % plugin_name)
+        usage_plugins = ", ".join(plugin_list)
+        print("usage: %s" % usage_plugins)
+        exit()
+    f = File("%s/%s" % (PLUGINS, plugin_name))
+    f_disabled = File("%s/%s.disabled" % (PLUGINS, plugin_name))
+
+if args.command == "list":
+    for dirname in plugin_list:
+        dirname = PLUGINS + "/" + dirname
+        if File(dirname).exist():
+            print(green("%s: enabled" % os.path.basename(dirname), "bold"))
+        if File(dirname + ".disabled").exist():
+            print(red("%s: disabled" % os.path.basename(dirname), "bold"))
+elif args.command == "install":
+    if f.exist():
+        print("%s is already exist" % plugin_name)
+        exit()
+    Shell("git clone %s %s/%s" % (lib_dict[plugin_name], PLUGINS, plugin_name)).call()
+elif args.command == "update":
+    plugin_dir = None
+    if f.exist():
+        f_plugin = f
+    elif f_disabled.exist():
+        f_plugin = f_disabled
+    else:
+        print("%s is not installed" % plugin_name)
+        exit()
+    Shell("cd %s" % f_plugin.abspath).call()
+    Shell("git pull --rebase origin master").call()
+elif args.command == "enable":
+    if f.exist():
+        print("%s is already enabled" % plugin_name)
+        exit()
+    if not f_disabled.exist():
+        print("%s is not installed" % plugin_name)
+        exit()
+    Shell("mv %s/%s.disabled %s/%s" % (PLUGINS, plugin_name, PLUGINS, plugin_name)).call()
+    print("[+]enabled %s" % plugin_name)
+    Shell("exgdbctl list").call()
+elif args.command == "disable":
+    if not f.exist():
+        print("%s is already disabled" % plugin_name)
+        exit()
+    Shell("mv %s/%s %s/%s.disabled" % (PLUGINS, plugin_name, PLUGINS, plugin_name)).call()
+    print("[+]disabled %s" % plugin_name)
+    Shell("exgdbctl list").call()
