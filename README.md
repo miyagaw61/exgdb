@@ -3,7 +3,7 @@ Exgdb
 
 Exgdb - Extension for GDB
 
-## New Class:
+## New Classes:
 
 * `Exgdb` -- This has many methods to coding debug automation script
 * `ExgdbCmd` -- This has many methods that can execute as gdb command
@@ -97,7 +97,7 @@ Exgdb - Extension for GDB
 
 ### Installation:
 
-    sudo ln -s $(realpath /path/to/exgdbctl) /usr/local/bin/exgdbctl
+    sudo ln -s $(realpath /path/to/exgdb/exgdbctl) /usr/local/bin/exgdbctl
 
 ### Usage:
 
