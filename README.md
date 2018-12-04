@@ -13,7 +13,7 @@ Exgdb - Extension for GDB
 * `stepi, si` -- Execute stepi command
 * `afterpc, af` -- Show instructions after now program-counter
 * `beforepc, bef` -- Show instructions before now program-counter
-* `grp` -- Grep strings
+* `grp` -- Grep command output
 * `allstack` -- Show all stack data
 * `nuntil` -- Execute nexti command until given regexp
 * `suntil` -- Execute stepi command until given regexp
