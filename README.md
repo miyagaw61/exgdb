@@ -1,7 +1,7 @@
-expeda
-======
+Exgdb
+=====
 
-EXGDB - Extension for GDB
+Exgdb - Extension for GDB
 
 ## New Key Features:
 
