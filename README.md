@@ -3,7 +3,12 @@ Exgdb
 
 Exgdb - Extension for GDB
 
-## New Key Features:
+## New Class:
+
+* `Exgdb` -- This has many methods to coding debug automation script
+* `ExgdbCmd` -- This has many methods that can execute as gdb command
+
+## Methods of ExgdbCmd:
 
 * `ctn, c` -- Execute continue command
 * `brk, b` -- Execute break command
