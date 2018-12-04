@@ -55,7 +55,8 @@ Exgdb - Extension for GDB
     exgdb-peda$ python
     >c.nuntil("call.*plt") # You can use `c` suddenly if you have used `c = ExgdbCmd()` in `gdbrc.py` .
     >rsp = e.getreg("rsp") # You can use `e` suddenly if you have used `e = Exgdb()` in `gdbrc.py` .
-    >print(rsp) # If you finish coding, you should send Ctrl+D
+    >print(rsp)
+    > # If you finish coding, you should send Ctrl+D
 
     ...
 
