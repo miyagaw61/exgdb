@@ -52,8 +52,8 @@ Exgdb - Extension for GDB
        0x402a3b:    call   0x402840 <setlocale@plt>
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
-    gdb-expeda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
-    gdb-expeda$ cat tmp.py
+    exgdb-peda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
+    exgdb-peda$ cat tmp.py
     while True:
         c.next() # You can use `e` and `c` suddenly if you have used `e = Exgdb()` and `c = ExgdbCmd()` in `gdbrc.py` .
         eax = e.getreg("eax")
