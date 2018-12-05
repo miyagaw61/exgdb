@@ -14,6 +14,7 @@ def concat_quote(args):
     n = 0
     for (i, x) in enumerate(args):
         if type(x) != str:
+            tmp_args.append(args[i])
             continue
         if x[0] == "\"":
             flg = True
