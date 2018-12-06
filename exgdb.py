@@ -13,9 +13,9 @@ def concat_quote(args):
         if type(x) != str:
             tmp_args.append(x)
             continue
-        if x[0] == "\"":
+        if x[0] in ("\"", "'"):
             flg = True
-            if x[-1] == "\"":
+            if x[-1] in ("\"", "'"):
                 flg = False
                 tmp_args.append(x[1:-1])
                 n += 1
@@ -23,7 +23,7 @@ def concat_quote(args):
                 tmp_args.append(x[1:])
                 n += 1
             continue
-        if x[-1] == "\"":
+        if x[-1] in ("\"", "'"):
             flg = False
             tmp_args[n] = "%s %s" % (tmp_args[n], x[:-1])
             continue
