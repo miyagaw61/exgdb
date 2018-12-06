@@ -51,7 +51,7 @@ if args.command == "list":
         if File(dirname + ".disabled").exist():
             print(red("%s: disabled" % os.path.basename(dirname), "bold"))
 elif args.command == "install":
-    if f.exist():
+    if f.exist() or f_disabled.exist():
         print("%s is already exist" % plugin_name)
         exit()
     Shell("git clone %s %s/%s" % (lib_dict[plugin_name], PLUGINS, plugin_name)).call()
