@@ -5,9 +5,6 @@ sys.path.insert(0, os.path.dirname(EXGDBFILE) + "/lib/")
 
 from enert import *
 
-pd = PEDA()
-pc = PEDACmd()
-
 def concat_quote(args):
     tmp_args = []
     flg = False
