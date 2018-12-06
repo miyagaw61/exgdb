@@ -88,17 +88,17 @@ Exgdb - Extension for GDB
 
 ## Installation:
 
-    git clone https://github.com/miyagaw61/exgdb.git
-    cd exgdb/
-    ./exgdbctl install expeda # git clone https://github.com/miyagaw61/expeda.git plugins/expeda
-    ./exgdbctl install Pwngdb # git clone https://github.com/scwuaptx/Pwngdb.git plugins/Pwngdb
-    echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
+    $ git clone https://github.com/miyagaw61/exgdb.git
+    $ cd exgdb/
+    $ ./exgdbctl install expeda # git clone https://github.com/miyagaw61/expeda.git plugins/expeda
+    $ ./exgdbctl install Pwngdb # git clone https://github.com/scwuaptx/Pwngdb.git plugins/Pwngdb
+    $ echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
 
 ## Plugin Manager:
 
 ### Installation:
 
-    sudo ln -s $(realpath exgdbctl) /usr/local/bin/exgdbctl
+    $ sudo ln -s $(realpath exgdbctl) /usr/local/bin/exgdbctl
 
 ### Usage:
 
@@ -108,3 +108,10 @@ Exgdb - Extension for GDB
              update  <peda/expeda/Pwngdb>
              enable  <peda/expeda/Pwngdb>
              disable <peda/expeda/Pwngdb>
+
+### Add New Plugins:
+
+    $ cat inits/init.conf
+    new_plugin_init.py NewPlugin/newplugin.py
+    new_plugin_init_2.py NewPlugin2/gdbinit.py
+    $ exgdbctl install https://github.com/anybody/anyplugin

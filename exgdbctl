@@ -9,6 +9,7 @@ if os.path.islink(THISFILE):
 EXGDBDIR = os.path.dirname(THISFILE)
 LIB = EXGDBDIR + "/lib"
 PLUGINS = EXGDBDIR + "/plugins"
+INITS = EXGDBDIR + "/inits"
 
 if not os.path.exists(EXGDBDIR + "/exgdb.py"):
     print("Please put exgdbctl(this script) exgdb.git directory")
@@ -33,13 +34,15 @@ command: list
 parser = mkparser(usage, ["list", "install", "update", "enable", "disable"])
 args = parser.parse_args(sys.argv[1:])
 
-if len(args.args) > 0:
-    plugin_name = args.args[0]
+def default_plugin_check(plugin_name):
     if not plugin_name in plugin_list:
         print("invalid plugin name: %s" % plugin_name)
         usage_plugins = ", ".join(plugin_list)
         print("usage: %s" % usage_plugins)
         exit()
+
+if len(args.args) > 0:
+    plugin_name = args.args[0]
     f = File("%s/%s" % (PLUGINS, plugin_name))
     f_disabled = File("%s/%s.disabled" % (PLUGINS, plugin_name))
 
@@ -51,11 +54,31 @@ if args.command == "list":
         if File(dirname + ".disabled").exist():
             print(red("%s: disabled" % os.path.basename(dirname), "bold"))
 elif args.command == "install":
-    if f.exist() or f_disabled.exist():
-        print("%s is already exist" % plugin_name)
-        exit()
-    Shell("git clone %s %s/%s" % (lib_dict[plugin_name], PLUGINS, plugin_name)).call()
+    if args.args[0] in plugin_list:
+        if f.exist() or f_disabled.exist():
+            print("%s is already exist" % plugin_name)
+            exit()
+        Shell("git clone %s %s/%s" % (lib_dict[plugin_name], PLUGINS, plugin_name)).call()
+    else:
+        r_repo = re.compile(r".*/(.*)")
+        Shell("git clone %s %s/%s" % (args.args[0], PLUGINS, r_repo.findall(args.args[0])[0])).call()
+        f = File("%s/init.conf" % INITS)
+        f_lastinit = File("%s/lastinit" % INITS)
+        lines = f.readlines()
+        for i in range(len(lines)):
+            (init_file, plugin_file) = lines[i].split(" ")
+            f_init = File("%s/%s" % (INITS, init_file))
+            f_plugin = File("%s/%s" % (PLUGINS, plugin_file))
+            if not f_plugin.exist():
+                print("ERROR: %s is not found" % f_plugin.abspath)
+                exit()
+            f_init.add("gdb.execute(\"source %s/" + plugin_file + "\" % PLUGINPATH)\n")
+            if i != len(lines)-1:
+                (next_init_file, next_plugin_file) = lines[i+1].split(" ")
+                f_init.add("gdb.execute(\"source %s/" + next_init_file + "\" % INITS)\n")
+                f_lastinit.write("%s/%s" % (INITS, next_init_file))
 elif args.command == "update":
+    default_plugin_check(args.args[0])
     plugin_dir = None
     if f.exist():
         f_plugin = f
@@ -67,6 +90,7 @@ elif args.command == "update":
     Shell("cd %s" % f_plugin.abspath).call()
     Shell("git pull --rebase origin master").call()
 elif args.command == "enable":
+    default_plugin_check(args.args[0])
     if f.exist():
         print("%s is already enabled" % plugin_name)
         exit()
@@ -77,6 +101,7 @@ elif args.command == "enable":
     print("[+]enabled %s" % plugin_name)
     Shell("exgdbctl list").call()
 elif args.command == "disable":
+    default_plugin_check(args.args[0])
     if not f.exist():
         print("%s is already disabled" % plugin_name)
         exit()
