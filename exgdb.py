@@ -8,23 +8,30 @@ from enert import *
 def concat_quote(args):
     tmp_args = []
     flg = False
-    n = 0
-    for (i, x) in enumerate(args):
+    n = -1
+    for x in args:
         if type(x) != str:
-            tmp_args.append(args[i])
+            tmp_args.append(x)
             continue
         if x[0] == "\"":
             flg = True
-            n = i
-            tmp_args.append(args[i][1:])
+            if x[-1] == "\"":
+                flg = False
+                tmp_args.append(x[1:-1])
+                n += 1
+            else:
+                tmp_args.append(x[1:])
+                n += 1
             continue
-        if flg:
-            tmp_args[n] = "%s %s" % (tmp_args[n], args[i])
-        else:
-            tmp_args.append(args[i])
         if x[-1] == "\"":
             flg = False
-            tmp_args[n] = tmp_args[n][:-1]
+            tmp_args[n] = "%s %s" % (tmp_args[n], x[:-1])
+            continue
+        if flg:
+            tmp_args[n] = "%s %s" % (tmp_args[n], x)
+        else:
+            tmp_args.append(x)
+            n += 1
     return tmp_args
 
 utils.concat_quote = concat_quote
