@@ -419,8 +419,8 @@ class ExgdbCmdMethods(object):
         if callonlyflag == True or callonlyflag == "True":
             cmd = c.nextcall
         else:
-            cmd = c.next
-        c.next()
+            cmd = c.nexti
+        c.nexti()
         while True:
             (addr, code) = e.current_inst(e.getreg("pc"))
             regexed_code = r.findall(code)
@@ -449,13 +449,13 @@ class ExgdbCmdMethods(object):
         if callonlyflag == True or callonlyflag == "True":
             cmd = c.nextcall
         else:
-            cmd = c.next
-        next_when_call = c.next
-        step_when_call = c.step
+            cmd = c.nexti
+        next_when_call = c.nexti
+        step_when_call = c.stepi
         arch = e.getarch()
         ctx = config.Option.get("context")
         config.Option.set("context", "code")
-        c.step()
+        c.stepi()
         while True:
             (addr, code) = e.current_inst(e.getreg("pc"))
             regexed_code = r.findall(code)
@@ -468,7 +468,7 @@ class ExgdbCmdMethods(object):
                 ret_code = r_ret.findall(code)
                 if len(call_code) > 0:
                     if now_depth < depth:
-                        c.step()
+                        c.stepi()
                         now_depth = now_depth + 1
                         continue
                 elif len(ret_code) > 0:
