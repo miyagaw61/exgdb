@@ -65,32 +65,34 @@ class ExgdbCmd():
         pass
 
 def import_other_plugin():
-    cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PEDA, cmd)
-            setattr(Exgdb, cmd, cmd_obj)
+    if "PEDA" in globals():
+        cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
+        for cmd in cmds:
+            if not cmd.startswith("_"):
+                cmd_obj = getattr(PEDA, cmd)
+                setattr(Exgdb, cmd, cmd_obj)
 
-    cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PEDACmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
+    if "PEDACmd" in globals():
+        cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
+        for cmd in cmds:
+            if not cmd.startswith("_"):
+                cmd_obj = getattr(PEDACmd, cmd)
+                setattr(ExgdbCmd, cmd, cmd_obj)
 
-    cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(PEDACmd, cmd)
-            setattr(ExgdbCmd, cmd, cmd_obj)
+        cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
+        for cmd in cmds:
+            if not cmd.startswith("_"):
+                cmd_obj = getattr(PEDACmd, cmd)
+                setattr(ExgdbCmd, cmd, cmd_obj)
 
-    if PwnCmd:
+    if "PwnCmd" in globals():
         cmds = [cmd for cmd in dir(PwnCmd) if callable(getattr(PwnCmd, cmd))]
         for cmd in cmds:
             if not cmd.startswith("_"):
                 cmd_obj = getattr(PwnCmd, cmd)
                 setattr(ExgdbCmd, cmd, cmd_obj)
 
-    if AngelHeapCmd:
+    if "AngelHeapCmd" in globals():
         cmds = [cmd for cmd in dir(AngelHeapCmd) if callable(getattr(AngelHeapCmd, cmd))]
         for cmd in cmds:
             if not cmd.startswith("_"):
@@ -198,8 +200,6 @@ class ExgdbCmdMethods(object):
         gdb.execute("continue")
 
     c = ctn
-    setattr(PEDACmd, "ctn", ctn)
-    setattr(PEDACmd, "c", ctn)
 
     def brk(self, *arg):
         """
@@ -832,7 +832,8 @@ class ExgdbCmdMethods(object):
 
         return
 
-    setattr(PEDACmd, "context", context)
+    if "PEDACmd" in globals():
+        setattr(PEDACmd, "context", context)
 
 class ExgdbCmdWrapper(gdb.Command):
     """ Exgdb command wrapper """
