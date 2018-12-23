@@ -62,7 +62,15 @@ elif args.command == "install":
         Shell("git clone %s %s/%s" % (lib_dict[plugin_name], PLUGINS, plugin_name)).call()
     else:
         r_repo = re.compile(r".*/(.*)")
-        Shell("git clone %s %s/%s" % (args.args[0], PLUGINS, r_repo.findall(args.args[0])[0])).call()
+        plugin_dir = "%s/%s" % (PLUGINS, r_repo.findall(args.args[0])[0])
+        plugin_disabled_dir = plugin_dir + ".disabled"
+        if File(plugin_dir).exist():
+            print("already exists: %s" % plugin_dir)
+            exit()
+        if File(plugin_disabled_dir).exist():
+            print("already exists: %s" % plugin_disabled_dir)
+            exit()
+        Shell("git clone %s %s" % (args.args[0], plugin_dir)).call()
         f = File("%s/init.conf" % INITS)
         f_lastinit = File("%s/lastinit" % INITS)
         lines = f.readlines()
