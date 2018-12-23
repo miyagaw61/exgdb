@@ -87,8 +87,7 @@ elif args.command == "update":
     else:
         print("%s is not installed" % plugin_name)
         exit()
-    Shell("cd %s" % f_plugin.abspath).call()
-    Shell("git pull --rebase origin master").call()
+    Shell("cd %s && git pull --rebase origin master" % f_plugin.abspath).call()
 elif args.command == "enable":
     default_plugin_check(args.args[0])
     if f.exist():
