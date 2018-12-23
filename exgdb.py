@@ -1113,7 +1113,7 @@ class ExgdbCmdMethods(object):
         e.getheaplist(lst)
         for i in range(len(lst)-2):
             unlinkable_flag = 0
-            gdb.execute("cix " + hex(lst[i]))
+            gdb.execute("xchunkinfo " + hex(lst[i]))
             #if lst[i+2] != -1:
             #    print("==================================================================")
 
