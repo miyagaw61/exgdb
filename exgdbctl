@@ -28,10 +28,11 @@ from enert import *
 usage = """%s <command> [<args>]
 command: list
          install <peda/expeda/Pwngdb>
+         delete <peda/expeda/Pwngdb>
          update  <peda/expeda/Pwngdb>
          enable  <peda/expeda/Pwngdb>
          disable <peda/expeda/Pwngdb>""" % os.path.basename(sys.argv[0])
-parser = mkparser(usage, ["list", "install", "update", "enable", "disable"])
+parser = mkparser(usage, ["list", "install", "delete", "update", "enable", "disable"])
 args = parser.parse_args(sys.argv[1:])
 
 def default_plugin_check(plugin_name):
@@ -107,3 +108,11 @@ elif args.command == "disable":
     Shell("mv %s/%s %s/%s.disabled" % (PLUGINS, plugin_name, PLUGINS, plugin_name)).call()
     print("[+]disabled %s" % plugin_name)
     Shell("exgdbctl list").call()
+elif args.command == "delete":
+    default_plugin_check(args.args[0])
+    if f.exist():
+        print("deleting %s" % f.abspath)
+        Shell("rm -rf %s" % f.abspath).call()
+    if f_disabled.exist():
+        print("deleting %s" % f_disabled.abspath)
+        Shell("rm -rf %s" % f_disabled.abspath).call()
