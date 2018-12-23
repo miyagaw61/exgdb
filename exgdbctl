@@ -75,16 +75,24 @@ elif args.command == "install":
         f_lastinit = File("%s/lastinit" % INITS)
         lines = f.readlines()
         for i in range(len(lines)):
-            (init_file, plugin_file) = lines[i].split(" ")
+            plugin_file = lines[i]
+            init_file = "source_" + os.path.basename(plugin_file)
             f_init = File("%s/%s" % (INITS, init_file))
             f_plugin = File("%s/%s" % (PLUGINS, plugin_file))
             if not f_plugin.exist():
                 print("ERROR: %s is not found" % f_plugin.abspath)
                 exit()
+            if f_init.exist():
+                f_init.rm()
             f_init.add("gdb.execute(\"source %s/" + plugin_file + "\" % PLUGINPATH)\n")
             if i != len(lines)-1:
-                (next_init_file, next_plugin_file) = lines[i+1].split(" ")
+                next_plugin_file = lines[i+1]
+                next_init_file = "source_" + os.path.basename(next_plugin_file)
                 f_init.add("gdb.execute(\"source %s/" + next_init_file + "\" % INITS)\n")
+                f_init = File(next_init_file)
+                if f_init.exist():
+                    f_init.rm()
+                f_init.add("gdb.execute(\"source %s/" + next_plugin_file + "\" % PLUGINPATH)\n")
                 f_lastinit.write("%s/%s" % (INITS, next_init_file))
 elif args.command == "update":
     default_plugin_check(args.args[0])
