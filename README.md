@@ -115,3 +115,7 @@ Exgdb - Extension for GDB
     new_plugin_init.py NewPlugin/newplugin.py
     new_plugin_init_2.py NewPlugin2/gdbinit.py
     $ exgdbctl install https://github.com/anybody/anyplugin
+
+## If you have any demands or questions
+
+Please ask everything [here](https://peing.net/ja/miyagaw61).
