@@ -321,6 +321,15 @@ class ExgdbCmdMethods(object):
 
     setattr(ExgdbCmd, "_is_running", _is_running)
 
+    def st(self):
+        """
+        Start debugging with ./gdbrc.py
+        Usage:
+            st
+        """
+        os.system('rm -rf /tmp/gdb.pause')
+        gdb.execute('source ./gdbrc.py')
+
     def ctn(self):
         """
         Continue
