@@ -104,10 +104,10 @@ Exgdb - Extension for GDB
 
     usage: exgdbctl <command> [<args>]
     command: list
-             install <peda/expeda/Pwngdb>
-             update  <peda/expeda/Pwngdb>
-             enable  <peda/expeda/Pwngdb>
-             disable <peda/expeda/Pwngdb>
+             install <peda/expeda/Pwngdb/ANY PLUGIN URL>
+             update  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
+             enable  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
+             disable <peda/expeda/Pwngdb/ANY PLUGIN NAME>
 
 ### Add New Plugins:
 
