@@ -118,4 +118,4 @@ Exgdb - Extension for GDB
 
 ## If you have any demands or questions
 
-Please ask everything [here](https://peing.net/ja/miyagaw61).
+Please ask everything [here](https://odaibako.net/u/miyagaw61)
