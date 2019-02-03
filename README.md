@@ -11,32 +11,32 @@ Exgdb - Extension for GDB
 ## Methods of Exgdb:
 
 
-* `read_int` -- Customized read_int of peda
-* `read_int_bytes` -- Read bytes as intsize list
-* `read_byte` -- Read one byte
-* `read_bytes` -- Read bytes as any size list
+* `read_int(addr)` -- Customized read_int of peda
+* `read_int_bytes(addr, intsize=None)` -- Read bytes as intsize list
+* `read_byte(addr, intsize=None)` -- Read one byte
+* `read_bytes(addr, size)` -- Read bytes as any size list
 * ... and all commands of peda and Pwngdb.
 
 ## Methods of ExgdbCmd:
 
 * `ctn, c` -- Execute continue command
-* `brk, b` -- Execute break command
-* `next, n` -- Execute next command
-* `step, s` -- Execute step command
-* `nexti, ni` -- Execute nexti command
-* `stepi, si` -- Execute stepi command
-* `afterpc, af` -- Show instructions after now program-counter
-* `beforepc, bef` -- Show instructions before now program-counter
-* `grp` -- Grep command output
+* `brk, b <symbol>` -- Execute break command
+* `next, n, [count]` -- Execute next command
+* `step, s [count]` -- Execute step command
+* `nexti, ni [count]` -- Execute nexti command
+* `stepi, si [count]` -- Execute stepi command
+* `afterpc, af <count>` -- Show instructions after now program-counter
+* `beforepc, bef <count>` -- Show instructions before now program-counter
+* `grp <command> <regex>` -- Grep command output
 * `allstack` -- Show all stack data
-* `nuntil` -- Execute nexti command until given regexp
-* `suntil` -- Execute stepi command until given regexp
-* `nextcalluntil` -- Execute nextcall command until given regexp
-* `stepcalluntil` -- Execute nextcall and step command until given regexp and given depth
+* `nuntil <regex>` -- Execute nexti command until given regexp
+* `suntil <regex>` -- Execute stepi command until given regexp
+* `nextcalluntil <regex>` -- Execute nextcall command until given regexp
+* `stepcalluntil <regex>` -- Execute nextcall and step command until given regexp and given depth
 * `infonow, inow` -- Show detail information of the instruction now specified program-counter
-* `contextmode` -- Set context mode
-* `infox` -- Customized xinfo command of peda
-* `patch` -- Customized patch command of peda
+* `contextmode <mode>` -- Set context mode
+* `infox <addr>` -- Customized xinfo command of peda
+* `patch <addr> <value> [size]` -- Customized patch command of peda
 * `parseheap` -- Customized parseheap command of Pwngdb
 * ... and all commands of peda and Pwngdb.
 
