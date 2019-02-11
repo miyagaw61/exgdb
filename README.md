@@ -34,7 +34,7 @@ Exgdb - Extension for GDB
 * `nextcalluntil <regex>` -- Execute nextcall command until given regexp
 * `stepcalluntil <regex>` -- Execute nextcall and step command until given regexp and given depth
 * `infonow, inow` -- Show detail information of the instruction now specified program-counter
-* `contextmode <mode>` -- Set context mode
+* `contextmode <mode>` -- Set context mode (e.g. `contextmode reg,code`, `contextmode infonow` )
 * `infox <addr>` -- Customized xinfo command of peda
 * `patch <addr> <value> [size]` -- Customized patch command of peda
 * `parseheap` -- Customized parseheap command of Pwngdb
