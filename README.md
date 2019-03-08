@@ -1,7 +1,7 @@
-Exgdb
+ExGDB
 =====
 
-Exgdb - Extension for GDB
+ExGDB - Extension for GDB
 
 ## New Classes:
 
