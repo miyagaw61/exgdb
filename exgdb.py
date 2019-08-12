@@ -526,7 +526,7 @@ class ExgdbCmdMethods(object):
         intsize = e.intsize()
         arg = arg/intsize
         arg += 1
-        arg = utils.to_i(arg)
+        arg = utils.to_int(arg)
         e.execute("stack %s" % arg)
         return
 
