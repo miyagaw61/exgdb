@@ -232,12 +232,22 @@ class ExgdbMethods():
         if capsize == 0 :
             arch = getarch()
         addr = getheapbase()
+        addr = addr + capsize*2
+        lst = []
         lst.append(addr)
-        addr = e.getinfoh(addr)
-        lst.append(addr)
-        while(addr != -1):
-            addr = e.getinfoh(addr)
+        chunkinfo = e.getchunkinfo(addr)
+        if chunkinfo == None:
+            return lst
+        addr = chunkinfo['next']
+        size = chunkinfo['aligned_size']
+        while(addr != -1 and size != 0):
             lst.append(addr)
+            chunkinfo = e.getchunkinfo(addr)
+            if chunkinfo == None:
+                return lst
+            addr = chunkinfo['next']
+            size = chunkinfo['aligned_size']
+        return lst
 
 class ExgdbCmdMethods(object):
     def _is_running(self):
