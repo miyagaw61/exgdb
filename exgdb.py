@@ -787,6 +787,15 @@ class ExgdbCmdMethods(object):
                 c.patch(addr+i, bytes_list[i])
             return True
 
+    def context_infonow(self):
+        """
+        context_infonow
+        """
+
+        print(red("======================================inow======================================", "bold"))
+        c.infonow()
+        print(red("================================================================================", "bold"))
+
     def context(self, *arg):
         """
         Customized context command from https://github.com/longld/peda
@@ -819,13 +828,7 @@ class ExgdbCmdMethods(object):
             self.context_register()
 
         if "infonow" in opt:
-            print(red("======================================inow======================================", "bold"))
-            c.infonow()
-            print(red("================================================================================", "bold"))
-            #self.context_code(8)
-            if not "stack" in opt:
-                msg("[%s]" % ("-"*78), "blue", "light")
-                msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+            self.context_infonow()
 
         # display assembly code
         if "code" in opt:
