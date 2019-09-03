@@ -714,19 +714,19 @@ class ExgdbCmdMethods(object):
                 displayed_addr = addr
                 for reg in REGISTERS[8]:
                     if reg in addr:
-                        c.infox("register", reg)
+                        #c.infox("register", reg)
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
                 for reg in REGISTERS[16]:
                     regexed_code = re.findall("[ ,]%s" % reg, code)
                     if reg in addr and len(regexed_code) > 0:
-                        c.infox("register", reg)
+                        #c.infox("register", reg)
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
                 for i in (32, 64):
                     for reg in REGISTERS[i]:
                         if reg in addr:
-                            c.infox("register", reg)
+                            #c.infox("register", reg)
                             addr = addr.replace(reg, "$" + reg)
                             displayed_addr = displayed_addr.replace(reg, reg.upper())
                 addr = addr.replace("[", "")
