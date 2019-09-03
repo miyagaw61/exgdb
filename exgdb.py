@@ -146,7 +146,7 @@ class ExgdbMethods():
                 for (r, v) in sorted(regs.items()):
                     text += get_reg_text(r, v)
             if text:
-                utils.msg(text.strip())
+                return text.strip()
             if regname is None or "eflags" in regname:
                 self.eflags()
             return
@@ -675,24 +675,33 @@ class ExgdbCmdMethods(object):
             reg_B = "," + reg
             if reg_A in code or reg_B in code:
                 reg = reg.replace(" ", "")
-                print(green("%s" % reg.upper(), "bold"), end=": ")
-                c.infox(gdb.parse_and_eval("$%s" % reg))
+                prefix = green("%s" % reg.upper(), "bold") + ": "
+                infox_text = e.get_infox_text(gdb.parse_and_eval("$%s" % reg))
+                print(prefix + infox_text)
         for reg in REGISTERS[16]:
-            regexed_code = re.findall("[ ,]%s" % reg, code)
-            if len(regexed_code) > 0:
-                print(green("%s" % reg.upper(), "bold"), end=": ")
-                c.infox(gdb.parse_and_eval("$%s" % reg))
+            #regexed_code = re.findall("[ ,]%s" % reg, code)
+            #if len(regexed_code) > 0:
+            #    print(green("%s" % reg.upper(), "bold"), end=": ")
+            #    c.infox(gdb.parse_and_eval("$%s" % reg))
+            reg_A = " " + reg
+            reg_B = "," + reg
+            if reg_A in code or reg_B in code:
+                reg = reg.replace(" ", "")
+                prefix = green("%s" % reg.upper(), "bold") + ": "
+                infox_text = c.get_infox_text(gdb.parse_and_eval("$%s" % reg))
+                print(prefix + infox_text)
         for i in (32, 64):
             for reg in REGISTERS[i]:
                 reg_A = " " + reg
                 reg_B = "," + reg
                 if reg_A in code or reg_B in code:
-                    print(green("%3s" % reg.upper(), "bold"), end=": ")
+                    prefix = green("%s" % reg.upper(), "bold") + ": "
                     if reg == "rip":
                         now_code_str = gdb.execute("pdisass $rip /1", to_string=True)
-                        print(now_code_str[6:])
+                        print(prefix + now_code_str[6:])
                     else:
-                        c.infox(gdb.parse_and_eval("$%s" % reg))
+                        infox_text = e.get_infox_text(gdb.parse_and_eval("$%s" % reg))
+                        print(prefix + infox_text)
 
         # addrs that 0xNNNNNN and more except "[ANY_REG+0xNNNNNN]" from code strings
         addrs = re.findall("[^+](0x[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]+)", code)
@@ -712,8 +721,9 @@ class ExgdbCmdMethods(object):
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
                 for reg in REGISTERS[16]:
-                    regexed_code = re.findall("[ ,]%s" % reg, code)
-                    if len(regexed_code) > 0:
+                    #regexed_code = re.findall("[ ,]%s" % reg, code)
+                    #if len(regexed_code) > 0:
+                    if reg in addr:
                         c.infox("register", reg)
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
@@ -730,8 +740,9 @@ class ExgdbCmdMethods(object):
                 # "0x12341234 <'hogefunction'>" -> "0x12341234"
                 addr = re.findall("0x[0-9a-f]+", addr)[0]
 
-                print(green("%s" % displayed_addr, "bold"), end=": ")
-                c.infox(addr)
+                prefix = green("%s" % displayed_addr, "bold") + ": "
+                infox_text = e.get_infox_text(addr)
+                print(prefix + infox_text)
 
     inow = infonow
 
