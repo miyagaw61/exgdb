@@ -679,13 +679,10 @@ class ExgdbCmdMethods(object):
                 infox_text = e.get_infox_text(gdb.parse_and_eval("$%s" % reg))
                 print(prefix + infox_text)
         for reg in REGISTERS[16]:
-            #regexed_code = re.findall("[ ,]%s" % reg, code)
-            #if len(regexed_code) > 0:
-            #    print(green("%s" % reg.upper(), "bold"), end=": ")
-            #    c.infox(gdb.parse_and_eval("$%s" % reg))
+            regexed_code = re.findall("[ ,]%s" % reg, code)
             reg_A = " " + reg
             reg_B = "," + reg
-            if reg_A in code or reg_B in code:
+            if (reg_A in code or reg_B in code) and len(regexed_code) > 0:
                 reg = reg.replace(" ", "")
                 prefix = green("%s" % reg.upper(), "bold") + ": "
                 infox_text = c.get_infox_text(gdb.parse_and_eval("$%s" % reg))
@@ -721,9 +718,8 @@ class ExgdbCmdMethods(object):
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
                 for reg in REGISTERS[16]:
-                    #regexed_code = re.findall("[ ,]%s" % reg, code)
-                    #if len(regexed_code) > 0:
-                    if reg in addr:
+                    regexed_code = re.findall("[ ,]%s" % reg, code)
+                    if reg in addr and len(regexed_code) > 0:
                         c.infox("register", reg)
                         addr = addr.replace(reg, "$" + reg)
                         displayed_addr = displayed_addr.replace(reg, reg.upper())
