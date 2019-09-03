@@ -796,96 +796,9 @@ class ExgdbCmdMethods(object):
             MYNAME options
         """
         (opt, ) = utils.normalize_argv(arg, 1)
-        print(opt)
         if opt == None:
             return
         config.Option.set("context", opt)
-
-    ####################################################################################################################
-
-    def parseheap(self, *arg):
-        """
-        Customized parseheap command from https://github.com/scwuaptx/Pwngdb
-        """
-        (arena, ) = utils.normalize_argv(arg, 1)
-        if capsize == 0 :
-            arch = getarch()
-        if not get_heap_info(arena):
-            print("Can't find heap info")
-            return
-        if (main_arena and not enable_thread) or thread_arena == main_arena :
-            heapbase = int(gdb.execute("x/" + word + " &mp_.sbrk_base",to_string=True).split(":")[1].strip(),16)
-        else :
-            print("Can't find heap")
-        chunkaddr = heapbase
-        addr_str = yellow("addr", "bold")
-        prev_str = yellow("prev", "bold")
-        size_str = yellow("size", "bold")+yellow("|")+red("NM", "bold")+yellow("|")+green("IM", "bold")+yellow("|")+blue("PI", "bold")+yellow("|")
-        fd_str = yellow("fd", "bold")
-        bk_str = yellow("bk", "bold")
-        NM = red("NM", "bold")
-        IM = green("IM", "bold")
-        PI = blue("PI", "bold")
-        print('{:<32}{:<31}{:<114}{:<30}{:<28}'.format(addr_str, prev_str, size_str, fd_str, bk_str))
-        while chunkaddr != top["addr"] :
-            try :
-                cmd = "x/" + word + hex(chunkaddr)
-                prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-                cmd = "x/" + word + hex(chunkaddr + capsize*1)
-                size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-                cmd = "x/" + word + hex(chunkaddr + capsize*2)
-                fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-                cmd = "x/" + word + hex(chunkaddr + capsize*3)
-                bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-                cmd = "x/" + word + hex(chunkaddr + (size & 0xfffffffffffffff8) + capsize)
-                nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-                status = nextsize & 1 
-                NM = str(size & 4)
-                if(NM == "0"):
-                    NM = red("0", "bold")
-                else:
-                    NM = red("1", "bold")
-                IM = str(size & 2)
-                if(IM == "0"):
-                    IM = green("0", "bold")
-                else:
-                    IM = green("1", "bold")
-                PI = str(size & 1)
-                if(PI == "0"):
-                    PI = blue("0", "bold")
-                else:
-                    PI = blue("1", "bold")
-                bits = yellow("|") + NM + yellow("|") + IM + yellow("|") + PI + yellow("|")
-                size = size & 0xfffffffffffffff8
-                if size == 0 :
-                    print("\033[31mCorrupt ?! \033[0m(size == 0) (0x%x)" % chunkaddr)
-                    break 
-                if status :
-                    if chunkaddr in fastchunk :
-                        msg = "\033[1;34m Freed \033[0m"
-                        chunkaddr_str = blue(hex(chunkaddr))
-                        print('{:<30}0x{:<17x}{:<102}{:<18}{:<18}'.format(chunkaddr_str, prev_size, hex(size)+bits, hex(fd), "None"))
-                    else :
-                        msg = "\033[31m Used \033[0m"
-                        chunkaddr_str = green(hex(chunkaddr), "bold")
-                        print('{:<32}0x{:<17x}{:<102}{:<18}{:<18}'.format(chunkaddr_str, prev_size, hex(size)+bits, "None", "None"))
-                else :
-                    if chunkaddr in fastchunk:
-                        msg = "\033[1;34m Freed \033[0m"
-                        chunkaddr_str = blue(hex(chunkaddr))
-                        print('{:<30}0x{:<17x}{:<102}{:<18}{:<18}'.format(chunkaddr_str, prev_size, hex(size)+bits, hex(fd), hex(bk)))
-                    else:
-                        msg = "\033[1;34m Freed \033[0m"
-                        chunkaddr_str = blue(hex(chunkaddr), "bold")
-                        print('{:<32}0x{:<17x}{:<102}{:<18}{:<18}'.format(chunkaddr_str, prev_size, hex(size)+bits, hex(fd), hex(bk)))
-                chunkaddr = chunkaddr + (size & 0xfffffffffffffff8)
-
-                if chunkaddr > top["addr"] :
-                    print("\033[31mCorrupt ?!\033[0m")
-                    break 
-            except :
-                print("Corrupt ?!")
-                break
 
     def patch(self, *arg):
         (addr, value, size) = utils.normalize_argv(arg, 3)
