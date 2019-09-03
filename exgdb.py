@@ -109,6 +109,67 @@ c = ExgdbCmd()
 class ExgdbMethods():
     global e
     global c
+
+    def get_infox_text(self, *arg, color=None):
+        """
+        Customized xinfo command from https://github.com/longld/peda
+        Usage:
+            MYNAME address
+            MYNAME register [reg1 reg2]
+        """
+
+        (address, regname) = utils.normalize_argv(arg, 2)
+        if address is None:
+            self._missing_argument()
+
+        text = ""
+        #if not self._is_running():
+        if False:
+            return
+
+        def get_reg_text(r, v):
+            text = green("%s" % r.upper().ljust(3), "bold") + ": "
+            chain = e.examine_mem_reference(v)
+            text += utils.format_reference_chain(chain)
+            text += "\n"
+            return text
+
+        (arch, bits) = e.getarch()
+        if str(address).startswith("r"):
+            # Register
+            regs = e.getregs(" ".join(arg[1:]))
+            if regname is None:
+                for r in REGISTERS[bits]:
+                    if r in regs:
+                        text += get_reg_text(r, regs[r])
+            else:
+                for (r, v) in sorted(regs.items()):
+                    text += get_reg_text(r, v)
+            if text:
+                utils.msg(text.strip())
+            if regname is None or "eflags" in regname:
+                self.eflags()
+            return
+
+        elif utils.to_int(address) is None:
+            warning_utils.msg("not a register nor an address")
+        else:
+            # Address
+            chain = e.examine_mem_reference(address)
+            #text += '\n'
+            #text += 'info: '
+            text += utils.format_reference_chain(chain) # + "\n"
+            if color == "yellow":
+                text = RE_BLUE.sub(r";33;01m", text)
+            elif color == "white":
+                text = RE_BLUE.sub(r";37;01m", text)
+            elif color == "gray":
+                text = RE_BLUE.sub(r";37m", text)
+            #vmrange = e.get_vmrange(address)
+            #if vmrange:
+            #    (start, end, perm, name) = vmrange
+        return text
+
     def read_int(self, address, intsize=None):
         """
         Customized read_int from https://github.com/longld/peda
@@ -674,58 +735,14 @@ class ExgdbCmdMethods(object):
 
     inow = infonow
 
-    def infox(self, *arg):
+    def infox(self, *arg, color=None):
         """
         Customized xinfo command from https://github.com/longld/peda
         Usage:
             MYNAME address
             MYNAME register [reg1 reg2]
         """
-
-        (address, regname) = utils.normalize_argv(arg, 2)
-        if address is None:
-            self._missing_argument()
-
-        text = ""
-        #if not self._is_running():
-        if False:
-            return
-
-        def get_reg_text(r, v):
-            text = green("%s" % r.upper().ljust(3), "bold") + ": "
-            chain = e.examine_mem_reference(v)
-            text += utils.format_reference_chain(chain)
-            text += "\n"
-            return text
-
-        (arch, bits) = e.getarch()
-        if str(address).startswith("r"):
-            # Register
-            regs = e.getregs(" ".join(arg[1:]))
-            if regname is None:
-                for r in REGISTERS[bits]:
-                    if r in regs:
-                        text += get_reg_text(r, regs[r])
-            else:
-                for (r, v) in sorted(regs.items()):
-                    text += get_reg_text(r, v)
-            if text:
-                utils.msg(text.strip())
-            if regname is None or "eflags" in regname:
-                self.eflags()
-            return
-
-        elif utils.to_int(address) is None:
-            warning_utils.msg("not a register nor an address")
-        else:
-            # Address
-            chain = e.examine_mem_reference(address)
-            #text += '\n'
-            #text += 'info: '
-            text += utils.format_reference_chain(chain) # + "\n"
-            vmrange = e.get_vmrange(address)
-            if vmrange:
-                (start, end, perm, name) = vmrange
+        text = e.get_infox_text(*arg, color=color)
         utils.msg(text)
         return
 
