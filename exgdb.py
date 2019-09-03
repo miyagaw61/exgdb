@@ -181,6 +181,52 @@ class ExgdbMethods():
             bytes_list.append(byte)
         return bytes_list
 
+    def getchunkinfo(self, *arg):
+        global fastchunk
+        (victim, showsize) = utils.normalize_argv(arg, 2)
+        if capsize == 0 :
+            arch = getarch()
+        chunkaddr = victim
+        if(victim < 100):
+            lst = getchunklist()
+            chunkaddr = lst[victim]
+        if not get_heap_info() :
+            print("Can't find heap info")
+            return None
+        cmd = "x/" + word + hex(chunkaddr)
+        prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*1)
+        size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        aligned_size = size & 0xfffffffffffffff8
+        if showsize == None:
+            showsize = aligned_size
+        cmd = "x/" + word + hex(chunkaddr + capsize*2)
+        fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*3)
+        bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        try:
+            cmd = "x/" + word + hex(chunkaddr + aligned_size + capsize)
+            nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            status = nextsize & 1
+            used_flag = 0
+            fast_flag = 0
+            if status:
+                if chunkaddr in fastchunk :
+                    used_flag = 0
+                    fast_flag = 1
+                else :
+                    used_flag = 1
+            else :
+                used_flag = 0
+        except:
+            used_flag = None
+            fast_flag = None
+            nextsize = None
+        NM = size & 4
+        IM = size & 2
+        PI = size & 1
+        return {'next': chunkaddr + aligned_size, 'aligned_size': aligned_size, 'nextsize': nextsize, 'used_flag': used_flag, 'fast_flag': fast_flag, 'size': showsize, 'NM': NM, 'IM': IM, 'PI': PI, 'fd': fd, 'bk': bk}
+
     def getheaplist(self, lst):
         #print(yellow("addr               prev      size     ", "bold") + red("NM", "bold") + "/" + green("IM", "bold") + "/" + blue("PI", "bold") + "    " + yellow("fd", "bold") + "                 " + yellow("bk", "bold"))
         if capsize == 0 :
