@@ -826,7 +826,7 @@ class ExgdbCmdMethods(object):
             print(red("======================================inow======================================", "bold"))
             c.infonow()
             print(red("================================================================================", "bold"))
-            self.context_code(8)
+            #self.context_code(8)
             if not "stack" in opt:
                 msg("[%s]" % ("-"*78), "blue", "light")
                 msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
