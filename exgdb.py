@@ -227,7 +227,7 @@ class ExgdbMethods():
         PI = size & 1
         return {'next': chunkaddr + aligned_size, 'aligned_size': aligned_size, 'nextsize': nextsize, 'used_flag': used_flag, 'fast_flag': fast_flag, 'size': showsize, 'NM': NM, 'IM': IM, 'PI': PI, 'fd': fd, 'bk': bk}
 
-    def getheaplist(self, lst):
+    def getchunklist(self):
         #print(yellow("addr               prev      size     ", "bold") + red("NM", "bold") + "/" + green("IM", "bold") + "/" + blue("PI", "bold") + "    " + yellow("fd", "bold") + "                 " + yellow("bk", "bold"))
         if capsize == 0 :
             arch = getarch()
