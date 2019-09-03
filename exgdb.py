@@ -973,6 +973,13 @@ class ExgdbCmdMethods(object):
 
     sc = showchunk
 
+    def showchunks(self):
+        chunklist = e.getchunklist()
+        for chunk_addr in chunklist:
+            c.showchunk(chunk_addr)
+
+    scs = showchunks
+
 
 class ExgdbCmdWrapper(gdb.Command):
     """ Exgdb command wrapper """
