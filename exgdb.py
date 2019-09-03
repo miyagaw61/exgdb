@@ -844,6 +844,135 @@ class ExgdbCmdMethods(object):
     if "PEDACmd" in globals():
         setattr(PEDACmd, "context", context)
 
+    def showchunk(self, *arg, is_only_header=False):
+        global fastchunk
+        (victim, showsize) = utils.normalize_argv(arg, 2)
+        if capsize == 0 :
+            arch = getarch()
+        chunkaddr = victim
+        if(victim < 100):
+            lst = getchunklist()
+            chunkaddr = lst[victim]
+        if not get_heap_info() :
+            print("Can't find heap info")
+            return
+        cmd = "x/" + word + hex(chunkaddr)
+        prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*1)
+        size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        aligned_size = size & 0xfffffffffffffff8
+        if showsize == None:
+            showsize = aligned_size
+        cmd = "x/" + word + hex(chunkaddr + capsize*2)
+        fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        cmd = "x/" + word + hex(chunkaddr + capsize*3)
+        bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        try:
+            cmd = "x/" + word + hex(chunkaddr + aligned_size + capsize)
+            nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            status = nextsize & 1
+            used_flag = 0
+            fast_flag = 0
+            if status:
+                if chunkaddr in fastchunk :
+                    used_flag = 0
+                    fast_flag = 1
+                else :
+                    used_flag = 1
+            else :
+                used_flag = 0
+        except:
+            used_flag = 2
+            fast_flag = 2
+            nextsize = None
+        NM = size & 4
+        IM = size & 2
+        PI = size & 1
+        if used_flag == 1:
+            print(
+                green("prev| ", "bold")
+                #+ yellow(hex(chunkaddr), "bold")
+                #+ " --> "
+                #+ white(hex(prev_size))
+                + e.get_infox_text(chunkaddr, color="yellow")
+            )
+            print(
+                green("size| ", "bold")
+                #+ yellow(hex(chunkaddr+capsize), "bold")
+                #+ " --> "
+                #+ white(hex(showsize))
+                + e.get_infox_text(chunkaddr+capsize, color="yellow")
+                + yellow(" |")
+                + red(str(NM), "bold")
+                + yellow("|")
+                + green(str(IM), "bold")
+                + yellow("|")
+                + blue(str(PI), "bold")
+                + yellow("|")
+                + white(" ( next: ", "bold")
+                + yellow(hex(chunkaddr+showsize), "bold")
+                + white(" size: ", "bold")
+                + yellow(hex(nextsize), "bold")
+                + white(" )", "bold")
+            )
+            gdb.execute("tel " + hex(chunkaddr+capsize*2) + " 2")
+            if not is_only_header:
+                gdb.execute("tel " + hex(chunkaddr+capsize*4) + " " + hex(int(showsize/capsize-4)))
+        elif used_flag == 0:
+            print(
+                blue("prev| ", "bold")
+                #+ yellow(hex(chunkaddr), "bold")
+                #+ " --> "
+                #+ white(hex(prev_size))
+                + e.get_infox_text(chunkaddr, color="yellow")
+            )
+            print(
+                blue("size| ", "bold")
+                #+ yellow(hex(chunkaddr+capsize), "bold")
+                #+ " --> "
+                #+ white(hex(showsize))
+                + e.get_infox_text(chunkaddr+capsize, color="yellow")
+                + yellow(" |")
+                + red(str(NM), "bold")
+                + yellow("|")
+                + green(str(IM), "bold")
+                + yellow("|")
+                + blue(str(PI), "bold")
+                + yellow("|")
+                + white(" ( next: ", "bold")
+                + yellow(hex(chunkaddr+showsize), "bold")
+                + white(" size: ", "bold")
+                + yellow(hex(nextsize), "bold")
+                + white(" )", "bold")
+            )
+            gdb.execute("tel " + hex(chunkaddr+capsize*2) + " 2")
+            if not is_only_header:
+                gdb.execute("tel " + hex(chunkaddr+capsize*4) + " " + hex(int(showsize/capsize-4)))
+        else:
+            print(
+                yellow("prev| ")
+                #+ white(hex(chunkaddr), "bold")
+                #+ " --> "
+                #+ white(hex(prev_size))
+                + e.get_infox_text(chunkaddr, color="gray")
+            )
+            print(
+                yellow("size| ")
+                #+ white(hex(chunkaddr+capsize), "bold")
+                #+ " --> "
+                #+ white(hex(showsize))
+                + e.get_infox_text(chunkaddr+capsize, color="gray")
+                + white(" ( next: ", "bold")
+                + yellow(hex(chunkaddr+showsize), "bold")
+                + white(" )", "bold")
+            )
+            gdb.execute("tel " + hex(chunkaddr+capsize*2) + " 2")
+            if not is_only_header:
+                gdb.execute("tel " + hex(chunkaddr+capsize*4) + " " + hex(int(showsize/capsize-4)))
+        return {'next': chunkaddr + aligned_size, 'nextsize': nextsize, 'used_flag': used_flag, 'fast_flag': fast_flag, 'size': showsize, 'NM': NM, 'IM': IM, 'PI': PI, 'fd': fd, 'bk': bk}
+
+    sc = showchunk
+
 
 class ExgdbCmdWrapper(gdb.Command):
     """ Exgdb command wrapper """
