@@ -826,29 +826,6 @@ class ExgdbCmdMethods(object):
         setattr(PEDACmd, "context", context)
 
 
-    def xchunkinfo(self, *arg):
-        (victim, ) = utils.normalize_argv(arg, 1)
-        try:
-            res = c.ci(victim)
-            chunkaddr = res['chunkaddr']
-            used_flag = res['used_flag']
-            next_size_flag = res['next_size_flag']
-            aligned_size = res['aligned_size']
-            if used_flag:
-                if next_size_flag:
-                    gdb.execute("tel " + hex(chunkaddr+capsize*4) + " " + hex(int(aligned_size/capsize-4)))
-                else:
-                    gdb.execute("tel " + hex(chunkaddr+capsize*2) + " " + hex(int(aligned_size/capsize-2)))
-            else:
-                if next_size_flag:
-                    gdb.execute("tel " + hex(chunkaddr+capsize*6) + " " + hex(int(aligned_size/capsize-6)))
-                else:
-                    gdb.execute("tel " + hex(chunkaddr+capsize*4) + " " + hex(int(aligned_size/capsize-4)))
-        except Exception as e:
-            #traceback.print_exc()
-            print("Can't access memory")
-
-    xci = xchunkinfo
 
     def allchunkinfo(self):
         global unlinkable_flag
