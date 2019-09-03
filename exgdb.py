@@ -791,7 +791,6 @@ class ExgdbCmdMethods(object):
         """
         context_infonow
         """
-
         print(red("======================================inow======================================", "bold"))
         c.infonow()
         print(red("================================================================================", "bold"))
@@ -827,16 +826,17 @@ class ExgdbCmdMethods(object):
         if "reg" in opt or "register" in opt:
             self.context_register()
 
+        # display infonow
         if "infonow" in opt:
-            self.context_infonow()
+            c.context_infonow()
 
         # display assembly code
         if "code" in opt:
-            self.context_code(count)
+            c.context_code(count)
 
         # display stack content, forced in case SIGSEGV
         if "stack" in opt or "SIGSEGV" in status:
-            self.context_stack(count)
+            c.context_stack(count)
             #if "infonow" in opt:
             #    msg("[%s]" % ("-"*78), "blue", "light")
             #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
