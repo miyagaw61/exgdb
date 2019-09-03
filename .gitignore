@@ -1,0 +1,4 @@
+*pyc
+peda-session-*
+.gdb_history
+plugins
