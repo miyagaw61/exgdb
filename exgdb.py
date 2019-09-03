@@ -827,15 +827,6 @@ class ExgdbCmdMethods(object):
 
 
 
-    def allchunkinfo(self):
-        global unlinkable_flag
-        lst = []
-        e.getheaplist(lst)
-        for i in range(len(lst)-2):
-            unlinkable_flag = 0
-            gdb.execute("ci " + hex(lst[i]))
-            if lst[i+2] != -1:
-                print("================================")
 
     allci = allchunkinfo
 
