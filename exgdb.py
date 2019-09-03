@@ -1,7 +1,9 @@
 import utils
+import re
 
 EXGDBFILE = os.path.abspath(os.path.expanduser(__file__))
 sys.path.insert(0, os.path.dirname(EXGDBFILE) + "/lib/")
+RE_BLUE = re.compile(r";34m")
 
 from enert import *
 
