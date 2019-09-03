@@ -827,7 +827,7 @@ class ExgdbCmdMethods(object):
             self.context_register()
 
         # display infonow
-        if "infonow" in opt:
+        if "infonow" in opt or "inow" in opt:
             c.context_infonow()
 
         # display assembly code
