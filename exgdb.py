@@ -980,6 +980,12 @@ class ExgdbCmdMethods(object):
 
     scs = showchunks
 
+    def showchunkheader(self, *arg):
+        (victim, ) = utils.normalize_argv(arg, 1)
+        c.showchunk(victim, is_only_header=True)
+
+    sch = showchunkheader
+
 
 class ExgdbCmdWrapper(gdb.Command):
     """ Exgdb command wrapper """
