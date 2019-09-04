@@ -1,4 +1,5 @@
 import os
+import sys
 
 thisfile = os.path.abspath(os.path.expanduser(__file__))
 exgdbpath = os.path.dirname(thisfile)
