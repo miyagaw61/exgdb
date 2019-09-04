@@ -134,7 +134,7 @@ class ExgdbMethods():
             return
 
         elif utils.to_int(address) is None:
-            warning_utils.msg("not a register nor an address")
+            print("not a register nor an address")
         else:
             # Address
             chain = e.examine_mem_reference(address)
