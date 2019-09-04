@@ -10,6 +10,7 @@ import utils
 import exutils
 
 class BpRetHandler(gdb.FinishBreakpoint):
+
     def __init__(self, id_str, stop=False, fn=None):
         gdb.FinishBreakpoint.__init__(self, gdb.newest_frame(), internal=True)
         self.id = id_str
@@ -27,6 +28,7 @@ class BpRetHandler(gdb.FinishBreakpoint):
             return False
 
 class BpHandler(gdb.Breakpoint):
+
     def __init__(self, id_str, is_stop=False, ret=False, is_stop_ret=False, fn=None, ret_fn=None, silent=False):
         gdb.Breakpoint.__init__(self, id_str, type=gdb.BP_BREAKPOINT, internal=True)
         self.id = id_str
@@ -105,7 +107,7 @@ class ExgdbMethods():
 
         (address, regname) = utils.normalize_argv(arg, 2)
         if address is None:
-            self._missing_argument()
+            pedacmd._missing_argument()
 
         text = ""
         #if not self._is_running():
