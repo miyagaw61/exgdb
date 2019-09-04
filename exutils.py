@@ -5,6 +5,7 @@ EXGDBFILE = os.path.abspath(os.path.expanduser(__file__))
 sys.path.insert(0, os.path.dirname(EXGDBFILE) + "/lib/")
 
 import utils
+from enert import *
 
 def concat_quote(args):
     tmp_args = []
@@ -56,3 +57,11 @@ def normalize_argv(args, size=0):
     return args
 
 utils.normalize_argv = normalize_argv
+
+def clearscreen():
+    """
+    Customized clearscreen from https://github.com/longld/peda
+    """
+    clear()
+
+utils.clearscreen = clearscreen

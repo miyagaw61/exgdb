@@ -950,7 +950,7 @@ class ExgdbCmdMethods(object):
 
         clearscr = config.Option.get("clearscr")
         if clearscr == "on":
-            clearscreen()
+            utils.clearscreen()
 
         status = peda.get_status()
         # display registers
