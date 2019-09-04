@@ -135,7 +135,7 @@ class ExgdbMethods():
             if text:
                 return text.strip()
             if regname is None or "eflags" in regname:
-                self.eflags()
+                e.eflags()
             return
 
         elif utils.to_int(address) is None:
@@ -163,7 +163,7 @@ class ExgdbMethods():
         """
         if not intsize:
             intsize = e.intsize()
-        value = self.readmem(address, intsize)
+        value = e.readmem(address, intsize)
         if value:
             value = codecs.encode(value[::-1], 'hex')
             value = value.decode("utf-8")
@@ -185,8 +185,8 @@ class ExgdbMethods():
             - byte list ([Int, ...])
         """
         if not intsize:
-            intsize = self.intsize()
-        value = self.readmem(address, intsize)
+            intsize = e.intsize()
+        value = e.readmem(address, intsize)
         if value == 0:
             return [0]*capsize
         if value:
@@ -207,8 +207,8 @@ class ExgdbMethods():
             - one byte data (Int)
         """
         if not intsize:
-            intsize = self.intsize()
-        value = self.read_int_bytes(address)[0]
+            intsize = e.intsize()
+        value = e.read_int_bytes(address)[0]
         if value == 0:
             return 0
         if value:
@@ -217,17 +217,17 @@ class ExgdbMethods():
             return None
 
     def read_bytes(self, addr, n):
-        capsize = self.intsize()
+        capsize = e.intsize()
         loopcnt = int(n/capsize)
         rem = n % capsize
         bytes_list = []
         for i in range(loopcnt):
-            for x in self.read_int_bytes(addr+capsize*i):
+            for x in e.read_int_bytes(addr+capsize*i):
                 bytes_list.append(x)
         if rem == 0:
             return bytes_list
         for i in range(rem):
-            byte = self.read_byte(addr+i)
+            byte = e.read_byte(addr+i)
             bytes_list.append(byte)
         return bytes_list
 
@@ -957,7 +957,7 @@ class ExgdbCmdMethods(object):
         status = peda.get_status()
         # display registers
         if "reg" in opt or "register" in opt:
-            self.context_register()
+            c.context_register()
 
         # display infonow
         if "infonow" in opt or "inow" in opt:
