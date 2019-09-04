@@ -1063,7 +1063,7 @@ class ExgdbCmdMethods(object):
             IM = cinfo['IM']
             PI = cinfo['PI']
         else:
-            print("Cannot access memory at " + hex(victim))
+            print("Cannot access memory address")
             return -1
         if used_flag == 1:
             print(
