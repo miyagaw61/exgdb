@@ -163,7 +163,7 @@ class ExgdbMethods():
             value = codecs.encode(value[::-1], 'hex')
             value = value.decode("utf-8")
             value = "0x" + value
-            value = to_int(value)
+            value = utils.to_int(value)
             return value
         else:
             return None
@@ -929,7 +929,7 @@ class ExgdbCmdMethods(object):
         """
         (opt, count) = normalize_argv(arg, 2)
 
-        if to_int(count) is None:
+        if utils.to_int(count) is None:
             count = 8
         if opt is None:
             opt = config.Option.get("context")
