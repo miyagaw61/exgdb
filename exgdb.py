@@ -571,6 +571,21 @@ class ExgdbCmdMethods(object):
             else:
                 cmd()
 
+    def rbreak(self, *arg):
+        """
+        regex break
+        Usage:
+            MYNAME regex
+        """
+        (regex, ) = utils.normalize_argv(arg, 1)
+        regex = str(regex)
+        fname = e.getfile()
+        cmd = "objdump -D " + fname + " | grep -E '" + regex + "' | grep -o -E '^ [0-9a-f]+'"
+        lines = Shell(cmd).readlines()[0]
+        for line in lines:
+            line = "0x" + line[1:]
+            gdb.execute("break *" + line, to_string=True)
+
     def radvance(self, *arg):
         """
         regex advance
@@ -583,12 +598,7 @@ class ExgdbCmdMethods(object):
         b_info_list = e.get_breakpoints()
         for b_info in b_info_list:
             saved_breakpoints.append(b_info[4])
-        fname = e.getfile()
-        cmd = "objdump -D " + fname + " | grep -E '" + regex + "' | grep -o -E '^ [0-9a-f]+'"
-        lines = Shell(cmd).readlines()[0]
-        for line in lines:
-            line = "0x" + line[1:]
-            gdb.execute("break *" + line, to_string=True)
+        c.rbreak(regex)
         gdb.execute("continue")
         gdb.execute("delete")
         for saved_breakpoint in saved_breakpoints:
