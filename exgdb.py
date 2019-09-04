@@ -296,17 +296,20 @@ class ExgdbMethods():
         if not get_heap_info() :
             print("Can't find heap info")
             return None
-        cmd = "x/" + word + hex(chunkaddr)
-        prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-        cmd = "x/" + word + hex(chunkaddr + capsize*1)
-        size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-        aligned_size = size & 0xfffffffffffffff8
-        if showsize == None:
-            showsize = aligned_size
-        cmd = "x/" + word + hex(chunkaddr + capsize*2)
-        fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-        cmd = "x/" + word + hex(chunkaddr + capsize*3)
-        bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        try:
+            cmd = "x/" + word + hex(chunkaddr)
+            prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            cmd = "x/" + word + hex(chunkaddr + capsize*1)
+            size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            aligned_size = size & 0xfffffffffffffff8
+            if showsize == None:
+                showsize = aligned_size
+            cmd = "x/" + word + hex(chunkaddr + capsize*2)
+            fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+            cmd = "x/" + word + hex(chunkaddr + capsize*3)
+            bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
+        except:
+            return None
         try:
             cmd = "x/" + word + hex(chunkaddr + aligned_size + capsize)
             nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
