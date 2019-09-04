@@ -121,12 +121,6 @@ def import_other_plugin():
                 cmd_obj = getattr(PEDACmd, cmd)
                 setattr(ExgdbCmd, cmd, cmd_obj)
 
-        cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
-        for cmd in cmds:
-            if not cmd.startswith("_"):
-                cmd_obj = getattr(PEDACmd, cmd)
-                setattr(ExgdbCmd, cmd, cmd_obj)
-
     if "PwnCmd" in globals():
         cmds = [cmd for cmd in dir(PwnCmd) if callable(getattr(PwnCmd, cmd))]
         for cmd in cmds:
