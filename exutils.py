@@ -57,12 +57,3 @@ def normalize_argv(args, size=0):
     return args
 
 utils.normalize_argv = normalize_argv
-
-def clearscreen():
-    """
-    Customized clearscreen from https://github.com/longld/peda
-    """
-    #clear()
-    print("\x1b[2J\x1b[H")
-
-utils.clearscreen = clearscreen

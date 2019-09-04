@@ -952,7 +952,7 @@ class ExgdbCmdMethods(object):
 
         clearscr = config.Option.get("clearscr")
         if clearscr == "on":
-            utils.clearscreen()
+            c.clearscreen()
 
         status = peda.get_status()
         # display registers
@@ -1121,6 +1121,14 @@ class ExgdbCmdMethods(object):
             c.showchunkheader(chunk_addr)
 
     schs = showchunkheaders
+
+    def clearscreen(self):
+        """
+        Customized clearscreen from https://github.com/longld/peda
+        """
+        print("\x1b[2J\x1b[H")
+
+    clear = clearscreen
 
 class ExgdbCmdWrapper(gdb.Command):
     """ Exgdb command wrapper """
