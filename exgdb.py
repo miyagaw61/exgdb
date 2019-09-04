@@ -352,6 +352,18 @@ class ExgdbMethods():
             size = chunkinfo['aligned_size']
         return lst
 
+    def get_addrs_by_regex(self, regex):
+        fname = e.getfile()
+        cmd = "objdump -M intel -D " + fname + " | grep -E '" + regex + "' | grep -o -E '^ [0-9a-f]+'"
+        lines = Shell(cmd).readlines()[0]
+        if lines == []:
+            return lines
+        addrs = []
+        for line in lines:
+            line = "0x" + line[1:]
+            addrs.append(int(line, 16))
+        return addrs
+
 class ExgdbCmdMethods(object):
     def _is_running(self):
         """
@@ -640,15 +652,12 @@ class ExgdbCmdMethods(object):
         """
         (regex, ) = utils.normalize_argv(arg, 1)
         regex = str(regex)
-        fname = e.getfile()
-        cmd = "objdump -M intel -D " + fname + " | grep -E '" + regex + "' | grep -o -E '^ [0-9a-f]+'"
-        lines = Shell(cmd).readlines()[0]
-        if lines == []:
+        addrs = e.get_addrs_by_regex(regex)
+        if addrs == []:
             print("Not found")
             return -1
-        for line in lines:
-            line = "0x" + line[1:]
-            gdb.execute("break *" + line)
+        for addr in addrs:
+            gdb.execute("break *" + hex(addr))
 
     def radvance(self, *arg):
         """
