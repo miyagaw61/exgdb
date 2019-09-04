@@ -571,6 +571,31 @@ class ExgdbCmdMethods(object):
             else:
                 cmd()
 
+    def radvance(self, *arg):
+        """
+        regex advance
+        Usage:
+            MYNAME regex
+        """
+        (regex, ) = utils.normalize_argv(arg, 1)
+        regex = str(regex)
+        saved_breakpoints = []
+        b_info_list = e.get_breakpoints()
+        for b_info in b_info_list:
+            saved_breakpoints.append(b_info[4])
+        fname = e.getfile()
+        cmd = "objdump -D " + fname + " | grep -E '" + regex + "' | grep -o -E '^ [0-9a-f]+'"
+        lines = Shell(cmd).readlines()[0]
+        for line in lines:
+            line = "0x" + line[1:]
+            gdb.execute("break *" + line, to_string=True)
+        gdb.execute("continue")
+        gdb.execute("delete")
+        for saved_breakpoint in saved_breakpoints:
+            gdb.execute("break *" + hex(saved_breakpoint), to_string=True)
+
+    rad = radvance
+
     def suntil(self, *arg):
         """
         Execute stepi until regex
