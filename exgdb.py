@@ -7,6 +7,46 @@ RE_BLUE = re.compile(r";34m")
 
 from enert import *
 
+class BpRetHandler(gdb.FinishBreakpoint):
+    def __init__(self, id_str, stop=False, fn=None):
+        gdb.FinishBreakpoint.__init__(self, gdb.newest_frame(), internal=True)
+        self.id = id_str
+        self.is_stop = is_stop
+        self.fn = fn
+
+    def stop(self):
+        if self.id != "":
+            print("[+]return detected: " + self.id)
+        if self.fn != None:
+            self.fn()
+        if self.is_stop:
+            return True
+        else:
+            return False
+
+class BpHandler(gdb.Breakpoint):
+    def __init__(self, id_str, is_stop=False, ret=False, is_stop_ret=False, fn=None, ret_fn=None, silent=False):
+        gdb.Breakpoint.__init__(self, id_str, type=gdb.BP_BREAKPOINT, internal=True)
+        self.id = id_str
+        self.ret = ret
+        self.is_stop = is_stop
+        self.is_stop_ret = is_stop_ret
+        self.fn = fn
+        self.ret_fn = ret_fn
+        self.silent = silent
+
+    def stop(self):
+        if not self.silent:
+            print("[+]enter detected: " + self.id)
+        if self.fn != None:
+            fn()
+        if self.ret:
+            BpRetHandler(self.id, stop=self.is_stop_ret, fn=self.ret_fn)
+        if self.is_stop:
+            return True
+        else:
+            return False
+
 def concat_quote(args):
     tmp_args = []
     flg = False
@@ -570,6 +610,27 @@ class ExgdbCmdMethods(object):
                 break
             else:
                 cmd()
+
+    def tracepoint(self, *arg, fn=None, ret_fn=None):
+        """
+        tracepoint
+        """
+        (addr, arg2, arg3, arg4, arg5) = utils.normalize_argv(arg, 5)
+        is_stop = False
+        ret = False
+        is_stop_ret = False
+        silent = False
+        for argN in [arg2, arg3, arg4, arg5]:
+            if argN == "is_stop":
+                is_stop = True
+            elif argN == "ret":
+                ret = True
+            elif argN == "is_stop_ret":
+                is_stop_ret = True
+            elif argN == "silent":
+                silent = True
+        BpHandler(addr, is_stop=is_stop, ret=ret, is_stop_ret=is_stop_ret, fn=fn, ret_fn=ret_fn, silent=silent)
+        return
 
     def rbreak(self, *arg):
         """
