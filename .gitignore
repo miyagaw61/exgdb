@@ -2,3 +2,5 @@
 peda-session-*
 .gdb_history
 plugins
+buf
+gdbrc.py
