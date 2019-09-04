@@ -94,9 +94,6 @@ e = Exgdb()
 c = ExgdbCmd()
 
 class ExgdbMethods():
-    global e
-    global c
-
     def get_infox_text(self, *arg, color=None):
         """
         Customized xinfo command from https://github.com/longld/peda
