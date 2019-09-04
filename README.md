@@ -98,7 +98,9 @@ ExGDB - Extension for GDB
 
 ### Installation:
 
-    $ sudo ln -s $(realpath exgdbctl) /usr/local/bin/exgdbctl
+    $ cd exgdb/
+    $ cp -a ./exgdbctl /usr/local/bin/
+    $ export EXGDBDIR=$PWD
 
 ### Usage:
 

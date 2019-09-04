@@ -3,9 +3,13 @@
 import os
 import sys
 
-THISFILE = os.path.abspath(os.path.expanduser(__file__))
-if os.path.islink(THISFILE):
-    THISFILE = os.readlink(THISFILE)
+#THISFILE = os.path.abspath(os.path.expanduser(__file__))
+#if os.path.islink(THISFILE):
+#    THISFILE = os.readlink(THISFILE)
+EXGDBDIR = os.environ.get("EXGDBDIR")
+if EXGDBDIR == None:
+    print("Please export $EXGDBDIR")
+    exit()
 EXGDBDIR = os.path.dirname(THISFILE)
 LIB = EXGDBDIR + "/lib"
 PLUGINS = EXGDBDIR + "/plugins"
