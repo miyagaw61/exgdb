@@ -1,10 +1,11 @@
-import utils
+import os
 import re
+RE_BLUE = re.compile(r";34m")
 
 EXGDBFILE = os.path.abspath(os.path.expanduser(__file__))
 sys.path.insert(0, os.path.dirname(EXGDBFILE) + "/lib/")
-RE_BLUE = re.compile(r";34m")
 
+import utils
 from enert import *
 
 class BpRetHandler(gdb.FinishBreakpoint):
@@ -1050,8 +1051,9 @@ class ExgdbCmdMethods(object):
         if cinfo != None:
             prev_size = cinfo['prev_size']
             size = cinfo['size']
-            showsize = size
             aligned_size = cinfo['aligned_size']
+            if showsize == None:
+                showsize = aligned_size
             fd = cinfo['fd']
             bk = cinfo['bk']
             used_flag = cinfo['used_flag']
