@@ -764,28 +764,103 @@ class ExgdbCmdMethods(object):
             return
         config.Option.set("context", opt)
 
-    def patch(self, *arg):
-        (addr, value, size) = utils.normalize_argv(arg, 3)
-        if type(value) == str:
-            c.patch(addr, value)
-        elif type(value) == list:
-            for (i, x) in enumerate(value):
-                c.patch(addr+i, x)
-        elif type(value) == int:
-            if size == None:
-                print("Please specify size.")
-                return False
-            bytes_list = int2bins(value)
-            length = len(bytes_list)
-            if size < length:
-                print("ERROR: invalid size")
-                return False
-            n = size - length
-            for i in range(n):
-                c.patch(addr+i, 0)
-            for (i, x) in enumerate(bytes_list):
-                c.patch(addr+i, bytes_list[i])
-            return True
+    peda_patch = PEDACmd.patch
+
+    def hexpatch(self, *arg):
+        """
+        patch hex-str to addr
+        Usage:
+            MYNAME <addr> <value> [size]
+        """
+        addr = None
+        value = None
+        size = None
+
+        argc = len(arg)
+        if argc >= 1:
+            addr = arg[0]
+            if type(addr) != int:
+                addr = int(addr, 0)
+        if argc >= 2:
+            value = arg[1]
+            if type(value) != str:
+                print("error: value must be str type")
+                return -1
+            leng = len(value)
+            if leng < 2:
+                print("error: value must be hex")
+                return -1
+        if argc >= 3:
+            size = arg[2]
+            if type(size) != int:
+                size = int(size, 0)
+
+        if size != None:
+            for i in range(size):
+                gdb.execute("peda_patch " + str(addr+i) + " 0", to_string=True)
+
+        chr_list = list(value)
+        chr_nr = len(chr_list)
+        i = 0
+        idx = 0
+        while chr_nr > idx:
+            n = chr_list[idx] + chr_list[idx+1]
+            n = int(n, 16)
+            gdb.execute("peda_patch " + str(addr+i) + " " + hex(n), to_string=True)
+            idx += 2
+            i += 1
+
+        return 0
+
+    def strpatch(self, *arg):
+        """
+        patch str to addr
+        Usage:
+            MYNAME <addr> <value> [size]
+        """
+        addr = None
+        value = None
+        size = None
+
+        argc = len(arg)
+        if argc >= 1:
+            addr = arg[0]
+            if type(addr) != int:
+                addr = int(addr, 0)
+        if argc >= 2:
+            value = arg[1]
+            value = str(value)
+        if argc >= 3:
+            size = arg[2]
+            if type(size) != int:
+                size = int(size, 0)
+
+        if size != None:
+            for i in range(size):
+                gdb.execute("peda_patch " + str(addr+i) + " 0", to_string=True)
+
+        if not value.isdigit():
+            gdb.execute("peda_patch " + str(addr) + " " + value, to_string=True)
+            return 0
+
+        chr_list = list(value)
+        for (i, x) in enumerate(chr_list):
+            gdb.execute("peda_patch " + str(addr+i) + " " + hex(ord(x)), to_string=True)
+
+        return 0
+
+    def wordpatch(self, *arg):
+        """
+        patch word-data to addr
+        Usage:
+            MYNAME <addr> <value>
+        """
+        (addr, value) = utils.normalize_argv(arg, 2)
+        for i in range(capsize):
+            gdb.execute("peda_patch " + str(addr+i) + " 0", to_string=True)
+        gdb.execute("peda_patch " + str(addr) + " " + hex(value), to_string=True)
+
+        return 0
 
     def context_infonow(self):
         """
