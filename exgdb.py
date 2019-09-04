@@ -1045,39 +1045,24 @@ class ExgdbCmdMethods(object):
             chunkaddr = lst[victim]
         if not get_heap_info() :
             print("Can't find heap info")
-            return
-        cmd = "x/" + word + hex(chunkaddr)
-        prev_size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-        cmd = "x/" + word + hex(chunkaddr + capsize*1)
-        size = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-        aligned_size = size & 0xfffffffffffffff8
-        if showsize == None:
-            showsize = aligned_size
-        cmd = "x/" + word + hex(chunkaddr + capsize*2)
-        fd = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-        cmd = "x/" + word + hex(chunkaddr + capsize*3)
-        bk = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-        try:
-            cmd = "x/" + word + hex(chunkaddr + aligned_size + capsize)
-            nextsize = int(gdb.execute(cmd,to_string=True).split(":")[1].strip(),16)
-            status = nextsize & 1
-            used_flag = 0
-            fast_flag = 0
-            if status:
-                if chunkaddr in fastchunk :
-                    used_flag = 0
-                    fast_flag = 1
-                else :
-                    used_flag = 1
-            else :
-                used_flag = 0
-        except:
-            used_flag = 2
-            fast_flag = 2
-            nextsize = None
-        NM = size & 4
-        IM = size & 2
-        PI = size & 1
+            return None
+        cinfo = e.getchunkinfo(victim)
+        if cinfo != None:
+            prev_size = cinfo['prev_size']
+            size = cinfo['size']
+            showsize = size
+            aligned_size = cinfo['aligned_size']
+            fd = cinfo['fd']
+            bk = cinfo['bk']
+            used_flag = cinfo['used_flag']
+            fast_flag = cinfo['fast_flag']
+            nextsize = cinfo['nextsize']
+            NM = cinfo['NM']
+            IM = cinfo['IM']
+            PI = cinfo['PI']
+        else:
+            print("Cannot access memory at " + hex(victim))
+            return -1
         if used_flag == 1:
             print(
                 green("prev| ", "bold")
