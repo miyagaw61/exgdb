@@ -1,9 +1,9 @@
 import os
 import sys
 
-exgdbpath = os.environ.get("EXGDBDIR")
+exgdbpath = os.environ.get("EXGDBPATH")
 if exgdbpath == None:
-    print("Please export $EXDIRPATH")
+    print("Please export $EXGDBPATH")
     exit()
 pluginpath = exgdbpath + "/plugins"
 
