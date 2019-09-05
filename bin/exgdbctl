@@ -10,7 +10,6 @@ EXGDBPATH = os.environ.get("EXGDBPATH")
 if EXGDBPATH == None:
     print("Please export $EXGDBPATH")
     exit()
-EXGDBPATH = os.path.dirname(THISFILE)
 LIB = EXGDBPATH + "/lib"
 PLUGINS = EXGDBPATH + "/plugins"
 INITS = EXGDBPATH + "/inits"
