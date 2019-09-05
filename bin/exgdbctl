@@ -23,7 +23,7 @@ plugin_list = [key for key in lib_dict.keys()]
 sys.path.insert(0, LIB)
 from enert import *
 
-usage = """%s <command> [<args>]
+usage = """%s <command> [args]
 command: list
          install <peda/Pwngdb/ANY PLUGIN URL>
          delete  <peda/Pwngdb/ANY PLUGIN NAME>
