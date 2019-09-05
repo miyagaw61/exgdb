@@ -1,8 +1,10 @@
 import os
 import sys
 
-thisfile = os.path.abspath(os.path.expanduser(__file__))
-exgdbpath = os.path.dirname(thisfile)
+exgdbpath = os.environ.get("EXGDBDIR")
+if exgdbpath == None:
+    print("Please export $EXDIRPATH")
+    exit()
 pluginpath = exgdbpath + "/plugins"
 
 expeda_is_enabled = os.path.exists("%s/expeda" % pluginpath)
