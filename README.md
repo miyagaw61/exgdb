@@ -10,7 +10,6 @@ ExGDB - Extension for GDB
 
 ## Methods of Exgdb:
 
-
 * `read_int(addr)` -- Customized read_int of peda
 * `read_int_bytes(addr, intsize=None)` -- Read bytes as intsize list
 * `read_byte(addr, intsize=None)` -- Read one byte
