@@ -15,10 +15,6 @@ LIB = EXGDBPATH + "/lib"
 PLUGINS = EXGDBPATH + "/plugins"
 INITS = EXGDBPATH + "/inits"
 
-if not os.path.exists(EXGDBPATH + "/exgdb.py"):
-    print("Please put exgdbctl(this script) exgdb.git directory")
-    exit()
-
 lib_dict = {
         "peda": "https://github.com/longld/peda",
         "expeda": "https://github.com/miyagaw61/expeda",
