@@ -33,9 +33,9 @@ usage = """%s <command> [<args>]
 command: list
          install <peda/expeda/Pwngdb/ANY PLUGIN URL>
          delete  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
-         update  <exgdb/peda/expeda/Pwngdb/ANY PLUGIN NAME>
-         enable  <exgdb/peda/expeda/Pwngdb/ANY PLUGIN NAME>
-         disable <exgdb/peda/expeda/Pwngdb/ANY PLUGIN NAME>""" % os.path.basename(sys.argv[0])
+         update  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
+         enable  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
+         disable <peda/expeda/Pwngdb/ANY PLUGIN NAME>""" % os.path.basename(sys.argv[0])
 parser = mkparser(usage, ["list", "install", "delete", "update", "enable", "disable"])
 args = parser.parse_args(sys.argv[1:])
 

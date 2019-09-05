@@ -96,7 +96,7 @@ ExGDB - Extension for GDB
 
     $ cd exgdb/
     $ cp -a ./bin/exgdbctl /usr/local/bin/
-    $ export EXGDBDIR=$PWD
+    $ export EXGDBPATH=$PWD
 
 ### 3. Install ExGDB:
 
