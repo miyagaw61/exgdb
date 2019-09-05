@@ -7,15 +7,12 @@ if exgdbpath == None:
     exit()
 pluginpath = exgdbpath + "/plugins"
 
-expeda_is_enabled = os.path.exists("%s/expeda" % pluginpath)
 peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
 pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
 #yourplugin_is_enabled = os.path.exists("%s/yourplugin" % pluginpath)
 
-if expeda_is_enabled:
-    sys.path.insert(0, "%s/expeda/lib/" % pluginpath)
-    gdb.execute("source %s/expeda/peda.py" % pluginpath)
-elif peda_is_enabled:
+if peda_is_enabled:
+    __file__ = "%s/peda/peda.py" % pluginpath
     gdb.execute("source %s/peda/peda.py" % pluginpath)
 if pwngdb_is_enabled:
     sys.path.insert(0, "%s/Pwngdb/angelheap" % pluginpath)

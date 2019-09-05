@@ -100,7 +100,7 @@ ExGDB - Extension for GDB
 
 ### 3. Install ExGDB:
 
-    $ exgdbctl install expeda # git clone https://github.com/miyagaw61/expeda.git ./plugins/expeda
+    $ exgdbctl install peda # git clone https://github.com/longld/peda.git ./plugins/peda
     $ exgdbctl install Pwngdb # git clone https://github.com/scwuaptx/Pwngdb.git ./plugins/Pwngdb
     $ echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
 
@@ -108,10 +108,10 @@ ExGDB - Extension for GDB
 
     usage: exgdbctl <command> [<args>]
     command: list
-             install <peda/expeda/Pwngdb/ANY PLUGIN URL>
-             update  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
-             enable  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
-             disable <peda/expeda/Pwngdb/ANY PLUGIN NAME>
+             install <peda/Pwngdb/ANY PLUGIN URL>
+             update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+             enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+             disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
 
 ### Add New Plugins:
 
@@ -124,15 +124,12 @@ ExGDB - Extension for GDB
     exgdbpath = os.path.dirname(thisfile)
     pluginpath = exgdbpath + "/plugins"
 
-    expeda_is_enabled = os.path.exists("%s/expeda" % pluginpath)
     peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
     pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
     #yourplugin_is_enabled = os.path.exists("%s/yourplugin" % pluginpath)
 
-    if expeda_is_enabled:
-        sys.path.insert(0, "%s/expeda/lib/" % pluginpath)
-        gdb.execute("source %s/expeda/peda.py" % pluginpath)
-    elif peda_is_enabled:
+    if peda_is_enabled:
+		__file__ = "%s/peda/peda.py" % pluginpath
         gdb.execute("source %s/peda/peda.py" % pluginpath)
     if pwngdb_is_enabled:
         sys.path.insert(0, "%s/Pwngdb/angelheap" % pluginpath)
@@ -143,7 +140,9 @@ ExGDB - Extension for GDB
     #if yourplugin_is_enabled:
     #    gdb.execute("source %s/yourplugin/gdbinit.py" % pluginpath)
 
-    gdb.execute("source %s/exgdb.py" % exgdbpath)
+	if os.path.exists("%s/exgdb.py" % exgdbpath):
+		gdb.execute("source %s/exgdb.py" % exgdbpath)
+
     $ vim ./gdbinit.py
     $ cat ./gdbinit.py
     import os
@@ -153,15 +152,12 @@ ExGDB - Extension for GDB
     exgdbpath = os.path.dirname(thisfile)
     pluginpath = exgdbpath + "/plugins"
 
-    expeda_is_enabled = os.path.exists("%s/expeda" % pluginpath)
     peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
     pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
     myplugin_is_enabled = os.path.exists("%s/myplugin" % pluginpath)
 
-    if expeda_is_enabled:
-        sys.path.insert(0, "%s/expeda/lib/" % pluginpath)
-        gdb.execute("source %s/expeda/peda.py" % pluginpath)
-    elif peda_is_enabled:
+    if peda_is_enabled:
+		__file__ = "%s/peda/peda.py" % pluginpath
         gdb.execute("source %s/peda/peda.py" % pluginpath)
     if pwngdb_is_enabled:
         sys.path.insert(0, "%s/Pwngdb/angelheap" % pluginpath)
@@ -172,7 +168,8 @@ ExGDB - Extension for GDB
     if myplugin_is_enabled:
         gdb.execute("source %s/myplugin/gdbinit.py" % pluginpath)
 
-    gdb.execute("source %s/exgdb.py" % exgdbpath)
+	if os.path.exists("%s/exgdb.py" % exgdbpath):
+		gdb.execute("source %s/exgdb.py" % exgdbpath)
     $ cat ./exgdb.py
     def import_other_plugin():
         if "PEDA" in globals():

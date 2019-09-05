@@ -21,7 +21,6 @@ if not os.path.exists(EXGDBPATH + "/exgdb.py"):
 
 lib_dict = {
         "peda": "https://github.com/longld/peda",
-        "expeda": "https://github.com/miyagaw61/expeda",
         "Pwngdb": "https://github.com/scwuaptx/Pwngdb"
         }
 plugin_list = [key for key in lib_dict.keys()]
@@ -31,11 +30,11 @@ from enert import *
 
 usage = """%s <command> [<args>]
 command: list
-         install <peda/expeda/Pwngdb/ANY PLUGIN URL>
-         delete  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
-         update  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
-         enable  <peda/expeda/Pwngdb/ANY PLUGIN NAME>
-         disable <peda/expeda/Pwngdb/ANY PLUGIN NAME>""" % os.path.basename(sys.argv[0])
+         install <peda/Pwngdb/ANY PLUGIN URL>
+         delete  <peda/Pwngdb/ANY PLUGIN NAME>
+         update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+         enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+         disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>""" % os.path.basename(sys.argv[0])
 parser = mkparser(usage, ["list", "install", "delete", "update", "enable", "disable"])
 args = parser.parse_args(sys.argv[1:])
 
