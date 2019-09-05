@@ -31,6 +31,11 @@ command: list
          update  <exgdb/peda/expeda/Pwngdb/ANY PLUGIN NAME>
          enable  <exgdb/peda/expeda/Pwngdb/ANY PLUGIN NAME>
          disable <exgdb/peda/expeda/Pwngdb/ANY PLUGIN NAME>""" % os.path.basename(sys.argv[0])
+
+if len(sys.argv) > 1 and sys.argv[1] in ["-h", "--help"]:
+    print(usage)
+    exit()
+
 parser = mkparser(usage, ["list", "install", "delete", "update", "enable", "disable"])
 args = parser.parse_args(sys.argv[1:])
 
