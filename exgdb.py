@@ -4,8 +4,11 @@ import re
 import gdb
 RE_BLUE = re.compile(r";34m")
 
-EXGDBFILE = os.path.abspath(os.path.expanduser(__file__))
-sys.path.insert(0, os.path.dirname(EXGDBFILE) + "/lib/")
+exgdbpath = os.environ.get("EXGDBPATH")
+if exgdbpath == None:
+    print("Please export $EXGDBPATH")
+    exit()
+sys.path.insert(0, exgdbpath + "/lib/")
 
 from enert import *
 import utils
@@ -78,6 +81,6 @@ class ExgdbAlias(gdb.Command):
         gdb.execute("%s %s" % (self.command,args))
 
 import_other_plugin()
-gdb.execute("source ./exgdbmethods.py")
-gdb.execute("source ./exgdbcmdmethods.py")
-gdb.execute("source ./initialize.py")
+gdb.execute("source %s/exgdbmethods.py" % exgdbpath)
+gdb.execute("source %s/exgdbcmdmethods.py" % exgdbpath)
+gdb.execute("source %s/initialize.py" % exgdbpath)
