@@ -26,4 +26,5 @@ if pwngdb_is_enabled:
 #if yourplugin_is_enabled:
 #    gdb.execute("source %s/yourplugin/gdbinit.py" % pluginpath)
 
-gdb.execute("source %s/exgdb.py" % exgdbpath)
+if os.path.exists("%s/exgdb.py" % exgdbpath):
+    gdb.execute("source %s/exgdb.py" % exgdbpath)
