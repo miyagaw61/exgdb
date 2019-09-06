@@ -254,6 +254,11 @@ $ git push origin master
 
 ```
 $ exgdbctl install https://github.com/username/myplugin.git
+[+]install successful
+exgdb: enabled
+peda: enabled
+Pwngdb: enabled
+myplugin: enabled
 ```
 
 ### 3. Edit $EXGDBPATH/gdbinit.py
