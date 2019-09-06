@@ -254,8 +254,15 @@ $ git push origin master
 
 ```
 $ exgdbctl install https://github.com/username/myplugin.git
+```
+
+### 3. Edit $EXGDBPATH/gdbinit.py
+
+```
 $ cat $EXGDBPATH/gdbinit.py
+
 ・・・
+
 peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
 pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
 #yourplugin_is_enabled = os.path.exists("%s/yourplugin" % pluginpath)
@@ -272,11 +279,13 @@ if pwngdb_is_enabled:
 #if yourplugin_is_enabled:
 #    gdb.execute("source %s/yourplugin/gdbinit.py" % pluginpath)
 
-if os.path.exists("%s/exgdb.py" % exgdbpath):
-    gdb.execute("source %s/exgdb.py" % exgdbpath)
+・・・
+
 $ vim $EXGDBPATH/gdbinit.py
 $ cat $EXGDBPATH/gdbinit.py
+
 ・・・
+
 peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
 pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
 myplugin_is_enabled = os.path.exists("%s/myplugin" % pluginpath)
@@ -293,9 +302,11 @@ if pwngdb_is_enabled:
 if myplugin_is_enabled:
     gdb.execute("source %s/myplugin/myplugin.py" % pluginpath)
 
-if os.path.exists("%s/exgdb.py" % exgdbpath):
-    gdb.execute("source %s/exgdb.py" % exgdbpath)
+・・・
+
 ```
+
+You can issue Pull Request such as this patch.
 
 ## If you have any demands or questions
 
