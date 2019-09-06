@@ -854,3 +854,15 @@ class ExgdbCmdMethods(object):
         print("\x1b[2J\x1b[H")
 
     clear = clearscreen
+
+    def edit(self, *arg):
+        """
+        edit file by $EDITOR
+        """
+        (fname, ) = utils.normalize_argv(arg, 1)
+        editor = os.environ.get("EDITOR")
+        if editor == None: editor = "vi"
+        gdb.execute("shell" + " " +  editor + " " + fname)
+
+    vim = edit
+    emacs = edit
