@@ -74,7 +74,7 @@ ExGDB - Extension for GDB
              enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
              disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
 
-## Usage
+## Usage of ExGDB
 
 ### Usage when just debugging:
 
@@ -120,7 +120,7 @@ ExGDB - Extension for GDB
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
 
-### Usage
+### Usage of Plugin Manager (exgdbctl):
 
 show plugins information
 
