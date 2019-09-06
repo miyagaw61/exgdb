@@ -22,7 +22,29 @@ class ExgdbCmd():
     def __init__(self):
         pass
 
+def import_topFunctions(fname):
+    cmd = r"grep -o '^def.*:' " + fname + " | sed -E 's@^def (.*)\((.*)\) *:@\\1:\\2@g'"
+    stdout, stderr = Shell(cmd).readlines()
+    functions = stdout
+    for function in functions:
+        (function_name, function_args) = function.split(":")
+        if not function_name.startswith("_"):
+            code = "lambda self, " + function_args + ": " + function_name + "(" + function_args + ")"
+            new_function = eval(code)
+            setattr(Exgdb, function_name, new_function)
+
+def import_from_importFile():
+    fnames = Shell("ls -1 %s/plugins/*/import_to_exgdb.py" % exgdbpath).readlines()[0]
+    if len(fnames) < 1: return
+    for fname in fnames:
+        if not File(fname).exist(): continue
+        gdb.execute("source %s" % fname)
+
 def import_other_plugin():
+    if "PwnCmd" in globals():
+        import_topFunctions("%s/plugins/Pwngdb/pwngdb.py" % exgdbpath)
+        import_topFunctions("%s/plugins/Pwngdb/angelheap/angelheap.py" % exgdbpath)
+
     if "PEDA" in globals():
         cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
         for cmd in cmds:
@@ -50,6 +72,8 @@ def import_other_plugin():
             if not cmd.startswith("_"):
                 cmd_obj = getattr(AngelHeapCmd, cmd)
                 setattr(ExgdbCmd, cmd, cmd_obj)
+
+    import_from_importFile()
 
 class ExgdbCmdWrapper(gdb.Command):
     """ Exgdb command wrapper """
