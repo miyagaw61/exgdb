@@ -43,7 +43,7 @@ ExGDB - Extension for GDB
 
 ### Usage when just debugging:
 
-    $ gdb /bin/ls
+    $ gdb {any_binary}
     gdb-peda$ start
     gdb-peda$ contextmode infonow,code,stack
     gdb-peda$ nuntil call
@@ -60,7 +60,7 @@ ExGDB - Extension for GDB
     c.contextmode("infonow,code,stack")
     c.nuntil("call")
     c.grp("pdisass", ".*call.*")
-    $ gdb /bin/ls -x gdbrc.py
+    $ gdb {any_binary} -x gdbrc.py
 
     ...
 
@@ -72,10 +72,11 @@ ExGDB - Extension for GDB
 
 ### Usage as a library when just debugging:
 
+    $ gdb {any_binary}
     gdb-peda$ start
     gdb-peda$ contextmode infonow,code,stack
     gdb-peda$ nuntil call
-    gdb-peda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
+    gdb-peda$ edit tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
     gdb-peda$ cat tmp.py
     c.grp("pdisass", ".*call.*")
     gdb-peda$ source tmp.py
