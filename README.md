@@ -65,15 +65,6 @@ ExGDB - Extension for GDB
 
     $ echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
 
-## exgdbctl (Plugin Manager):
-
-    usage: exgdbctl <command> [<args>]
-    command: list
-             install <peda/Pwngdb/ANY PLUGIN URL>
-             update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
-             enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
-             disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
-
 ## Usage of ExGDB
 
 ### Usage when just debugging:
@@ -120,7 +111,14 @@ ExGDB - Extension for GDB
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
 
-### Usage of Plugin Manager (exgdbctl):
+## Usage of Plugin Manager (exgdbctl):
+
+    usage: exgdbctl <command> [<args>]
+    command: list
+             install <peda/Pwngdb/ANY PLUGIN URL>
+             update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+             enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+             disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
 
 show plugins information
 
