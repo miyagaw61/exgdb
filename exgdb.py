@@ -46,7 +46,7 @@ def import_from_importFile():
         if len(plugin_name) > len(".disabled") and plugin_name[-9:] == ".disabled": continue
         gdb.execute("source %s" % importFile_name)
 
-def import_other_plugin():
+def import_other_plugins():
     if "PwnCmd" in globals():
         import_topFunctions("%s/plugins/Pwngdb/pwngdb.py" % exgdbpath)
         import_topFunctions("%s/plugins/Pwngdb/angelheap/angelheap.py" % exgdbpath)
@@ -110,7 +110,7 @@ class ExgdbAlias(gdb.Command):
         self.dont_repeat()
         gdb.execute("%s %s" % (self.command,args))
 
-import_other_plugin()
+import_other_plugins()
 gdb.execute("source %s/exgdbmethods.py" % exgdbpath)
 gdb.execute("source %s/exgdbcmdmethods.py" % exgdbpath)
 gdb.execute("source %s/initialize.py" % exgdbpath)
