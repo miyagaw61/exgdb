@@ -34,11 +34,17 @@ def import_topFunctions(fname):
             setattr(Exgdb, function_name, new_function)
 
 def import_from_importFile():
-    fnames = Shell("ls -1 %s/plugins/*/import_to_exgdb.py" % exgdbpath).readlines()[0]
-    if len(fnames) < 1: return
-    for fname in fnames:
-        if not File(fname).exist(): continue
-        gdb.execute("source %s" % fname)
+    importFile_names = Shell("ls -1 %s/plugins/*/import_to_exgdb.py" % exgdbpath).readlines()[0]
+    if len(importFile_names) < 1: return
+    for importFile_name in importFile_names:
+        if not File(importFile_name).exist(): continue
+        plugin_name_chrs = list(importFile_name.replace("%s/plugins/" % exgdbpath, ""))
+        plugin_name = ""
+        for ch in plugin_name_chrs:
+            if ch == "/": break
+            plugin_name += ch
+        if len(plugin_name) > len(".disabled") and plugin_name[-9:] == ".disabled": continue
+        gdb.execute("source %s" % importFile_name)
 
 def import_other_plugin():
     if "PwnCmd" in globals():
