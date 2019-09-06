@@ -39,6 +39,41 @@ ExGDB - Extension for GDB
 * `parseheap` -- Customized parseheap command of Pwngdb
 * ... and all commands of peda and Pwngdb.
 
+## Installation:
+
+### 1. Clone:
+
+    $ git clone https://github.com/miyagaw61/exgdb.git /path/to/exgdb
+
+### 2. Export EXGDBPATH
+
+    $ cd /path/to/exgdb/
+    $ export EXGDBPATH=$PWD
+    $ echo "export EXGDBPATH=$PWD" >> ~/.bashrc
+
+### 3. Install Plugin Manager (exgdbctl) :
+
+    $ cd /path/to/exgdb
+    $ cp -a ./bin/exgdbctl /usr/local/bin/
+
+### 4. Install some plugins:
+
+    $ exgdbctl install peda # git clone https://github.com/longld/peda.git ./plugins/peda
+    $ exgdbctl install Pwngdb # git clone https://github.com/scwuaptx/Pwngdb.git ./plugins/Pwngdb
+
+### 5. Prepare .gdbinit
+
+    $ echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
+
+## exgdbctl (Plugin Manager):
+
+    usage: exgdbctl <command> [<args>]
+    command: list
+             install <peda/Pwngdb/ANY PLUGIN URL>
+             update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+             enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+             disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+
 ## Usage
 
 ### Usage when just debugging:
@@ -84,41 +119,6 @@ ExGDB - Extension for GDB
        0x402a3b:    call   0x402840 <setlocale@plt>
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
-
-## Installation:
-
-### 1. Clone:
-
-    $ git clone https://github.com/miyagaw61/exgdb.git /path/to/exgdb
-
-### 2. Export EXGDBPATH
-
-    $ cd /path/to/exgdb/
-    $ export EXGDBPATH=$PWD
-    $ echo "export EXGDBPATH=$PWD" >> ~/.bashrc
-
-### 3. Install Plugin Manager (exgdbctl) :
-
-    $ cd /path/to/exgdb
-    $ cp -a ./bin/exgdbctl /usr/local/bin/
-
-### 4. Install some plugins:
-
-    $ exgdbctl install peda # git clone https://github.com/longld/peda.git ./plugins/peda
-    $ exgdbctl install Pwngdb # git clone https://github.com/scwuaptx/Pwngdb.git ./plugins/Pwngdb
-
-### 5. Prepare .gdbinit
-
-    $ echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
-
-## exgdbctl (Plugin Manager):
-
-    usage: exgdbctl <command> [<args>]
-    command: list
-             install <peda/Pwngdb/ANY PLUGIN URL>
-             update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
-             enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
-             disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
 
 ### Usage
 
