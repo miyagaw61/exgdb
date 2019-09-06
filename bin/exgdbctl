@@ -3,9 +3,6 @@
 import os
 import sys
 
-#THISFILE = os.path.abspath(os.path.expanduser(__file__))
-#if os.path.islink(THISFILE):
-#    THISFILE = os.readlink(THISFILE)
 EXGDBPATH = os.environ.get("EXGDBPATH")
 if EXGDBPATH == None:
     print("Please export $EXGDBPATH")
@@ -14,14 +11,60 @@ LIB = EXGDBPATH + "/lib"
 PLUGINS = EXGDBPATH + "/plugins"
 INITS = EXGDBPATH + "/inits"
 
-lib_dict = {
-        "peda": "https://github.com/longld/peda",
-        "Pwngdb": "https://github.com/scwuaptx/Pwngdb"
-        }
-plugin_list = [key for key in lib_dict.keys()]
-
 sys.path.insert(0, LIB)
 from enert import *
+
+def gitRemoteV_to_repoUrl(line):
+    url = line[7:]
+    reved_url = list(url)
+    reved_url.reverse()
+    reved_url_bak = reved_url.copy()
+    for ch in reved_url_bak:
+        if ch == " ":
+            break
+        reved_url.pop(0)
+    url = reved_url
+    url.reverse()
+    url = "".join(url)
+    return url
+
+def repoUrl_to_repoName(repo_url):
+    reversed_repo_url = list(repo_url)
+    reversed_repo_url.reverse()
+    reversed_repo_name = ""
+    for ch in reversed_repo_url:
+        if ch == "/": break
+        reversed_repo_name += ch
+    repo_name = list(reversed_repo_name)
+    repo_name.reverse()
+    repo_name = "".join(repo_name)
+    return repo_name
+
+plugin_dict = {
+        "exgdb": {"url": "https://github.com/miyagaw61/exgdb", "path": EXGDBPATH + "/exgdb.py"},
+        "peda": {"url": "https://github.com/longld/peda", "path": PLUGINS + "/peda"},
+        "Pwngdb": {"url": "https://github.com/scwuaptx/Pwngdb", "path": PLUGINS + "/Pwngdb"}
+}
+out, err = Shell("ls -1 %s/" % PLUGINS).readlines()
+fnames = out
+for fname in fnames:
+    plugin_path = PLUGINS + "/" + fname
+    plugin_base = os.path.basename(plugin_path)
+    plugin_name = plugin_base.replace(".disabled", "")
+    if plugin_name in plugin_dict.keys(): continue
+    f = File(plugin_path)
+    if not f.isdir(): continue
+    out, err = Shell("cd %s && git remote -v" % plugin_path).readlines()
+    if len(out) < 1:
+        print("error: can not confirm git repository")
+        exit()
+    for line in out:
+        if line[:6] != "origin":
+            continue
+        plugin_url = gitRemoteV_to_repoUrl(line)
+        plugin_dict[plugin_name] = {"url": plugin_url, "path": plugin_path}
+        break
+plugin_list = [key for key in plugin_dict.keys()]
 
 usage = """%s <command> [args]
 command: list
@@ -38,70 +81,73 @@ if len(sys.argv) > 1 and sys.argv[1] in ["-h", "--help"]:
 parser = mkparser(usage, ["list", "install", "delete", "update", "enable", "disable"])
 args = parser.parse_args(sys.argv[1:])
 
-def default_plugin_check(plugin_name):
+def plugin_check(plugin_name):
     if not plugin_name in plugin_list:
         print("invalid plugin name: %s" % plugin_name)
         usage_plugins = ", ".join(plugin_list)
         print("usage: %s" % usage_plugins)
         exit()
 
-if len(args.args) > 0:
-    plugin_name = args.args[0]
-    f = File("%s/%s" % (PLUGINS, plugin_name))
-    f_disabled = File("%s/%s.disabled" % (PLUGINS, plugin_name))
-
 if args.command == "list":
-    for dirname in plugin_list:
-        dirname = PLUGINS + "/" + dirname
-        if File(dirname).exist():
-            print(green("%s: enabled" % os.path.basename(dirname), "bold"))
-        if File(dirname + ".disabled").exist():
-            print(red("%s: disabled" % os.path.basename(dirname), "bold"))
+    for plugin_name in plugin_list:
+        plugin_path = plugin_dict[plugin_name]["path"]
+        if File(plugin_path).exist():
+            print(green("%s: enabled" % plugin_name, "bold"))
+        elif File(plugin_path + ".disabled").exist():
+            print(red("%s: disabled" % plugin_name, "bold"))
+        else:
+            print(red("%s: not installed!!" % plugin_name, "bold"))
 elif args.command == "install":
+    if len(args.args) < 1:
+        print("error: invalid arguments")
+        exit()
+    # arg == plugin name
     if args.args[0] in plugin_list:
-        if f.exist() or f_disabled.exist():
-            print("%s is already exist" % plugin_name)
+        plugin_name = args.args[0]
+        plugin_path = plugin_dict[plugin_name]["path"]
+        f_enabled = File(plugin_path)
+        f_disabled = File("%s.disabled" % plugin_path)
+        if f_enabled.exist() or f_disabled.exist():
+            print("%s is already installed" % plugin_name)
             exit()
-        Shell("git clone %s %s/%s" % (lib_dict[plugin_name], PLUGINS, plugin_name)).call()
-    else:
-        r_repo = re.compile(r".*/(.*)")
-        plugin_dir = "%s/%s" % (PLUGINS, r_repo.findall(args.args[0])[0])
-        plugin_disabled_dir = plugin_dir + ".disabled"
-        if File(plugin_dir).exist():
-            print("already exists: %s" % plugin_dir)
-            exit()
-        if File(plugin_disabled_dir).exist():
-            print("already exists: %s" % plugin_disabled_dir)
-            exit()
-        Shell("git clone %s %s" % (args.args[0], plugin_dir)).call()
-        f = File("%s/init.conf" % INITS)
-        f_lastinit = File("%s/lastinit" % INITS)
-        lines = f.readlines()
-        for i in range(len(lines)):
-            plugin_file = lines[i]
-            init_file = "source_" + os.path.basename(plugin_file)
-            f_init = File("%s/%s" % (INITS, init_file))
-            f_plugin = File("%s/%s" % (PLUGINS, plugin_file))
-            if not f_plugin.exist():
-                print("ERROR: %s is not found" % f_plugin.abspath)
+        plugin_url = plugin_dict[plugin_name]["url"]
+        plugin_path = plugin_dict[plugin_name]["path"]
+        if plugin_name == "exgdb":
+            if File(EXGDBPATH).exist():
+                print("exgdb is already installed")
                 exit()
-            if f_init.exist():
-                f_init.rm()
-            f_init.add("gdb.execute(\"source %s/" + plugin_file + "\" % PLUGINPATH)\n")
-            if i != len(lines)-1:
-                next_plugin_file = lines[i+1]
-                next_init_file = "source_" + os.path.basename(next_plugin_file)
-                f_init.add("gdb.execute(\"source %s/" + next_init_file + "\" % INITS)\n")
-                f_init = File(next_init_file)
-                if f_init.exist():
-                    f_init.rm()
-                f_init.add("gdb.execute(\"source %s/" + next_plugin_file + "\" % PLUGINPATH)\n")
-                f_lastinit.write("%s/%s" % (INITS, next_init_file))
+            Shell("git clone %s %s" % (plugin_url, EXGDBPATH)).call()
+        else:
+            Shell("git clone %s %s" % (plugin_url, plugin_path)).call()
+    # arg == plugin repository url
+    else:
+        plugin_url = args.args[0]
+        plugin_name = repoUrl_to_repoName(plugin_url)
+        if plugin_name == "exgdb":
+            if File(EXGDBPATH).exist():
+                print("exgdb is already installed")
+                exit()
+            Shell("git clone %s %s" % (plugin_url, EXGDBPATH)).call()
+        else:
+            Shell("git clone %s %s/%s" % (plugin_url, PLUGINS, plugin_name)).call()
+    f_plugin = File("%s/%s" % (PLUGINS, plugin_name))
+    install_successful_exgdb = plugin_name == "exgdb" and File(EXGDBPATH).exist()
+    if install_successful_exgdb or f_plugin.exist():
+        print("[+]install successful")
+        Shell("exgdbctl list").call()
+    else:
+        print("[+]install failed")
 elif args.command == "update":
-    default_plugin_check(args.args[0])
-    plugin_dir = None
-    if f.exist():
-        f_plugin = f
+    if len(args.args) < 1:
+        print("error: invalid arguments")
+        exit()
+    plugin_name = args.args[0]
+    plugin_check(plugin_name)
+    plugin_path = plugin_dict[plugin_name]["path"]
+    f_enabled = File(plugin_path)
+    f_disabled = File("%s.disabled" % plugin_path)
+    if f_enabled.exist():
+        f_plugin = f_enabled
     elif f_disabled.exist():
         f_plugin = f_disabled
     else:
@@ -109,29 +155,85 @@ elif args.command == "update":
         exit()
     Shell("cd %s && git pull --rebase origin master" % f_plugin.abspath).call()
 elif args.command == "enable":
-    default_plugin_check(args.args[0])
-    if f.exist():
+    if len(args.args) < 1:
+        print("error: invalid arguments")
+        exit()
+    plugin_name = args.args[0]
+    plugin_check(plugin_name)
+    plugin_path = plugin_dict[plugin_name]["path"]
+    f_enabled = File(plugin_path)
+    f_disabled = File("%s.disabled" % plugin_path)
+    if f_enabled.exist():
         print("%s is already enabled" % plugin_name)
         exit()
     if not f_disabled.exist():
         print("%s is not installed" % plugin_name)
         exit()
-    Shell("mv %s/%s.disabled %s/%s" % (PLUGINS, plugin_name, PLUGINS, plugin_name)).call()
-    print("[+]enabled %s" % plugin_name)
-    Shell("exgdbctl list").call()
+    plugin_path = plugin_dict[plugin_name]["path"]
+    out, err = Shell("mv %s.disabled %s" % (plugin_path, plugin_path)).readlines()
+    if not out == []:
+        for line in out:
+            print(line)
+    if err == []:
+        print("[+]enabled %s" % plugin_name)
+        Shell("exgdbctl list").call()
+    else:
+        print("[+]error:")
+        for line in err:
+            print(line)
 elif args.command == "disable":
-    default_plugin_check(args.args[0])
-    if not f.exist():
+    if len(args.args) < 1:
+        print("error: invalid arguments")
+        exit()
+    plugin_name = args.args[0]
+    plugin_check(plugin_name)
+    plugin_path = plugin_dict[plugin_name]["path"]
+    f_enabled = File(plugin_path)
+    f_disabled = File("%s.disabled" % plugin_path)
+    if f_disabled.exist():
         print("%s is already disabled" % plugin_name)
         exit()
-    Shell("mv %s/%s %s/%s.disabled" % (PLUGINS, plugin_name, PLUGINS, plugin_name)).call()
-    print("[+]disabled %s" % plugin_name)
-    Shell("exgdbctl list").call()
+    if not f_enabled.exist():
+        print("%s is not installed" % plugin_name)
+        exit()
+    plugin_path = plugin_dict[plugin_name]["path"]
+    out, err = Shell("mv %s %s.disabled" % (plugin_path, plugin_path)).readlines()
+    if not out == []:
+        for line in out:
+            print(line)
+    if err == []:
+        print("[+]disabled %s" % plugin_name)
+        Shell("exgdbctl list").call()
+    else:
+        print("[+]error: ")
+        for line in err:
+            print(line)
 elif args.command == "delete":
-    default_plugin_check(args.args[0])
-    if f.exist():
-        print("deleting %s" % f.abspath)
-        Shell("rm -rf %s" % f.abspath).call()
-    if f_disabled.exist():
-        print("deleting %s" % f_disabled.abspath)
-        Shell("rm -rf %s" % f_disabled.abspath).call()
+    if len(args.args) < 1:
+        print("error: invalid arguments")
+        exit()
+    plugin_name = args.args[0]
+    plugin_check(plugin_name)
+    plugin_path = plugin_dict[plugin_name]["path"]
+    f_enabled = File(plugin_path)
+    f_disabled = File("%s.disabled" % plugin_path)
+    if f_enabled.exist():
+        f_plugin = f_enabled
+    elif f_disabled.exist():
+        f_plugin = f_disabled
+    else:
+        print("%s is not installed" % plugin_name)
+        exit()
+    if plugin_name == "exgdb":
+        print("[!]You can not delete $EXGDBPATH by exgdbctl.")
+        exit()
+    else:
+        print("[+]deleting %s" % f_plugin.abspath)
+        out, err = Shell("rm -rf %s" % f_plugin.abspath).readlines()
+    if err == []:
+        print("[+]delete successful")
+        Shell("exgdbctl list").call()
+    else:
+        print("[+]delete failed")
+        for line in err:
+            print(line)
