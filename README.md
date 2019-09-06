@@ -204,19 +204,21 @@ You need "{any name}.py" and "import_to_exgdb.py".
 - {any name}.py: main script of your plugin.
 - import_to_exgdb.py: setattr your functions to Exgdb or ExgdbCmd
 
-    $ pwd
-    /path/to/myplugin
-    $ ls
-    myplugin.py import_to_exgdb.py
-    $ cat import_to_exgdb.py
-    cmds = [cmd for cmd in dir(MyPlugin) if callable(getattr(MyPlugin, cmd))]
-    for cmd in cmds:
-        if not cmd.startswith("_"):
-            cmd_obj = getattr(MyPlugin, cmd)
-            setattr(Exgdb, cmd, cmd_obj)
-    $ git remote -v
-    https://github.com/username/myplugin.git
-    $ git push origin master
+```
+$ pwd
+/path/to/myplugin
+$ ls
+myplugin.py import_to_exgdb.py
+$ cat import_to_exgdb.py
+cmds = [cmd for cmd in dir(MyPlugin) if callable(getattr(MyPlugin, cmd))]
+for cmd in cmds:
+    if not cmd.startswith("_"):
+        cmd_obj = getattr(MyPlugin, cmd)
+        setattr(Exgdb, cmd, cmd_obj)
+$ git remote -v
+https://github.com/username/myplugin.git
+$ git push origin master
+```
 
 ### 2. Install your plugin:
 
