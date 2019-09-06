@@ -244,7 +244,7 @@ cmds = [cmd for cmd in dir(MyPlugin) if callable(getattr(MyPlugin, cmd))]
 for cmd in cmds:
     if not cmd.startswith("_"):
         cmd_obj = getattr(MyPlugin, cmd)
-        setattr(Exgdb, cmd, cmd_obj)
+        setattr(ExgdbCmd, cmd, cmd_obj)
 $ git remote -v
 https://github.com/username/myplugin.git
 $ git push origin master
