@@ -119,23 +119,40 @@ ExGDB - Extension for GDB
              enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
              disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
 
-### Add New Plugins:
+## Add New Plugin:
 
-    $ exgdbctl install https://github.com/username/repository
-    $ cat ./gdbinit.py
-    import os
-    import sys
+### 1. Prepare new plugin:
 
-    thisfile = os.path.abspath(os.path.expanduser(__file__))
-    exgdbpath = os.path.dirname(thisfile)
-    pluginpath = exgdbpath + "/plugins"
+You need "{any name}.py" and "import_to_exgdb.py".
 
+- {any name}.py: main script of your plugin.
+- import_to_exgdb.py: setattr your functions to Exgdb or ExgdbCmd
+
+    $ pwd
+    /path/to/myplugin
+    $ ls
+    myplugin.py import_to_exgdb.py
+    $ cat import_to_exgdb.py
+    cmds = [cmd for cmd in dir(MyPlugin) if callable(getattr(MyPlugin, cmd))]
+    for cmd in cmds:
+        if not cmd.startswith("_"):
+            cmd_obj = getattr(MyPlugin, cmd)
+            setattr(Exgdb, cmd, cmd_obj)
+    $ git remote -v
+    https://github.com/username/myplugin.git
+    $ git push origin master
+
+### 2. Install your plugin:
+
+    $ exgdbctl install https://github.com/username/myplugin.git
+    $ cat $EXGDBPATH/gdbinit.py
+    ・・・
     peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
     pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
     #yourplugin_is_enabled = os.path.exists("%s/yourplugin" % pluginpath)
 
     if peda_is_enabled:
-		__file__ = "%s/peda/peda.py" % pluginpath
+        __file__ = "%s/peda/peda.py" % pluginpath
         gdb.execute("source %s/peda/peda.py" % pluginpath)
     if pwngdb_is_enabled:
         sys.path.insert(0, "%s/Pwngdb/angelheap" % pluginpath)
@@ -148,16 +165,9 @@ ExGDB - Extension for GDB
 
 	if os.path.exists("%s/exgdb.py" % exgdbpath):
 		gdb.execute("source %s/exgdb.py" % exgdbpath)
-
-    $ vim ./gdbinit.py
-    $ cat ./gdbinit.py
-    import os
-    import sys
-
-    thisfile = os.path.abspath(os.path.expanduser(__file__))
-    exgdbpath = os.path.dirname(thisfile)
-    pluginpath = exgdbpath + "/plugins"
-
+    $ vim $EXGDBPATH/gdbinit.py
+    $ cat $EXGDBPATH/gdbinit.py
+    ・・・
     peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
     pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
     myplugin_is_enabled = os.path.exists("%s/myplugin" % pluginpath)
@@ -172,65 +182,10 @@ ExGDB - Extension for GDB
         gdb.execute("source %s/Pwngdb/angelheap/command_wrapper.py" % pluginpath)
         gdb.execute("source %s/Pwngdb/angelheap/angelheap.py" % pluginpath)
     if myplugin_is_enabled:
-        gdb.execute("source %s/myplugin/gdbinit.py" % pluginpath)
+        gdb.execute("source %s/myplugin/myplugin.py" % pluginpath)
 
 	if os.path.exists("%s/exgdb.py" % exgdbpath):
 		gdb.execute("source %s/exgdb.py" % exgdbpath)
-    $ cat ./exgdb.py
-    def import_other_plugin():
-        if "PEDA" in globals():
-            cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
-            for cmd in cmds:
-                if not cmd.startswith("_"):
-                    cmd_obj = getattr(PEDA, cmd)
-                    setattr(Exgdb, cmd, cmd_obj)
-
-    ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-
-        if "AngelHeapCmd" in globals():
-            cmds = [cmd for cmd in dir(AngelHeapCmd) if callable(getattr(AngelHeapCmd, cmd))]
-            for cmd in cmds:
-                if not cmd.startswith("_"):
-                    cmd_obj = getattr(AngelHeapCmd, cmd)
-                    setattr(ExgdbCmd, cmd, cmd_obj)
-
-    ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-
-    $ vim ./exgdb.py
-    $ cat ./exgdb.py
-    def import_other_plugin():
-        if "PEDA" in globals():
-            cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
-            for cmd in cmds:
-                if not cmd.startswith("_"):
-                    cmd_obj = getattr(PEDA, cmd)
-                    setattr(Exgdb, cmd, cmd_obj)
-
-    ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-
-        if "AngelHeapCmd" in globals():
-            cmds = [cmd for cmd in dir(AngelHeapCmd) if callable(getattr(AngelHeapCmd, cmd))]
-            for cmd in cmds:
-                if not cmd.startswith("_"):
-                    cmd_obj = getattr(AngelHeapCmd, cmd)
-                    setattr(ExgdbCmd, cmd, cmd_obj)
-
-        if "MyPlugin" in globals():
-            cmds = [cmd for cmd in dir(MyPlugin) if callable(getattr(MyPlugin, cmd))]
-            for cmd in cmds:
-                if not cmd.startswith("_"):
-                    cmd_obj = getattr(MyPlugin, cmd)
-                    setattr(Exgdb, cmd, cmd_obj)
-
-        if "MyPluginCmd" in globals():
-            cmds = [cmd for cmd in dir(MyPluginCmd) if callable(getattr(MyPluginCmd, cmd))]
-            for cmd in cmds:
-                if not cmd.startswith("_"):
-                    cmd_obj = getattr(MyPluginCmd, cmd)
-                    setattr(ExgdbCmd, cmd, cmd_obj)
-
-    ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-
 
 ## If you have any demands or questions
 
