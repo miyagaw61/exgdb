@@ -39,14 +39,27 @@ ExGDB - Extension for GDB
 * `parseheap` -- Customized parseheap command of Pwngdb
 * ... and all commands of peda and Pwngdb.
 
-## Usage as a library:
+## Usage
+
+### Usage when just debugging:
+
+    $ gdb /bin/ls
+    gdb-peda$ start
+    gdb-peda$ contextmode infonow,code,stack
+    gdb-peda$ nuntil call
+    gdb-peda$ grp 'pdisass' '.*call.*'
+    => 0x402a2c:    call   0x40db00
+       0x402a3b:    call   0x402840 <setlocale@plt>
+       0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
+       0x402a54:    call   0x402470 <textdomain@plt>
+
+### Usage as a library:
 
     $ cat gdbrc.py
-    e = Exgdb()
-    c = ExgdbCmd()
     c.start()
+    c.contextmode("infonow,code,stack")
     c.nuntil("call")
-    c.grp("afterpc 10", ".*call.*")
+    c.grp("pdisass", ".*call.*")
     $ gdb /bin/ls -x gdbrc.py
 
     ...
@@ -55,35 +68,21 @@ ExGDB - Extension for GDB
        0x402a3b:    call   0x402840 <setlocale@plt>
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
-    exgdb-peda$ 
+    gdb-peda$
 
-## Usage when just debugging:
+### Usage as a library when just debugging:
 
-    $ gdb /bin/ls -x gdbrc.py
-
-    ...
-
+    gdb-peda$ start
+    gdb-peda$ contextmode infonow,code,stack
+    gdb-peda$ nuntil call
+    gdb-peda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
+    gdb-peda$ cat tmp.py
+    c.grp("pdisass", ".*call.*")
+    gdb-peda$ source tmp.py
     => 0x402a2c:    call   0x40db00
        0x402a3b:    call   0x402840 <setlocale@plt>
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
-    exgdb-peda$ python
-    >c.nuntil("call.*plt") # You can use `c` suddenly if you have used `c = ExgdbCmd()` in `gdbrc.py` .
-    >rsp = e.getreg("rsp") # You can use `e` suddenly if you have used `e = Exgdb()` in `gdbrc.py` .
-    >print(rsp)
-    > # If you finish coding, you should send Ctrl+D
-
-    ...
-
-    140737488345888
-    exgdb-peda$ editor tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
-    exgdb-peda$ cat tmp.py
-    while True:
-        c.next()
-        rax = e.getreg("rax")
-        if rax == 0:
-            break
-    exgdb-peda$ source tmp.py
 
 ## Installation:
 
