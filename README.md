@@ -113,9 +113,11 @@ ExGDB - Extension for GDB
 
 ## Usage of Plugin Manager (exgdbctl):
 
-    usage: exgdbctl <command> [<args>]
+    $ exgdbctl -h
+    exgdbctl <command> [args]
     command: list
              install <peda/Pwngdb/ANY PLUGIN URL>
+             delete  <peda/Pwngdb/ANY PLUGIN NAME>
              update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
              enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
              disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
