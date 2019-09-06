@@ -39,7 +39,7 @@ ExGDB - Extension for GDB
 * `parseheap` -- Customized parseheap command of Pwngdb
 * ... and all commands of peda and Pwngdb.
 
-## Installation:
+## Installation
 
 ### 1. Clone:
 
@@ -111,7 +111,7 @@ ExGDB - Extension for GDB
        0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
        0x402a54:    call   0x402470 <textdomain@plt>
 
-## Usage of Plugin Manager (exgdbctl):
+## Usage of Plugin Manager (exgdbctl)
 
     $ exgdbctl -h
     exgdbctl <command> [args]
@@ -195,7 +195,7 @@ enable a plugin
     peda: enabled
     Pwngdb: enabled
 
-## Add New Plugin:
+## Add New Plugin
 
 ### 1. Prepare new plugin:
 
