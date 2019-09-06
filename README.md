@@ -111,7 +111,7 @@ ExGDB - Extension for GDB
 
     $ echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
 
-## Usage (exgdbctl) :
+## exgdbctl (Plugin Manager):
 
     usage: exgdbctl <command> [<args>]
     command: list
@@ -119,6 +119,81 @@ ExGDB - Extension for GDB
              update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
              enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
              disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
+
+### Usage
+
+show plugins information
+
+    $ exgdbctl list
+    exgdb: enabled
+    peda: not installed!!
+    Pwngdb: not installed!!
+
+You have to install peda and Pwngdb.
+
+    $ exgdbctl install peda
+    Cloning into '/home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/peda'...
+    remote: Enumerating objects: 351, done.
+    remote: Total 351 (delta 0), reused 0 (delta 0), pack-reused 351
+    Receiving objects: 100% (351/351), 279.51 KiB | 580.00 KiB/s, done.
+    Resolving deltas: 100% (220/220), done.
+    [+]install successful
+    exgdb: enabled
+    peda: enabled
+    Pwngdb: not installed!!
+    $ exgdbctl install Pwngdb
+    Cloning into '/home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/Pwngdb'...
+    remote: Enumerating objects: 29, done.
+    remote: Counting objects: 100% (29/29), done.
+    remote: Compressing objects: 100% (21/21), done.
+    remote: Total 451 (delta 14), reused 20 (delta 8), pack-reused 422
+    Receiving objects: 100% (451/451), 196.36 KiB | 430.00 KiB/s, done.
+    Resolving deltas: 100% (284/284), done.
+    [+]install successful
+    exgdb: enabled
+    peda: enabled
+    Pwngdb: enabled
+
+You can install a plugin from repository url
+
+    $ exgdbctl install https://github.com/miyagaw61/sample_plugin
+    Cloning into '/home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/sample_plugin'...
+    remote: Enumerating objects: 4, done.
+    remote: Counting objects: 100% (4/4), done.
+    remote: Compressing objects: 100% (3/3), done.
+    remote: Total 4 (delta 0), reused 0 (delta 0), pack-reused 0
+    Unpacking objects: 100% (4/4), done.
+    [+]install successful
+    exgdb: enabled
+    peda: enabled
+    Pwngdb: enabled
+    sample_plugin: enabled
+
+delete a plugin
+
+    $ exgdbctl delete sample_plugin
+    [+]deleting /home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/sample_plugin
+    [+]delete successful
+    exgdb: enabled
+    peda: enabled
+    Pwngdb: enabled
+
+
+disable a plugin
+
+    $ exgdbctl disable peda
+    [+]disabled peda
+    exgdb: enabled
+    peda: disabled
+    Pwngdb: enabled
+
+enable a plugin
+
+    $ exgdbctl enable peda
+    [+]enabled peda
+    exgdb: enabled
+    peda: enabled
+    Pwngdb: enabled
 
 ## Add New Plugin:
 
