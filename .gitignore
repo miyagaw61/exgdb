@@ -4,3 +4,4 @@ peda-session-*
 plugins
 buf
 gdbrc.py
+exgdb.py.disabled
