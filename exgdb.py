@@ -88,7 +88,8 @@ class ExgdbCmdWrapper(gdb.Command):
 
     def invoke(self,args,from_tty):
         self.dont_repeat()
-        arg = args.split()
+        #arg = args.split()
+        arg = e.string_to_argv(args)
         if len(arg) > 0 :
             cmd = arg[0]
             if cmd in c.commands :
