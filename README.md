@@ -154,7 +154,7 @@ You have to install peda and Pwngdb.
     peda: enabled
     Pwngdb: enabled
 
-You can install a plugin from repository url
+You can install any plugin from repository url
 
     $ exgdbctl install https://github.com/miyagaw61/sample_plugin
     Cloning into '/home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/sample_plugin'...
