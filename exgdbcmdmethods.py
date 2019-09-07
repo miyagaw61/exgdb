@@ -557,6 +557,20 @@ class ExgdbCmdMethods(object):
                 infox_text = e.get_infox_text(addr)
                 print(prefix + infox_text)
 
+        # display "Return value" routine
+        data = gdb.execute("beforepc 2", to_string=True)
+        before_inst = data.split("\n")[0]
+        before_inst = before_inst.split()[3]
+        if before_inst == "call":
+            arch = e.getarch()
+            if arch[1] == 64:
+                reg = "rax"
+            else:
+                reg = "eax"
+            prefix = green("RETURN-VALUE", "bold") + ": "
+            infox_text = e.get_infox_text(gdb.parse_and_eval("$%s" % reg))
+            print(prefix + infox_text)
+
     inow = infonow
 
     def infox(self, *arg, color=None):
