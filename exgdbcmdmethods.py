@@ -143,9 +143,9 @@ class ExgdbCmdMethods(object):
 
     si = stepi
 
-    def afterpc(self, *arg):
+    def nextnow(self, *arg):
         """
-        Show n instructions after pc
+        Show n instructions next now
         Usage:
             MYNAME n
         """
@@ -158,8 +158,6 @@ class ExgdbCmdMethods(object):
         else:
             ip = "$eip"
         e.execute('pdisas %s /%s' % (ip, n))
-
-    afpc = afterpc
 
     def prevnow(self, *arg):
         """
