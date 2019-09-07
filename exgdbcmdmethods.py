@@ -1,13 +1,14 @@
 class BpRetHandler(gdb.FinishBreakpoint):
-    def __init__(self, id_str, stop=False, fn=None, source=None):
+    def __init__(self, id_str, stop=False, fn=None, source=None, debug=False):
         gdb.FinishBreakpoint.__init__(self, gdb.newest_frame(), internal=False)
         self.id = id_str
         self.stop_ = stop
         self.fn = fn
         self.source = source
+        self.debug = debug
 
     def stop(self):
-        if self.id != "":
+        if self.debug:
             print("[+]return detected: " + self.id)
         if self.fn != None:
             self.fn()
@@ -19,7 +20,7 @@ class BpRetHandler(gdb.FinishBreakpoint):
             return False
 
 class BpHandler(gdb.Breakpoint):
-    def __init__(self, id_str, stop=False, ret=False, stop_ret=False, fn=None, ret_fn=None, silent=False, source=None, ret_source=None):
+    def __init__(self, id_str, stop=False, ret=False, stop_ret=False, fn=None, ret_fn=None, debug=False, source=None, source_ret=None, debug_ret=False):
         gdb.Breakpoint.__init__(self, id_str, type=gdb.BP_BREAKPOINT, internal=False)
         self.id = id_str
         self.ret = ret
@@ -27,19 +28,20 @@ class BpHandler(gdb.Breakpoint):
         self.stop_ret = stop_ret
         self.fn = fn
         self.ret_fn = ret_fn
-        self.silent = silent
+        self.debug = debug
+        self.debug_ret = debug_ret
         self.source = source
-        self.ret_source = ret_source
+        self.source_ret = source_ret
 
     def stop(self):
-        if not self.silent:
+        if self.debug:
             print("[+]enter detected: " + self.id)
         if self.fn != None:
             self.fn()
         if self.source != None:
             gdb.execute("source " + self.source)
         if self.ret:
-            BpRetHandler(self.id, stop=self.stop_ret, fn=self.ret_fn, source=ret_source)
+            BpRetHandler(self.id, stop=self.stop_ret, fn=self.ret_fn, source=source_ret, debug=debug_ret)
         if self.stop_:
             return True
         else:
@@ -304,7 +306,7 @@ class ExgdbCmdMethods(object):
             else:
                 cmd()
 
-    def tracepoint(self, *arg, fn=None, ret_fn=None, source=None, ret_source=None):
+    def tracepoint(self, *arg, fn=None, ret_fn=None, source=None, source_ret=None):
         """
         tracepoint
         """
@@ -312,7 +314,7 @@ class ExgdbCmdMethods(object):
         stop = False
         ret = False
         stop_ret = False
-        silent = False
+        debug = False
         for argN in [arg2, arg3, arg4, arg5]:
             if argN == None:
                 continue
@@ -322,15 +324,15 @@ class ExgdbCmdMethods(object):
                 stop_ret = True
             elif argN == "ret=True":
                 ret = True
-            elif argN == "silent=True":
-                silent = True
+            elif argN == "debug=True":
+                debug = True
             elif argN[:7] == "source=":
                 fpath = argN[7:]
                 source = os.path.abspath(fpath)
-            elif argN[:11] == "ret_source=":
+            elif argN[:11] == "source_ret=":
                 fpath = argN[11:]
-                ret_source = os.path.abspath(fpath)
-        BpHandler(addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, silent=silent, source=source, ret_source=ret_source)
+                source_ret = os.path.abspath(fpath)
+        BpHandler(addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, debug=debug, source=source, source_ret=source_ret)
         return
 
     def rbreak(self, *arg, silent=False):
