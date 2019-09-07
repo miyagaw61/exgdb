@@ -306,15 +306,11 @@ class ExgdbCmdMethods(object):
             else:
                 cmd()
 
-    def tracepoint(self, *arg, fn=None, ret_fn=None, source=None, source_ret=None):
+    def tracepoint(self, *arg, fn=None, ret_fn=None, source=None, source_ret=None, stop=False, stop_ret=False, ret=False, debug=False):
         """
         tracepoint
         """
         (addr, arg2, arg3, arg4, arg5) = utils.normalize_argv(arg, 5)
-        stop = False
-        ret = False
-        stop_ret = False
-        debug = False
         for argN in [arg2, arg3, arg4, arg5]:
             if argN == None:
                 continue
