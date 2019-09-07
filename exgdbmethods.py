@@ -204,13 +204,28 @@ class ExgdbMethods():
         return lst
 
     def get_addrs_by_regex(self, regex):
-        fname = e.getfile()
-        cmd = "objdump -M intel -D " + fname + " | grep -E '" + regex + "' | grep -o -E '^ [0-9a-f]+'"
+        fpath = e.getfile()
+
+        out, err = Shell("md5sum %s" % fpath).readlines()
+        md5sum = 0
+        if out != []:
+            md5sum = out[0]
+            md5sum = md5sum.split()[0]
+            md5sum = str(md5sum)
+        disass_file = "%s/.cache/%s.disass" % (exgdbpath, md5sum)
+        f = File(disass_file)
+        if not f.exist():
+            codebase, codeend = codeaddr()
+            disass_data = e.disassemble(hex(codebase), hex(codeend))
+            print(disass_data)
+            f.write(disass_data)
+        cmd = "cat " + disass_file + " | grep -E ':.*" + regex + "' | grep -o -E '^ *0x[0-9a-f]+'"
         lines = Shell(cmd).readlines()[0]
         if lines == []:
             return lines
         addrs = []
         for line in lines:
-            line = "0x" + line[1:]
-            addrs.append(int(line, 16))
+            line = line.split()[0]
+            addr = int(line, 16)
+            addrs.append(addr)
         return addrs
