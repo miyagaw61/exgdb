@@ -9,9 +9,8 @@ def load_to_exgdbcmd():
         setattr(ExgdbCmd, cmd, getattr(ExgdbCmdMethods, cmd))
     return cmds
 
-def register_gdbcmd(exgdbcmd, cmds):
-    exgdbcmd.commands = cmds
-    for cmd in exgdbcmd.commands :
+def register_gdbcmd(cmds):
+    for cmd in cmds:
         if not cmd in ["next", "step", "nexti", "stepi", "n", "s", "ni", "si"]:
             ExgdbAlias(cmd,"exgdb %s" % cmd)
     ExgdbCmdWrapper()
@@ -21,5 +20,6 @@ cmds = load_to_exgdbcmd()
 
 e = Exgdb()
 c = ExgdbCmd()
+c.commands = cmds
 
-register_gdbcmd(c, cmds)
+register_gdbcmd(c.commands)
