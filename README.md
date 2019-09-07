@@ -26,7 +26,7 @@ ExGDB - Extension for GDB
 * `stepi, si [count]` -- Execute stepi command
 * `afterpc, af <count>` -- Show instructions after now program-counter
 * `beforepc, bef <count>` -- Show instructions before now program-counter
-* `grp <command> <regex>` -- Grep command output
+* `grep <command> <regex>` -- Grep command output
 * `allstack` -- Show all stack data
 * `nuntil <regex>` -- Execute nexti command until given regexp
 * `suntil <regex>` -- Execute stepi command until given regexp
@@ -85,7 +85,7 @@ $ gdb {any_binary}
 gdb-peda$ start
 gdb-peda$ contextmode infonow,code,stack
 gdb-peda$ radvance call
-gdb-peda$ grp 'pdisass' '.*call.*'
+gdb-peda$ grep 'pdisass' '.*call.*'
 => 0x402a2c:    call   0x40db00
    0x402a3b:    call   0x402840 <setlocale@plt>
    0x402a4a:    call   0x4024b0 <bindtextdomain@plt>
@@ -99,7 +99,7 @@ $ cat gdbrc.py
 c.start()
 c.contextmode("infonow,code,stack")
 c.radvance("call")
-c.grp("pdisass", ".*call.*")
+c.grep("pdisass", ".*call.*")
 $ gdb {any_binary} -x gdbrc.py
 
 ...
@@ -120,7 +120,7 @@ gdb-peda$ contextmode infonow,code,stack
 gdb-peda$ radvance call
 gdb-peda$ edit tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
 gdb-peda$ cat tmp.py
-c.grp("pdisass", ".*call.*")
+c.grep("pdisass", ".*call.*")
 gdb-peda$ source tmp.py
 => 0x402a2c:    call   0x40db00
    0x402a3b:    call   0x402840 <setlocale@plt>

@@ -217,7 +217,7 @@ class ExgdbCmdMethods(object):
 
     befad = beforeaddr
 
-    def grp(self, *arg):
+    def grep(self, *arg):
         """
         Grep command-output
         Usage:
@@ -232,7 +232,7 @@ class ExgdbCmdMethods(object):
             for line in regexed:
                 print(line)
         except Exception as e:
-            utils.msg("Exception in grp(%s, %s): %s" % (repr(cmd), repr(regex), e), "red")
+            utils.msg("Exception in grep(%s, %s): %s" % (repr(cmd), repr(regex), e), "red")
             traceback.print_exc()
             return False
 
