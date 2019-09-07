@@ -203,7 +203,7 @@ class ExgdbCmdMethods(object):
 
     afad = afteraddr
 
-    def beforeaddr(self, *arg):
+    def prevpd(self, *arg):
         """
         Show n instructions prev given addr
         Usage:
@@ -224,7 +224,7 @@ class ExgdbCmdMethods(object):
             addr = e.prev_inst(ip, n)[1][0]
             e.execute('pdisas %s /%s' % (addr, n))
 
-    befad = beforeaddr
+    prev = prevpd
 
     def grep(self, *arg):
         """
