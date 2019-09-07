@@ -151,6 +151,8 @@ class ExgdbCmdMethods(object):
         """
         arch = e.getarch()
         (expr, ) = utils.normalize_argv(arg,1)
+        if expr == None:
+            expr = 10
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
         if arch[1] == 64:
@@ -167,6 +169,8 @@ class ExgdbCmdMethods(object):
         """
         arch = e.getarch()
         (expr, ) = utils.normalize_argv(arg,1)
+        if expr == None:
+            expr = 10
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
@@ -188,6 +192,8 @@ class ExgdbCmdMethods(object):
         """
         arch = e.getarch()
         (addr, expr) = utils.normalize_argv(arg,2)
+        if expr == None:
+            expr = 10
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
@@ -205,6 +211,8 @@ class ExgdbCmdMethods(object):
         """
         arch = e.getarch()
         (addr, expr) = utils.normalize_argv(arg,2)
+        if expr == None:
+            expr = 10
         expr = str(expr)
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
