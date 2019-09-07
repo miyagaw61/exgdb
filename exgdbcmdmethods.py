@@ -40,8 +40,8 @@ class BpHandler(gdb.Breakpoint):
             self.fn()
         if self.source != None:
             gdb.execute("source " + self.source)
-        if self.ret:
-            BpRetHandler(self.id, stop=self.stop_ret, fn=self.ret_fn, source=source_ret, debug=debug_ret)
+        if self.ret or self.source_ret:
+            BpRetHandler(self.id, stop=self.stop_ret, fn=self.ret_fn, source=self.source_ret, debug=self.debug_ret)
         if self.stop_:
             return True
         else:
