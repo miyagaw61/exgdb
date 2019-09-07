@@ -362,6 +362,8 @@ class ExgdbCmdMethods(object):
             return
         gdb.execute("continue")
         gdb.execute("delete")
+        if saved_breakpoints == []:
+            return
         for saved_breakpoint in saved_breakpoints:
             gdb.execute("break *" + hex(saved_breakpoint), to_string=True)
 
