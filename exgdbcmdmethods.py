@@ -544,6 +544,7 @@ class ExgdbCmdMethods(object):
         """
         (opt, ) = utils.normalize_argv(arg, 1)
         if opt == None:
+            config.Option.set("context", "None")
             return
         config.Option.set("context", opt)
 
@@ -671,6 +672,10 @@ class ExgdbCmdMethods(object):
         if not opt:
             return
 
+        # do not display
+        if "none" in opt or "None" in opt:
+            return
+
         #if not self._is_running():
         if False:
             return
@@ -680,6 +685,11 @@ class ExgdbCmdMethods(object):
             utils.clearscreen()
 
         status = peda.get_status()
+
+        # display registers
+        if "none" in opt or "None" in opt:
+            c.context_none()
+
         # display registers
         if "reg" in opt or "register" in opt:
             c.context_register()
