@@ -83,7 +83,7 @@ $ echo "source $(realpath gdbinit.py)" >> ~/.gdbinit
 $ gdb {any_binary}
 gdb-peda$ start
 gdb-peda$ contextmode infonow,code,stack
-gdb-peda$ nuntil call
+gdb-peda$ radvance call
 gdb-peda$ grp 'pdisass' '.*call.*'
 => 0x402a2c:    call   0x40db00
    0x402a3b:    call   0x402840 <setlocale@plt>
@@ -97,7 +97,7 @@ gdb-peda$ grp 'pdisass' '.*call.*'
 $ cat gdbrc.py
 c.start()
 c.contextmode("infonow,code,stack")
-c.nuntil("call")
+c.radvance("call")
 c.grp("pdisass", ".*call.*")
 $ gdb {any_binary} -x gdbrc.py
 
@@ -116,7 +116,7 @@ gdb-peda$
 $ gdb {any_binary}
 gdb-peda$ start
 gdb-peda$ contextmode infonow,code,stack
-gdb-peda$ nuntil call
+gdb-peda$ radvance call
 gdb-peda$ edit tmp.py # You must have set `$EDITOR` . And you can use `vim` or `emacs` instead of `editor` .
 gdb-peda$ cat tmp.py
 c.grp("pdisass", ".*call.*")
