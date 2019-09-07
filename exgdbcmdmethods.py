@@ -318,7 +318,7 @@ class ExgdbCmdMethods(object):
         BpHandler(addr, is_stop=is_stop, ret=ret, is_stop_ret=is_stop_ret, fn=fn, ret_fn=ret_fn, silent=silent)
         return
 
-    def rbreak(self, *arg):
+    def rbreak(self, *arg, silent=False):
         """
         regex break
         Usage:
@@ -331,7 +331,7 @@ class ExgdbCmdMethods(object):
             print("Not found")
             return -1
         for addr in addrs:
-            gdb.execute("break *" + hex(addr))
+            gdb.execute("break *" + hex(addr), to_string=silent)
 
     def radvance(self, *arg):
         """
@@ -345,7 +345,7 @@ class ExgdbCmdMethods(object):
         b_info_list = e.get_breakpoints()
         for b_info in b_info_list:
             saved_breakpoints.append(b_info[4])
-        if c.rbreak(regex) == -1:
+        if c.rbreak(regex, silent=True) == -1:
             return
         gdb.execute("continue")
         gdb.execute("delete")
