@@ -343,8 +343,34 @@ class ExgdbCmdMethods(object):
         if addrs == []:
             print("Not found")
             return -1
-        for addr in addrs:
+        bp_nrs = []
+        addr = addrs[0]
+        gdb.execute("break *" + hex(addr), to_string=silent)
+        bp_info_list = e.get_breakpoints()
+        last_binfo = bp_info_list[-1]
+        bp_nr = int(last_binfo[0])
+        bp_nrs.append(bp_nr)
+        for addr in addrs[1:]:
             gdb.execute("break *" + hex(addr), to_string=silent)
+            bp_nr += 1
+            bp_nrs.append(bp_nr)
+        return bp_nrs
+
+    def alldelete(self, *arg):
+        """
+        delete which can handle list argument too
+        """
+        (addr, ) = utils.normalize_argv(arg, 1)
+        if addr == None:
+            return
+        if type(addr) == str:
+            gdb.execute("delete " + addr)
+        elif type(addr) == int:
+            gdb.execute("delete " + str(addr))
+        elif type(addr) == list:
+            addrs = addr
+            for addr in addrs:
+                c.alldelete(addr)
 
     def radvance(self, *arg):
         """
@@ -354,18 +380,11 @@ class ExgdbCmdMethods(object):
         """
         (regex, ) = utils.normalize_argv(arg, 1)
         regex = str(regex)
-        saved_breakpoints = []
-        b_info_list = e.get_breakpoints()
-        for b_info in b_info_list:
-            saved_breakpoints.append(b_info[4])
-        if c.rbreak(regex, silent=True) == -1:
+        bp_nrs = c.rbreak(regex, silent=True)
+        if bp_nrs == -1:
             return
         gdb.execute("continue")
-        gdb.execute("delete")
-        if saved_breakpoints == []:
-            return
-        for saved_breakpoint in saved_breakpoints:
-            gdb.execute("break *" + hex(saved_breakpoint), to_string=True)
+        c.alldelete(bp_nrs)
 
     rad = radvance
 
