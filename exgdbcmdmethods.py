@@ -35,7 +35,7 @@ class BpHandler(gdb.Breakpoint):
         if not self.silent:
             print("[+]enter detected: " + self.id)
         if self.fn != None:
-            fn()
+            self.fn()
         if self.source != None:
             gdb.execute("source " + self.source)
         if self.ret:
@@ -313,7 +313,6 @@ class ExgdbCmdMethods(object):
         ret = False
         stop_ret = False
         silent = False
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         for argN in [arg2, arg3, arg4, arg5]:
             if argN == None:
                 continue
