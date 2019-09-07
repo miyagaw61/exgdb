@@ -1,6 +1,6 @@
 class BpRetHandler(gdb.FinishBreakpoint):
     def __init__(self, id_str, stop=False, fn=None, source=None, debug=False):
-        gdb.FinishBreakpoint.__init__(self, gdb.newest_frame(), internal=False)
+        gdb.FinishBreakpoint.__init__(self, gdb.newest_frame(), internal=True)
         self.id = id_str
         self.stop_ = stop
         self.fn = fn
