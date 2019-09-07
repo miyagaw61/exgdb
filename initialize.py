@@ -15,11 +15,18 @@ def register_gdbcmd(cmds):
             ExgdbAlias(cmd,"exgdb %s" % cmd)
     ExgdbCmdWrapper()
 
+def register_repeat_gdbcmd(repeat_commands):
+    for cmd in repeat_commands:
+        RepeatExgdbAlias(cmd,"rexgdb %s" % cmd)
+    RepeatExgdbCmdWrapper()
+
 load_to_exgdb()
 cmds = load_to_exgdbcmd()
 
 e = Exgdb()
 c = ExgdbCmd()
 c.commands = cmds
+c.repeat_commands = ["radvance", "rad"]
 
 register_gdbcmd(c.commands)
+register_repeat_gdbcmd(c.repeat_commands)

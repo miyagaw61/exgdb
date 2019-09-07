@@ -99,7 +99,7 @@ class ExgdbCmdWrapper(gdb.Command):
                 print("Unknown command")
         else :
             print("Unknown command")
-        return 
+        return
 
 class ExgdbAlias(gdb.Command):
     """ Exgdb Alias """
@@ -109,6 +109,36 @@ class ExgdbAlias(gdb.Command):
 
     def invoke(self,args,from_tty):
         self.dont_repeat()
+        gdb.execute("%s %s" % (self.command,args))
+
+class RepeatExgdbCmdWrapper(gdb.Command):
+    """ Exgdb command wrapper """
+    def __init__(self):
+        super(RepeatExgdbCmdWrapper,self).__init__("rexgdb",gdb.COMMAND_USER)
+
+    def invoke(self,args,from_tty):
+        #self.dont_repeat()
+        #arg = args.split()
+        arg = e.string_to_argv(args)
+        if len(arg) > 0 :
+            cmd = arg[0]
+            if cmd in c.repeat_commands :
+                func = getattr(c,cmd)
+                func(*arg[1:])
+            else :
+                print("Unknown command")
+        else :
+            print("Unknown command")
+        return
+
+class RepeatExgdbAlias(gdb.Command):
+    """ Exgdb Alias """
+    def __init__(self,alias,command):
+        self.command = command
+        super(RepeatExgdbAlias,self).__init__(alias,gdb.COMMAND_NONE)
+
+    def invoke(self,args,from_tty):
+        #self.dont_repeat()
         gdb.execute("%s %s" % (self.command,args))
 
 import_other_plugins()
