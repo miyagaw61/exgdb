@@ -205,7 +205,7 @@ class ExgdbCmdMethods(object):
 
     def beforeaddr(self, *arg):
         """
-        Show n instructions after given addr
+        Show n instructions prev given addr
         Usage:
             MYNAME addr n
         """
