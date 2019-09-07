@@ -2,7 +2,7 @@ class BpRetHandler(gdb.FinishBreakpoint):
     def __init__(self, id_str, stop=False, fn=None, source=None):
         gdb.FinishBreakpoint.__init__(self, gdb.newest_frame(), internal=False)
         self.id = id_str
-        self.is_stop = is_stop
+        self.stop_ = stop
         self.fn = fn
         self.source = source
 
@@ -13,18 +13,18 @@ class BpRetHandler(gdb.FinishBreakpoint):
             self.fn()
         if self.source != None:
             gdb.execute("source " + self.source)
-        if self.is_stop:
+        if self.stop_:
             return True
         else:
             return False
 
 class BpHandler(gdb.Breakpoint):
-    def __init__(self, id_str, is_stop=False, ret=False, is_stop_ret=False, fn=None, ret_fn=None, silent=False, source=None, ret_source=None):
+    def __init__(self, id_str, stop=False, ret=False, stop_ret=False, fn=None, ret_fn=None, silent=False, source=None, ret_source=None):
         gdb.Breakpoint.__init__(self, id_str, type=gdb.BP_BREAKPOINT, internal=False)
         self.id = id_str
         self.ret = ret
-        self.is_stop = is_stop
-        self.is_stop_ret = is_stop_ret
+        self.stop_ = stop
+        self.stop_ret = stop_ret
         self.fn = fn
         self.ret_fn = ret_fn
         self.silent = silent
@@ -39,8 +39,8 @@ class BpHandler(gdb.Breakpoint):
         if self.source != None:
             gdb.execute("source " + self.source)
         if self.ret:
-            BpRetHandler(self.id, stop=self.is_stop_ret, fn=self.ret_fn, source=ret_source)
-        if self.is_stop:
+            BpRetHandler(self.id, stop=self.stop_ret, fn=self.ret_fn, source=ret_source)
+        if self.stop_:
             return True
         else:
             return False
@@ -309,20 +309,21 @@ class ExgdbCmdMethods(object):
         tracepoint
         """
         (addr, arg2, arg3, arg4, arg5) = utils.normalize_argv(arg, 5)
-        is_stop = False
+        stop = False
         ret = False
-        is_stop_ret = False
+        stop_ret = False
         silent = False
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         for argN in [arg2, arg3, arg4, arg5]:
             if argN == None:
                 continue
-            if argN == "is_stop":
-                is_stop = True
-            elif argN == "ret":
+            if argN == "stop=True":
+                stop = True
+            elif argN == "stop_ret=True":
+                stop_ret = True
+            elif argN == "ret=True":
                 ret = True
-            elif argN == "is_stop_ret":
-                is_stop_ret = True
-            elif argN == "silent":
+            elif argN == "silent=True":
                 silent = True
             elif argN[:7] == "source=":
                 fpath = argN[7:]
@@ -330,7 +331,7 @@ class ExgdbCmdMethods(object):
             elif argN[:11] == "ret_source=":
                 fpath = argN[11:]
                 ret_source = os.path.abspath(fpath)
-        BpHandler(addr, is_stop=is_stop, ret=ret, is_stop_ret=is_stop_ret, fn=fn, ret_fn=ret_fn, silent=silent, source=source, ret_source=ret_source)
+        BpHandler(addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, silent=silent, source=source, ret_source=ret_source)
         return
 
     def rbreak(self, *arg, silent=False):
