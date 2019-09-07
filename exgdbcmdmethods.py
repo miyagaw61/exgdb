@@ -161,9 +161,9 @@ class ExgdbCmdMethods(object):
 
     afpc = afterpc
 
-    def beforepc(self, *arg):
+    def prevnow(self, *arg):
         """
-        Show n instructions before pc
+        Show n instructions prev now
         Usage:
             MYNAME n
         """
@@ -181,8 +181,6 @@ class ExgdbCmdMethods(object):
         else:
             addr = e.prev_inst(ip, n)[1][0]
             e.execute('pdisas %s /%s' % (addr, n))
-
-    befpc = beforepc
 
     def nextpd(self, *arg):
         """
@@ -554,7 +552,7 @@ class ExgdbCmdMethods(object):
                 print(prefix + infox_text)
 
         # display "Return value" routine
-        data = gdb.execute("beforepc 2", to_string=True)
+        data = gdb.execute("prevnow 2", to_string=True)
         before_inst = data.split("\n")[0]
         before_inst = before_inst.split()[3]
         if before_inst == "call":
