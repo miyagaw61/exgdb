@@ -184,9 +184,9 @@ class ExgdbCmdMethods(object):
 
     befpc = beforepc
 
-    def afteraddr(self, *arg):
+    def nextpd(self, *arg):
         """
-        Show n instructions after given addr
+        Show n instructions next given addr
         Usage:
             MYNAME addr n
         """
@@ -200,8 +200,6 @@ class ExgdbCmdMethods(object):
         else:
             ip = e.getreg("eip")
         e.execute('pdisas %s /%s' % (addr, n))
-
-    afad = afteraddr
 
     def prevpd(self, *arg):
         """
@@ -223,8 +221,6 @@ class ExgdbCmdMethods(object):
         else:
             addr = e.prev_inst(ip, n)[1][0]
             e.execute('pdisas %s /%s' % (addr, n))
-
-    prev = prevpd
 
     def grep(self, *arg):
         """
