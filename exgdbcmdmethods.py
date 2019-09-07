@@ -582,6 +582,17 @@ class ExgdbCmdMethods(object):
             return
         config.Option.set("context", opt)
 
+    def clearmode(self, *arg):
+        """
+        Set clear options
+        Usage:
+            MYNAME options
+        """
+        (opt, ) = utils.normalize_argv(arg, 1)
+        if opt == None:
+            return
+        config.Option.set("clearscr", opt)
+
     peda_patch = PEDACmd.patch
 
     def hexpatch(self, *arg):
