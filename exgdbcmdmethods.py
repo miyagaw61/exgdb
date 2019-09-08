@@ -1174,6 +1174,9 @@ class ExgdbCmdMethods(object):
         config.Option.set("context", "None")
         clearscr = config.Option.get("clearscr")
         config.Option.set("clearscr", "off")
+        exgdbpath = os.environ.get("EXGDBPATH")
+        if log_filename == None:
+            log_filename = exgdbpath + "/.cache/tracecontinue.tmp"
         f_log = File(log_filename)
         symbol_memo = "symbol_memo.txt"
         f_symbol_memo = File(symbol_memo)
@@ -1197,6 +1200,8 @@ class ExgdbCmdMethods(object):
                 break
             if pc in enb_br_lst:
                 break
+        if log_filename == exgdbpath + "/.cache/tracecontinue.tmp":
+            gdb.execute("shell cat " + exgdbpath + "/.cache/tracecontinue.tmp")
         config.Option.set("clearscr", clearscr)
         config.Option.set("context", context_opts)
 
@@ -1210,6 +1215,9 @@ class ExgdbCmdMethods(object):
         if _pid == None:
             _pid = pid
         pid = _pid
+        exgdbpath = os.environ.get("EXGDBPATH")
+        if log_filename == None:
+            log_filename = exgdbpath + "/.cache/tracelog.tmp"
         f_log = File(log_filename)
         symbol_memo = "symbol_memo.txt"
         f_symbol_memo = File(symbol_memo)
@@ -1434,3 +1442,5 @@ class ExgdbCmdMethods(object):
                 if arg2 != "":
                     one_log += "," + arg2
         f_log.add(one_log + "\n")
+        if log_filename == exgdbpath + "/.cache/tracelog.tmp":
+            print(one_log)
