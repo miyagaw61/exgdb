@@ -258,6 +258,8 @@ class ExgdbCmdMethods(object):
         if expr == None:
             expr = 10
         expr = str(expr)
+        if expr[0] == "/":
+            expr = expr[1:]
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
         if arch[1] == 64:
@@ -265,6 +267,8 @@ class ExgdbCmdMethods(object):
         else:
             ip = e.getreg("eip")
         e.execute('pdisas %s /%s' % (addr, n))
+
+    npd = nextpd
 
     def prevpd(self, *arg):
         """
@@ -277,6 +281,8 @@ class ExgdbCmdMethods(object):
         if expr == None:
             expr = 10
         expr = str(expr)
+        if expr[0] == "/":
+            expr = expr[1:]
         n = gdb.parse_and_eval(expr)
         n = utils.to_int(n)
         if arch[1] == 64:
@@ -288,6 +294,8 @@ class ExgdbCmdMethods(object):
         else:
             addr = e.prev_inst(ip, n)[1][0]
             e.execute('pdisas %s /%s' % (addr, n))
+
+    ppd = prevpd
 
     def grep(self, *arg):
         """
