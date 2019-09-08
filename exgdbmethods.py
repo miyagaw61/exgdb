@@ -210,7 +210,7 @@ class ExgdbMethods():
         NM = size & 4
         IM = size & 2
         PI = size & 1
-        return {'next': chunkaddr + aligned_size, 'prev_size': prev_size, 'aligned_size': aligned_size, 'nextsize': nextsize, 'used_flag': used_flag, 'fast_flag': fast_flag, 'size': showsize, 'NM': NM, 'IM': IM, 'PI': PI, 'fd': fd, 'bk': bk}
+        return {'next': chunkaddr + aligned_size, 'prev_size': prev_size, 'aligned_size': aligned_size, 'nextsize': nextsize, 'used_flag': used_flag, 'fast_flag': fast_flag, 'size': size, 'showsize': showsize, 'NM': NM, 'IM': IM, 'PI': PI, 'fd': fd, 'bk': bk}
 
     def getchunklist(self):
         if capsize == 0 :

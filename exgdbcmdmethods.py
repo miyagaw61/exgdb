@@ -973,11 +973,13 @@ class ExgdbCmdMethods(object):
             )
             print(
                 green("size| ", "bold")
-                #+ yellow(hex(chunkaddr+capsize), "bold")
-                #+ " --> "
-                #+ white(hex(showsize))
-                + e.get_infox_text(chunkaddr+capsize, color="yellow")
+                + yellow(hex(chunkaddr+capsize), "bold")
+                + " --> "
+                + white(hex(size), "bold")
+                #+ e.get_infox_text(chunkaddr+capsize, color="yellow")
                 + yellow(" |")
+                + white(hex(aligned_size), "bold")
+                + yellow("|")
                 + red(str(NM), "bold")
                 + yellow("|")
                 + green(str(IM), "bold")
@@ -1003,11 +1005,13 @@ class ExgdbCmdMethods(object):
             )
             print(
                 blue("size| ", "bold")
-                #+ yellow(hex(chunkaddr+capsize), "bold")
-                #+ " --> "
-                #+ white(hex(showsize))
-                + e.get_infox_text(chunkaddr+capsize, color="yellow")
+                + yellow(hex(chunkaddr+capsize), "bold")
+                + " --> "
+                + white(hex(size), "bold")
+                #+ e.get_infox_text(chunkaddr+capsize, color="yellow")
                 + yellow(" |")
+                + white(hex(aligned_size), "bold")
+                + yellow("|")
                 + red(str(NM), "bold")
                 + yellow("|")
                 + green(str(IM), "bold")
