@@ -1090,16 +1090,16 @@ class ExgdbCmdMethods(object):
         Usage:
             MYNAME <on/off>
         """
-        (mode, fpath, start_addr, end_addr, arg5) = utils.normalize_argv(arg, 5)
+        (mode, logFile_path, start_addr, end_addr, arg5) = utils.normalize_argv(arg, 5)
         if pid == None and arg5 != None:
             pid = arg5
         if pid == None:
             pid = e.getpid()
         if mode == "on":
-            f = File(fpath)
-            if f.exist():
-                f.rm()
-            f.create()
+            f_log = File(logFile_path)
+            if f_log.exist():
+                f_log.rm()
+            f_log.create()
         exgdbpath = os.environ.get("EXGDBPATH")
         fpath = e.getfile()
         fname = os.path.basename(fpath)
@@ -1111,7 +1111,7 @@ class ExgdbCmdMethods(object):
             md5sum = str(md5sum)
         f_bpnrs = File(exgdbpath + "/.cache/" + md5sum + ".bpnrs")
         if mode == "on":
-            bp_nrs = c.rtracepoint(".*", fpath, start_addr, end_addr, pid=pid)
+            bp_nrs = c.rtracepoint(".*", logFile_path, start_addr, end_addr, pid=pid)
             print(red("\n[+]tracemode: on\n", "bold"))
             if f_bpnrs.exist():
                 f_bpnrs.rm()
