@@ -102,7 +102,7 @@ class TraceHandler(gdb.Breakpoint):
 
     def stop(self):
         try:
-            c.tracelog(self.fpath, pid=self.pid)
+            c.memtrace(self.fpath, pid=self.pid)
         except Exception as e:
             traceback.print_exc()
         if not self.silent:
@@ -439,7 +439,7 @@ class ExgdbCmdMethods(object):
         addr = addrs[0]
         addr = hex(addr)
         def function():
-            c.tracelog(fpath, pid=pid)
+            c.memtrace(fpath, pid=pid)
             if not silent:
                 gdb.execute("shell cat " + fpath + " | tail -1")
         c.tracepoint("*" + addr, fn=function)
@@ -882,6 +882,26 @@ class ExgdbCmdMethods(object):
         c.infonow()
         print(red("================================================================================", "bold"))
 
+    def context_memtrace(self):
+        """
+        context_memtrace
+        """
+        print(red("======================================memt======================================", "bold"))
+        c.memtrace()
+        print(red("================================================================================", "bold"))
+
+    def context_memt_inow(self):
+        """
+        context_memt_inow
+        """
+        print(red("====================================memtinow===================================", "bold"))
+        try:
+            c.memtrace()
+        except:
+            pass
+        c.infonow()
+        print(red("================================================================================", "bold"))
+
     def context(self, *arg):
         """
         Customized context command from https://github.com/longld/peda
@@ -922,8 +942,12 @@ class ExgdbCmdMethods(object):
         if "reg" in opt or "register" in opt:
             c.context_register()
 
-        # display infonow
-        if "infonow" in opt or "inow" in opt:
+        # display memtrace and infonow
+        if ("memtrace" in opt or "memt" in opt) and ("infonow" in opt or "inow" in opt):
+            c.context_memt_inow()
+        elif "memtrace" in opt or "memt" in opt:
+            c.context_memtrace()
+        elif "infonow" in opt or "inow" in opt:
             c.context_infonow()
 
         # display assembly code
@@ -1195,7 +1219,7 @@ class ExgdbCmdMethods(object):
                 f.add("error\n")
                 break
             old_pc = pc
-            ret = c.tracelog(log_filename)
+            ret = c.memtrace(log_filename)
             if ret == -1:
                 break
             if pc in enb_br_lst:
@@ -1205,7 +1229,7 @@ class ExgdbCmdMethods(object):
         config.Option.set("clearscr", clearscr)
         config.Option.set("context", context_opts)
 
-    def tracelog(self, *arg, pid=None):
+    def memtrace(self, *arg, pid=None):
         """
         tracing continue
         Usage:
@@ -1217,7 +1241,7 @@ class ExgdbCmdMethods(object):
         pid = _pid
         exgdbpath = os.environ.get("EXGDBPATH")
         if log_filename == None:
-            log_filename = exgdbpath + "/.cache/tracelog.tmp"
+            log_filename = exgdbpath + "/.cache/memtrace.tmp"
         f_log = File(log_filename)
         symbol_memo = "symbol_memo.txt"
         f_symbol_memo = File(symbol_memo)
@@ -1442,5 +1466,6 @@ class ExgdbCmdMethods(object):
                 if arg2 != "":
                     one_log += "," + arg2
         f_log.add(one_log + "\n")
-        if log_filename == exgdbpath + "/.cache/tracelog.tmp":
+        if log_filename == exgdbpath + "/.cache/memtrace.tmp":
+            one_log = one_log.split("!")[2]
             print(one_log)
