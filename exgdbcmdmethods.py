@@ -224,6 +224,8 @@ class ExgdbCmdMethods(object):
             ip = "$eip"
         e.execute('pdisas %s /%s' % (ip, n))
 
+    nnow = nextnow
+
     def prevnow(self, *arg):
         """
         Show n instructions prev now
@@ -246,6 +248,8 @@ class ExgdbCmdMethods(object):
         else:
             addr = e.prev_inst(ip, n)[1][0]
             e.execute('pdisas %s /%s' % (addr, n))
+
+    pnow = prevnow
 
     def nextpd(self, *arg):
         """
