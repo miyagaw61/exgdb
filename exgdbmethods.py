@@ -268,7 +268,24 @@ class ExgdbMethods():
         bytes_list = list(byte_data)
         return bytes_list
 
-    def examine_mem_value(self, value):
+    def is_address(self, value, maps=None, pid=None):
+        """
+        Customized is_address from https://github.com/longld/peda
+
+        Args:
+            - value (Int)
+            - maps: only check in provided maps (List)
+
+        Returns:
+            - True if value belongs to an address range (Bool)
+        """
+        if pid == None:
+            vmrange = self.get_vmrange(value, maps)
+        else:
+            vmrange = self.get_vmrange(value, maps, pid=pid)
+        return vmrange is not None
+
+    def examine_mem_value(self, value, pid=None):
         """
         Customized examine_mem_value from https://github.com/longld/peda
         Args:
@@ -289,27 +306,31 @@ class ExgdbMethods():
         if value is None:
             return result
 
-        maps = self.get_vmmap()
-        binmap = self.get_vmmap("binary")
+        if pid == None:
+            maps = e.get_vmmap()
+            binmap = e.get_vmmap("binary")
+        else:
+            maps = e.get_vmmap(pid=pid)
+            binmap = e.get_vmmap(pid=pid, name="binary")
 
         (arch, bits) = self.getarch()
-        if not self.is_address(value): # a value
+        if not e.is_address(value, pid=pid): # a value
             result = (to_hex(value), "value", "")
             return result
         else:
-            (_, _, _, mapname) = self.get_vmrange(value)
+            (_, _, _, mapname) = self.get_vmrange(value, pid=pid)
 
         # check for writable first so rwxp mem will be treated as data
-        if self.is_writable(value): # writable data address
+        if e.is_writable(value, pid=pid): # writable data address
             out = examine_data(value, bits)
             if out:
                 result = (to_hex(value), "data", out.split(":", 1)[1].strip())
 
-        elif self.is_executable(value): # code/rodata address
+        elif e.is_executable(value, pid=pid): # code/rodata address
             if self.is_address(value, binmap):
-                headers = self.elfheader()
+                headers = e.elfheader(pid=pid)
             else:
-                headers = self.elfheader_solib(mapname)
+                headers = e.elfheader_solib(mapname, pid=pid)
 
             if headers:
                 headers = sorted(headers.items(), key=lambda x: x[1][1])
@@ -353,6 +374,38 @@ class ExgdbMethods():
                 result = (to_hex(value), "rodata", out.split(":", 1)[1].strip())
             else:
                 result = (to_hex(value), "rodata", "MemError")
+
+        return result
+
+    def examine_mem_reference(self, value, pid=None, depth=5):
+        """
+        Customized examine_mem_reference from https://github.com/longld/peda
+
+        Args:
+            - value: value to examine (Int)
+
+        Returns:
+            - list of tuple of (value(Int), type(String), next_value(Int))
+        """
+        result = []
+        if depth <= 0:
+            depth = 0xffffffff
+
+        (v, t, vn) = e.examine_mem_value(value, pid=pid)
+        while vn is not None:
+            if len(result) > depth:
+                _v, _t, _vn = result[-1]
+                result[-1] = (_v, _t, "--> ...")
+                break
+
+            result += [(v, t, vn)]
+            if v == vn or to_int(v) == to_int(vn): # point to self
+                break
+            if to_int(vn) is None:
+                break
+            if to_int(vn) in [to_int(v) for (v, _, _) in result]: # point back to previous value
+                break
+            (v, t, vn) = e.examine_mem_value(to_int(vn), pid=pid)
 
         return result
 
@@ -452,3 +505,349 @@ class ExgdbMethods():
                 arg_data_str = ""
                 appending_one_log = ""
         return (arg_str, arg_data_str, arg_reg_str, arg_reg_data_str, b, appending_one_log)
+
+    def get_vmmap(self, pid=None, name=None):
+        """
+        Cutomized get_vmmap from https://github.com/longld/peda
+
+        Args:
+            - name: name/address of binary/library to get mapping range (String)
+                + name = "binary" means debugged program
+                + name = "all" means all virtual maps
+
+        Returns:
+            - list of virtual mapping ranges (start(Int), end(Int), permission(String), mapname(String))
+
+        """
+        def _get_offline_maps():
+            name = self.getfile()
+            if not name:
+                return None
+            headers = self.elfheader()
+            binmap = []
+            hlist = [x for x in headers.items() if x[1][2] == 'code']
+            hlist = sorted(hlist, key=lambda x:x[1][0])
+            binmap += [(hlist[0][1][0], hlist[-1][1][1], "rx-p", name)]
+
+            hlist = [x for x in headers.items() if x[1][2] == 'rodata']
+            hlist = sorted(hlist, key=lambda x:x[1][0])
+            binmap += [(hlist[0][1][0], hlist[-1][1][1], "r--p", name)]
+
+            hlist = [x for x in headers.items() if x[1][2] == 'data']
+            hlist = sorted(hlist, key=lambda x:x[1][0])
+            binmap += [(hlist[0][1][0], hlist[-1][1][1], "rw-p", name)]
+
+            return binmap
+
+        def _get_allmaps_osx(pid, remote=False):
+            maps = []
+            #_DATA                 00007fff77975000-00007fff77976000 [    4K] rw-/rw- SM=COW  /usr/lib/system/libremovefile.dylib
+            pattern = re.compile("([^\n]*)\s*  ([0-9a-f][^-\s]*)-([^\s]*) \[.*\]\s([^/]*).*  (.*)")
+
+            if remote: # remote target, not yet supported
+                return maps
+            else: # local target
+                try:  out = execute_external_command("/usr/bin/vmmap -w %s" % pid)
+                except: error_msg("could not read vmmap of process")
+
+            matches = pattern.findall(out)
+            if matches:
+                for (name, start, end, perm, mapname) in matches:
+                    if name.startswith("Stack"):
+                        mapname = "[stack]"
+                    start = to_int("0x%s" % start)
+                    end = to_int("0x%s" % end)
+                    if mapname == "":
+                        mapname = name.strip()
+                    maps += [(start, end, perm, mapname)]
+            return maps
+
+
+        def _get_allmaps_freebsd(pid, remote=False):
+            maps = []
+            mpath = "/proc/%s/map" % pid
+            # 0x8048000 0x8049000 1 0 0xc36afdd0 r-x 1 0 0x1000 COW NC vnode /path/to/file NCH -1
+            pattern = re.compile("0x([0-9a-f]*) 0x([0-9a-f]*)(?: [^ ]*){3} ([rwx-]*)(?: [^ ]*){6} ([^ ]*)")
+
+            if remote: # remote target, not yet supported
+                return maps
+            else: # local target
+                try:  out = open(mpath).read()
+                except: error_msg("could not open %s; is procfs mounted?" % mpath)
+
+            matches = pattern.findall(out)
+            if matches:
+                for (start, end, perm, mapname) in matches:
+                    if start[:2] in ["bf", "7f", "ff"] and "rw" in perm:
+                        mapname = "[stack]"
+                    start = to_int("0x%s" % start)
+                    end = to_int("0x%s" % end)
+                    if mapname == "-":
+                        if start == maps[-1][1] and maps[-1][-1][0] == "/":
+                            mapname = maps[-1][-1]
+                        else:
+                            mapname = "mapped"
+                    maps += [(start, end, perm, mapname)]
+            return maps
+
+        def _get_allmaps_linux(pid, remote=False):
+            maps = []
+            mpath = "/proc/%s/maps" % pid
+            #00400000-0040b000 r-xp 00000000 08:02 538840  /path/to/file
+            pattern = re.compile("([0-9a-f]*)-([0-9a-f]*) ([rwxps-]*)(?: [^ ]*){3} *(.*)")
+
+            if remote: # remote target
+                tmp = tmpfile()
+                self.execute("remote get %s %s" % (mpath, tmp.name))
+                tmp.seek(0)
+                out = tmp.read()
+                tmp.close()
+            else: # local target
+                out = open(mpath).read()
+
+            matches = pattern.findall(out)
+            if matches:
+                for (start, end, perm, mapname) in matches:
+                    start = to_int("0x%s" % start)
+                    end = to_int("0x%s" % end)
+                    if mapname == "":
+                        mapname = "mapped"
+                    maps += [(start, end, perm, mapname)]
+            return maps
+
+        result = []
+        if pid == None:
+            pid = self.getpid()
+        if not pid: # not running, try to use elfheader()
+            try:
+                return _get_offline_maps()
+            except:
+                return []
+
+        # retrieve all maps
+        os   = self.getos()
+        rmt  = self.is_target_remote()
+        maps = []
+        try:
+            if   os == "FreeBSD": maps = _get_allmaps_freebsd(pid, rmt)
+            elif os == "Linux"  : maps = _get_allmaps_linux(pid, rmt)
+            elif os == "Darwin" : maps = _get_allmaps_osx(pid, rmt)
+        except Exception as e:
+            if config.Option.get("debug") == "on":
+                msg("Exception: %s" %e)
+                traceback.print_exc()
+
+        # select maps matched specific name
+        if name == "binary":
+            name = self.getfile()
+        if name is None or name == "all":
+            name = ""
+
+        if to_int(name) is None:
+            for (start, end, perm, mapname) in maps:
+                if name in mapname:
+                    result += [(start, end, perm, mapname)]
+        else:
+            addr = to_int(name)
+            for (start, end, perm, mapname) in maps:
+                if start <= addr and addr < end:
+                    result += [(start, end, perm, mapname)]
+
+        return result
+
+    def get_vmrange(self, address, maps=None, pid=None):
+        """
+        Customized get_vmrange from https://github.com/longld/peda
+
+        Args:
+            - address: target address (Int)
+            - maps: only find in provided maps (List)
+
+        Returns:
+            - tuple of virtual memory info (start, end, perm, mapname)
+        """
+        if address is None:
+            return None
+        if maps is None:
+            if pid ==None:
+                maps = e.get_vmmap()
+            else:
+                maps = e.get_vmmap(pid=pid)
+        if maps:
+            for (start, end, perm, mapname) in maps:
+                if start <= address and end > address:
+                    return (start, end, perm, mapname)
+        # failed to get the vmmap
+        else:
+            try:
+                gdb.selected_inferior().read_memory(address, 1)
+                start = address & 0xfffffffffffff000
+                end = start + 0x1000
+                return (start, end, 'rwx', 'unknown')
+            except:
+                return None
+
+    def is_executable(self, address, maps=None, pid=None):
+        """
+        Check if an address is executable
+
+        Args:
+            - address: target address (Int)
+            - maps: only check in provided maps (List)
+
+        Returns:
+            - True if address belongs to an executable address range (Bool)
+        """
+        if pid == None:
+            vmrange = self.get_vmrange(address, maps, pid)
+        else:
+            vmrange = self.get_vmrange(address, maps, pid=pid)
+        if vmrange and "x" in vmrange[2]:
+            return True
+        else:
+            return False
+
+    def is_writable(self, address, maps=None, pid=None):
+        """
+        Customized is_writable from https://github.com/longld/peda
+
+        Args:
+            - address: target address (Int)
+            - maps: only check in provided maps (List)
+
+        Returns:
+            - True if address belongs to a writable address range (Bool)
+        """
+        vmrange = self.get_vmrange(address, maps, pid=pid)
+        if vmrange and "w" in vmrange[2]:
+            return True
+        else:
+            return False
+
+    def elfheader(self, name=None, pid=None):
+        """
+        Customized elfheader from https://github.com/longld/peda
+
+        Args:
+            - name: specific header name (String)
+
+        Returns:
+            - dictionary of headers {name(String): (start(Int), end(Int), type(String))}
+        """
+        elfinfo = {}
+        elfbase = 0
+        if pid == None:
+            pid = self.getpid()
+        if pid:
+            binmap = e.get_vmmap(name="binary", pid=pid)
+            elfbase = binmap[0][0] if binmap else 0
+
+        out = self.execute_redirect("maintenance info sections")
+        if not out:
+            return {}
+
+        p = re.compile("\s*(0x[^-]*)->(0x[^ ]*) at (0x[^:]*):\s*([^ ]*)\s*(.*)")
+        matches = p.findall(out)
+
+        for (start, end, offset, hname, attr) in matches:
+            start, end, offset = to_int(start), to_int(end), to_int(offset)
+            # skip unuseful header
+            if start < offset:
+                continue
+            # if PIE binary, update with runtime address
+            if start < elfbase:
+                start += elfbase
+                end += elfbase
+
+            if "CODE" in attr:
+                htype = "code"
+            elif "READONLY" in attr:
+                htype = "rodata"
+            else:
+                htype = "data"
+
+            elfinfo[hname.strip()] = (start, end, htype)
+
+        result = {}
+        if name is None:
+            result = elfinfo
+        else:
+            if name in elfinfo:
+                result[name] = elfinfo[name]
+            else:
+                for (k, v) in elfinfo.items():
+                    if name in k:
+                        result[k] = v
+        return result
+
+    def elfheader_solib(self, solib=None, name=None, pid=None):
+        """
+        Customized elfheader_solib from https://github.com/longld/peda
+
+        Args:
+            - solib: shared library name (String)
+            - name: specific header name (String)
+
+        Returns:
+            - dictionary of headers {name(String): start(Int), end(Int), type(String))
+        """
+        # hardcoded ELF header type
+        header_type = {"code": [".text", ".fini", ".init", ".plt", "__libc_freeres_fn"],
+            "data": [".dynamic", ".data", ".ctors", ".dtors", ".jrc", ".got", ".got.plt",
+                    ".bss", ".tdata", ".tbss", ".data.rel.ro", ".fini_array",
+                    "__libc_subfreeres", "__libc_thread_subfreeres"]
+        }
+
+        @memoized
+        def _elfheader_solib_all():
+            out = self.execute_redirect("info files")
+            if not out:
+                return None
+
+            p = re.compile("[^\n]*\s*(0x[^ ]*) - (0x[^ ]*) is (\.[^ ]*) in (.*)")
+            soheaders = p.findall(out)
+
+            result = []
+            for (start, end, hname, libname) in soheaders:
+                start, end = to_int(start), to_int(end)
+                result += [(start, end, hname, os.path.realpath(libname))] # tricky, return the realpath version of libraries
+            return result
+
+        elfinfo = {}
+
+        headers = _elfheader_solib_all()
+        if not headers:
+            return {}
+
+        if solib is None:
+            return headers
+
+        vmap = e.get_vmmap(solib, pid=pid)
+        elfbase = vmap[0][0] if vmap else 0
+
+        for (start, end, hname, libname) in headers:
+            if solib in libname:
+                # if PIE binary or DSO, update with runtime address
+                if start < elfbase:
+                    start += elfbase
+                if end < elfbase:
+                    end += elfbase
+                # determine the type
+                htype = "rodata"
+                if hname in header_type["code"]:
+                    htype = "code"
+                elif hname in header_type["data"]:
+                    htype = "data"
+                elfinfo[hname.strip()] = (start, end, htype)
+
+        result = {}
+        if name is None:
+            result = elfinfo
+        else:
+            if name in elfinfo:
+                result[name] = elfinfo[name]
+            else:
+                for (k, v) in elfinfo.items():
+                    if name in k:
+                        result[k] = v
+        return result

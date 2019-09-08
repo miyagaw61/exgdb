@@ -93,6 +93,23 @@ class BpHandler(gdb.Breakpoint):
         else:
             return False
 
+class TraceHandler(gdb.Breakpoint):
+    def __init__(self, id_str, fpath, pid, silent=False):
+        gdb.Breakpoint.__init__(self, id_str, type=gdb.BP_BREAKPOINT, internal=False)
+        self.id = id_str
+        self.fpath = fpath
+        self.silent = silent
+        self.pid = pid
+
+    def stop(self):
+        try:
+            c.tracelog(self.fpath, pid=self.pid)
+        except Exception as e:
+            traceback.print_exc()
+        if not self.silent:
+            gdb.execute("shell cat " + self.fpath + " | tail -1")
+        return False
+
 class ExgdbCmdMethods(object):
     def _is_running(self):
         """
@@ -377,30 +394,15 @@ class ExgdbCmdMethods(object):
         BpHandler(addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, debug=debug, source=source, source_ret=source_ret)
         return
 
-    def rtracepoint(self, *arg, fn=None, ret_fn=None, source=None, source_ret=None, stop=False, stop_ret=False, ret=False, debug=False):
+    def rtracepoint(self, *arg, silent=False, pid=None):
         """
         regex break
         Usage:
             MYNAME regex(intel)
         """
-        (regex, start_addr, end_addr, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) = utils.normalize_argv(arg, 11)
-        for argN in [arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11]:
-            if argN == None:
-                continue
-            if argN == "stop=True":
-                stop = True
-            elif argN == "stop_ret=True":
-                stop_ret = True
-            elif argN == "ret=True":
-                ret = True
-            elif argN == "debug=True":
-                debug = True
-            elif argN[:7] == "source=":
-                fpath = argN[7:]
-                source = os.path.abspath(fpath)
-            elif argN[:11] == "source_ret=":
-                fpath = argN[11:]
-                source_ret = os.path.abspath(fpath)
+        (regex, fpath, start_addr, end_addr, arg5) = utils.normalize_argv(arg, 5)
+        if pid == None and arg5 != None:
+            pid = arg5
         regex = str(regex)
         addrs = e.get_addrs_by_regex(regex, start_addr=start_addr, end_addr=end_addr)
         if addrs == []:
@@ -409,14 +411,17 @@ class ExgdbCmdMethods(object):
         bp_nrs = []
         addr = addrs[0]
         addr = hex(addr)
-        c.tracepoint("*" + addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, debug=debug, source=source, source_ret=source_ret)
+        def function():
+            c.tracelog(fpath, pid=pid)
+            gdb.execute("shell cat " + fpath + " | tail -1")
+        c.tracepoint("*" + addr, fn=function)
         bp_info_list = e.get_breakpoints()
         last_binfo = bp_info_list[-1]
         bp_nr = int(last_binfo[0])
         bp_nrs.append(bp_nr)
         for addr in addrs[1:]:
             addr = hex(addr)
-            c.tracepoint("*" + addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, debug=debug, source=source, source_ret=source_ret)
+            c.tracepoint("*" + addr, fn=function)
             bp_nr += 1
             bp_nrs.append(bp_nr)
         return bp_nrs
@@ -1018,6 +1023,25 @@ class ExgdbCmdMethods(object):
     vim = edit
     emacs = edit
 
+    def tracemode(self, *arg, pid=None):
+        """
+        tracemode
+        Usage:
+            MYNAME <on/off>
+        """
+        print("[+]tracemode: on")
+        (mode, fpath, start_addr, end_addr, arg5) = utils.normalize_argv(arg, 5)
+        if pid == None and arg5 != None:
+            pid = arg5
+        if pid == None:
+            pid = e.getpid()
+        f = File(fpath)
+        if f.exist():
+            f.rm()
+        f.create()
+        if mode == "on":
+            c.rtracepoint(".*", fpath, start_addr, end_addr, pid=pid)
+
     def tracecontinue(self, *arg):
         """
         tracing continue
@@ -1061,13 +1085,16 @@ class ExgdbCmdMethods(object):
         config.Option.set("clearscr", clearscr)
         config.Option.set("context", context_opts)
 
-    def tracelog(self, *arg):
+    def tracelog(self, *arg, pid=None):
         """
         tracing continue
         Usage:
             MYNAME log_filename
         """
-        (log_filename, ) = utils.normalize_argv(arg, 1)
+        (log_filename, _pid) = utils.normalize_argv(arg, 2)
+        if _pid == None:
+            _pid = pid
+        pid = _pid
         f_log = File(log_filename)
         symbol_memo = "symbol_memo.txt"
         f_symbol_memo = File(symbol_memo)
@@ -1076,7 +1103,7 @@ class ExgdbCmdMethods(object):
         if not f_symbol_memo.exist():
             f_symbol_memo.create()
         pc = e.getreg("pc")
-        chain = e.examine_mem_reference(pc)
+        chain = e.examine_mem_reference(pc, pid=pid)
         text = utils.format_reference_chain(chain)
         asm_str = r_asmStr.findall(text)
         if len(asm_str) > 0:
