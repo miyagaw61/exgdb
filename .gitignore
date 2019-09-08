@@ -6,3 +6,4 @@ buf
 gdbrc.py
 exgdb.py.disabled
 *.disass
+*.bpnrs
