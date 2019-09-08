@@ -806,6 +806,8 @@ class ExgdbCmdMethods(object):
             MYNAME <addr> <value>
         """
         (addr, value) = utils.normalize_argv(arg, 2)
+        (arch, bits) = e.getarch()
+        capsize = int(bits / 8)
         for i in range(capsize):
             gdb.execute("peda_patch " + str(addr+i) + " 0", to_string=True)
         gdb.execute("peda_patch " + str(addr) + " " + hex(value), to_string=True)
