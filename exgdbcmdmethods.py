@@ -356,8 +356,8 @@ class ExgdbCmdMethods(object):
         """
         tracepoint
         """
-        (addr, arg2, arg3, arg4, arg5) = utils.normalize_argv(arg, 5)
-        for argN in [arg2, arg3, arg4, arg5]:
+        (addr, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) = utils.normalize_argv(arg, 9)
+        for argN in [arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9]:
             if argN == None:
                 continue
             if argN == "stop=True":
@@ -376,6 +376,50 @@ class ExgdbCmdMethods(object):
                 source_ret = os.path.abspath(fpath)
         BpHandler(addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, debug=debug, source=source, source_ret=source_ret)
         return
+
+    def rtracepoint(self, *arg, fn=None, ret_fn=None, source=None, source_ret=None, stop=False, stop_ret=False, ret=False, debug=False):
+        """
+        regex break
+        Usage:
+            MYNAME regex(intel)
+        """
+        (regex, start_addr, end_addr, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) = utils.normalize_argv(arg, 11)
+        for argN in [arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11]:
+            if argN == None:
+                continue
+            if argN == "stop=True":
+                stop = True
+            elif argN == "stop_ret=True":
+                stop_ret = True
+            elif argN == "ret=True":
+                ret = True
+            elif argN == "debug=True":
+                debug = True
+            elif argN[:7] == "source=":
+                fpath = argN[7:]
+                source = os.path.abspath(fpath)
+            elif argN[:11] == "source_ret=":
+                fpath = argN[11:]
+                source_ret = os.path.abspath(fpath)
+        regex = str(regex)
+        addrs = e.get_addrs_by_regex(regex, start_addr=start_addr, end_addr=end_addr)
+        if addrs == []:
+            print("Not found")
+            return -1
+        bp_nrs = []
+        addr = addrs[0]
+        addr = hex(addr)
+        c.tracepoint("*" + addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, debug=debug, source=source, source_ret=source_ret)
+        bp_info_list = e.get_breakpoints()
+        last_binfo = bp_info_list[-1]
+        bp_nr = int(last_binfo[0])
+        bp_nrs.append(bp_nr)
+        for addr in addrs[1:]:
+            addr = hex(addr)
+            c.tracepoint("*" + addr, stop=stop, ret=ret, stop_ret=stop_ret, fn=fn, ret_fn=ret_fn, debug=debug, source=source, source_ret=source_ret)
+            bp_nr += 1
+            bp_nrs.append(bp_nr)
+        return bp_nrs
 
     def rbreak(self, *arg, silent=False):
         """
