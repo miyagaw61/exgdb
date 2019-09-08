@@ -1090,18 +1090,39 @@ class ExgdbCmdMethods(object):
         Usage:
             MYNAME <on/off>
         """
-        print("[+]tracemode: on")
         (mode, fpath, start_addr, end_addr, arg5) = utils.normalize_argv(arg, 5)
         if pid == None and arg5 != None:
             pid = arg5
         if pid == None:
             pid = e.getpid()
-        f = File(fpath)
-        if f.exist():
-            f.rm()
-        f.create()
         if mode == "on":
-            c.rtracepoint(".*", fpath, start_addr, end_addr, pid=pid)
+            f = File(fpath)
+            if f.exist():
+                f.rm()
+            f.create()
+        exgdbpath = os.environ.get("EXGDBPATH")
+        fpath = e.getfile()
+        fname = os.path.basename(fpath)
+        out, err = Shell("shell md5sum " + fpath).readlines()
+        md5sum = ""
+        if out != []:
+            md5sum = out[0]
+            md5sum = md5sum.split()[0]
+            md5sum = str(md5sum)
+        f_bpnrs = File(exgdbpath + "/.cache/" + md5sum + ".bpnrs")
+        if mode == "on":
+            bp_nrs = c.rtracepoint(".*", fpath, start_addr, end_addr, pid=pid)
+            print(red("\n[+]tracemode: on\n", "bold"))
+            if f_bpnrs.exist():
+                f_bpnrs.rm()
+            f_bpnrs.create()
+            f_bpnrs.write(repr(bp_nrs))
+        elif mode == "off":
+            bp_nrs = f_bpnrs.read()
+            bp_nrs = eval(bp_nrs)
+            c.alldelete(bp_nrs)
+            print(blue("\n[+]tracemode: off\n", "bold"))
+
 
     def tracecontinue(self, *arg):
         """
