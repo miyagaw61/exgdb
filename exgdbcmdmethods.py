@@ -66,7 +66,7 @@ class BpRetHandler(gdb.FinishBreakpoint):
             return False
 
 class BpHandler(gdb.Breakpoint):
-    def __init__(self, id_str, stop=False, ret=False, stop_ret=False, fn=None, ret_fn=None, debug=False, source=None, source_ret=None, debug_ret=False):
+    def __init__(self, id_str, stop=False, ret=False, stop_ret=False, fn=None, ret_fn=None, debug=False, source=None, source_ret=None):
         gdb.Breakpoint.__init__(self, id_str, type=gdb.BP_BREAKPOINT, internal=False)
         self.id = id_str
         self.ret = ret
@@ -75,19 +75,18 @@ class BpHandler(gdb.Breakpoint):
         self.fn = fn
         self.ret_fn = ret_fn
         self.debug = debug
-        self.debug_ret = debug_ret
         self.source = source
         self.source_ret = source_ret
 
     def stop(self):
         if self.debug:
-            print("[+]enter detected: " + self.id)
+            print("[+]enter  detected: " + self.id)
         if self.fn != None:
             self.fn()
         if self.source != None:
             gdb.execute("source " + self.source)
         if self.ret or self.source_ret:
-            BpRetHandler(self.id, stop=self.stop_ret, fn=self.ret_fn, source=self.source_ret, debug=self.debug_ret)
+            BpRetHandler(self.id, stop=self.stop_ret, fn=self.ret_fn, source=self.source_ret, debug=self.debug)
         if self.stop_:
             return True
         else:
