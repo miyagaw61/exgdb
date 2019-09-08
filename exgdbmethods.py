@@ -233,7 +233,7 @@ class ExgdbMethods():
             size = chunkinfo['aligned_size']
         return lst
 
-    def get_addrs_by_regex(self, regex):
+    def get_addrs_by_regex(self, regex, start_addr=None, end_addr=None):
         fpath = e.getfile()
 
         out, err = Shell("md5sum %s" % fpath).readlines()
@@ -257,7 +257,10 @@ class ExgdbMethods():
         for line in lines:
             line = line.split()[0]
             addr = int(line, 16)
-            addrs.append(addr)
+            if start_addr == None and end_addr == None:
+                addrs.append(addr)
+            elif start_addr < addr < end_addr:
+                addrs.append(addr)
         return addrs
 
     def to_bytes(self, i, size):
