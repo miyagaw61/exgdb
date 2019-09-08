@@ -762,7 +762,7 @@ class ExgdbCmdMethods(object):
 
         return 0
 
-    def strpatch(self, *arg):
+    def strpatch(self, *arg, null=False):
         """
         patch str to addr
         Usage:
@@ -772,30 +772,54 @@ class ExgdbCmdMethods(object):
         value = None
         size = None
 
+        def is_null_option(arg):
+            if type(arg) == str and len(arg) > 8 and arg[:5] == "null=":
+                return True
+            else:
+                return False
+
+        def get_null(arg):
+            if arg[5:10] == "True":
+                null = True
+            else:
+                null = False
+            return null
+
         argc = len(arg)
         if argc >= 1:
-            addr = arg[0]
-            if type(addr) != int:
-                addr = int(addr, 0)
+            if is_null_option(arg[0]):
+                null = get_null(arg[0])
+            else:
+                addr = arg[0]
+                if type(addr) != int:
+                    addr = int(addr, 0)
         if argc >= 2:
-            value = arg[1]
-            value = str(value)
+            if is_null_option(arg[1]):
+                null = get_null(arg[1])
+            else:
+                value = arg[1]
+                value = str(value)
         if argc >= 3:
-            size = arg[2]
-            if type(size) != int:
-                size = int(size, 0)
+            if is_null_option(arg[2]):
+                null = get_null(arg[2])
+            else:
+                size = arg[2]
+                if type(size) != int:
+                    size = int(size, 0)
+        if argc >= 4:
+            if is_null_option(arg[3]):
+                null = get_null(arg[3])
 
         if size != None:
             for i in range(size):
                 gdb.execute("peda_patch " + str(addr+i) + " 0", to_string=True)
 
-        if not value.isdigit():
-            gdb.execute("peda_patch " + str(addr) + " " + value, to_string=True)
-            return 0
-
         chr_list = list(value)
+        str_size = len(chr_list)
         for (i, x) in enumerate(chr_list):
             gdb.execute("peda_patch " + str(addr+i) + " " + hex(ord(x)), to_string=True)
+        if null == True:
+            gdb.execute("peda_patch " + str(addr+str_size) + " 0", to_string=True) 
 
         return 0
 
