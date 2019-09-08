@@ -59,6 +59,36 @@ class ExgdbMethods():
             #    (start, end, perm, name) = vmrange
         return text
 
+    def readmem(self, address, size):
+        """
+        Customized readmem from https://github.com/longld/peda
+
+        Args:
+            - address: start address to read (Int)
+            - size: bytes to read (Int)
+
+        Returns:
+            - memory content (raw bytes)
+        """
+        # try fast dumpmem if it works
+        mem = self.dumpmem(address, address+size)
+        if mem is not None:
+            return mem
+
+        # failed to dump, use slow x/gx way
+        mem = ""
+        try:
+            cmd = "x/%dbx 0x%x" % (size, address)
+            out = gdb.execute(cmd, to_string=True)
+        except:
+            return None
+        if out:
+            for line in out.splitlines():
+                bytes = line.split(":\t")[-1].split()
+                mem += "".join([chr(int(c, 0)) for c in bytes])
+
+        return mem
+
     def read_int(self, address, intsize=None):
         """
         Customized read_int from https://github.com/longld/peda
