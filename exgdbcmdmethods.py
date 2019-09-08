@@ -805,12 +805,32 @@ class ExgdbCmdMethods(object):
         Usage:
             MYNAME <addr> <value>
         """
-        (addr, value) = utils.normalize_argv(arg, 2)
+        addr = None
+        value = None
+        size = None
+
+        argc = len(arg)
+        if argc >= 1:
+            addr = arg[0]
+            if type(addr) != int:
+                addr = int(addr, 0)
+        if argc >= 2:
+            value = arg[1]
+            value = str(value)
+        if argc >= 3:
+            size = arg[2]
+            if type(size) != int:
+                size = int(size, 0)
+
+        if size != None:
+            for i in range(size):
+                gdb.execute("peda_patch " + str(addr+i) + " 0", to_string=True)
+
         (arch, bits) = e.getarch()
         capsize = int(bits / 8)
         for i in range(capsize):
             gdb.execute("peda_patch " + str(addr+i) + " 0", to_string=True)
-        gdb.execute("peda_patch " + str(addr) + " " + hex(value), to_string=True)
+        gdb.execute("peda_patch " + str(addr) + " " + hex(int(value, 0)), to_string=True)
 
         return 0
 
