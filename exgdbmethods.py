@@ -259,3 +259,96 @@ class ExgdbMethods():
             addr = int(line, 16)
             addrs.append(addr)
         return addrs
+
+    def to_bytes(self, i, size):
+        byte_data = i.to_bytes(size, 'little')
+        bytes_list = list(byte_data)
+        return bytes_list
+
+    def examine_mem_value(self, value):
+        """
+        Customized examine_mem_value from https://github.com/longld/peda
+        Args:
+            - value: value to examine (Int)
+
+        Returns:
+            - tuple of (value(Int), type(String), next_value(Int))
+        """
+        def examine_data(value, bits=32):
+            out = self.execute_redirect("x/%sx 0x%x" % ("g" if bits == 64 else "w", value))
+            if out:
+                v = out.split(":\t")[-1].strip()
+                if is_printable(int2hexstr(to_int(v), bits//8)):
+                    out = self.execute_redirect("x/s 0x%x" % value)
+            return out
+
+        result = (None, None, None)
+        if value is None:
+            return result
+
+        maps = self.get_vmmap()
+        binmap = self.get_vmmap("binary")
+
+        (arch, bits) = self.getarch()
+        if not self.is_address(value): # a value
+            result = (to_hex(value), "value", "")
+            return result
+        else:
+            (_, _, _, mapname) = self.get_vmrange(value)
+
+        # check for writable first so rwxp mem will be treated as data
+        if self.is_writable(value): # writable data address
+            out = examine_data(value, bits)
+            if out:
+                result = (to_hex(value), "data", out.split(":", 1)[1].strip())
+
+        elif self.is_executable(value): # code/rodata address
+            if self.is_address(value, binmap):
+                headers = self.elfheader()
+            else:
+                headers = self.elfheader_solib(mapname)
+
+            if headers:
+                headers = sorted(headers.items(), key=lambda x: x[1][1])
+                for (k, (start, end, type)) in headers:
+                    if value >= start and value < end:
+                        if type == "code":
+                            out = self.get_disasm(value)
+                            if "\n" in out:
+                                n_idx = out.index("\n")
+                                out_before = out[:n_idx]
+                                out_after = out[n_idx+1:]
+                                out = out_before
+                                while out_after[0] == " ":
+                                    out_after = out_after[1:]
+                                out += out_after
+                            p = re.compile(".*?0x[^ ]*?\s(.*)")
+                            m = p.search(out)
+                            result = (to_hex(value), "code", m.group(1))
+                        else: # rodata address
+                            out = examine_data(value, bits)
+                            result = (to_hex(value), "rodata", out.split(":", 1)[1].strip())
+                        break
+
+                if result[0] is None: # not fall to any header section
+                    out = examine_data(value, bits)
+                    result = (to_hex(value), "rodata", out.split(":", 1)[1].strip())
+
+            else: # not belong to any lib: [heap], [vdso], [vsyscall], etc
+                out = self.get_disasm(value)
+                if "(bad)" in out:
+                    out = examine_data(value, bits)
+                    result = (to_hex(value), "rodata", out.split(":", 1)[1].strip())
+                else:
+                    p = re.compile(".*?0x[^ ]*?\s(.*)")
+                    m = p.search(out)
+                    result = (to_hex(value), "code", m.group(1))
+
+        else: # readonly data address
+            out = examine_data(value, bits)
+            if out:
+                result = (to_hex(value), "rodata", out.split(":", 1)[1].strip())
+            else:
+                result = (to_hex(value), "rodata", "MemError")
+
+        return result
