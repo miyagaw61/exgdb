@@ -411,9 +411,25 @@ class ExgdbCmdMethods(object):
         Usage:
             MYNAME regex(intel)
         """
-        (regex, fpath, start_addr, end_addr, arg5) = utils.normalize_argv(arg, 5)
-        if pid == None and arg5 != None:
-            pid = arg5
+        (regex, fpath, start_addr, end_addr, arg5, arg6) = utils.normalize_argv(arg, 6)
+        def is_silent_option(arg):
+            if silent == False and type(arg) == str and len(arg) > 10 and arg[:7] == "silent=":
+                return True
+            else:
+                return False
+        def is_pid_option(arg):
+            if pid == None and type(arg) == str and len(arg) > 7 and arg[:4] == "pid=":
+                return True
+            else:
+                return False
+        if is_silent_option(arg5):
+            silent = arg5[7:11]
+        elif is_pid_option(arg5):
+            pid = arg5[4:8]
+        if is_silent_option(arg6):
+            silent = arg6[7:11]
+        elif is_pid_option(arg6):
+            pid = arg6[4:8]
         regex = str(regex)
         addrs = e.get_addrs_by_regex(regex, start_addr=start_addr, end_addr=end_addr)
         if addrs == []:
@@ -424,7 +440,8 @@ class ExgdbCmdMethods(object):
         addr = hex(addr)
         def function():
             c.tracelog(fpath, pid=pid)
-            gdb.execute("shell cat " + fpath + " | tail -1")
+            if not silent:
+                gdb.execute("shell cat " + fpath + " | tail -1")
         c.tracepoint("*" + addr, fn=function)
         bp_info_list = e.get_breakpoints()
         last_binfo = bp_info_list[-1]
@@ -1084,15 +1101,31 @@ class ExgdbCmdMethods(object):
     vim = edit
     emacs = edit
 
-    def tracemode(self, *arg, pid=None):
+    def tracemode(self, *arg, silent=False, pid=None):
         """
         tracemode
         Usage:
             MYNAME <on/off>
         """
-        (mode, logFile_path, start_addr, end_addr, arg5) = utils.normalize_argv(arg, 5)
-        if pid == None and arg5 != None:
-            pid = arg5
+        (mode, logFile_path, start_addr, end_addr, arg5, arg6) = utils.normalize_argv(arg, 6)
+        def is_silent_option(arg):
+            if silent == False and type(arg) == str and len(arg) > 10 and arg[:7] == "silent=":
+                return True
+            else:
+                return False
+        def is_pid_option(arg):
+            if pid == None and type(arg) == str and len(arg) > 7 and arg[:4] == "pid=":
+                return True
+            else:
+                return False
+        if is_silent_option(arg5):
+            silent = arg5[7:11]
+        elif is_pid_option(arg5):
+            pid = arg5[4:8]
+        if is_silent_option(arg6):
+            silent = arg6[7:11]
+        elif is_pid_option(arg6):
+            pid = arg6[4:8]
         if pid == None:
             pid = e.getpid()
         if mode == "on":
@@ -1111,7 +1144,7 @@ class ExgdbCmdMethods(object):
             md5sum = str(md5sum)
         f_bpnrs = File(exgdbpath + "/.cache/" + md5sum + ".bpnrs")
         if mode == "on":
-            bp_nrs = c.rtracepoint(".*", logFile_path, start_addr, end_addr, pid=pid)
+            bp_nrs = c.rtracepoint(".*", logFile_path, start_addr, end_addr, silent=silent, pid=pid)
             print(red("\n[+]tracemode: on\n", "bold"))
             if f_bpnrs.exist():
                 f_bpnrs.rm()
