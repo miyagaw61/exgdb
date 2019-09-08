@@ -352,3 +352,100 @@ class ExgdbMethods():
                 result = (to_hex(value), "rodata", "MemError")
 
         return result
+
+    def parse_arg(self, arg_str, text, f_log, f_symbol_memo):
+        b = 0
+        appending_one_log = ""
+        arg_data_str = ""
+        arg_reg_str = ""
+        arg_reg_data_str = ""
+        # arg_str has symbol
+        if "#" in arg_str:
+            f_symbol_memo.add(hex(pc) + ": " + arg_str + "\n")
+            arg_str_before = r_comment_before.sub("", arg_str)
+            arg_str_after = r_comment.sub("", arg_str)
+            arg_str_after = r_comment1.sub("", arg_str_after)
+            arg_str = arg_str_before
+            arg_str += "["
+            arg_str += arg_str_after
+            arg_str += "]"
+        # arg_str is ptr
+        if "PTR" in arg_str:
+            typ = ""
+            if "QWORD PTR" in arg_str:
+                typ = "long"
+                b = 8
+            elif "DWORD PTR" in arg_str:
+                typ = "int"
+                b = 4
+            elif "WORD PTR" in arg_str:
+                typ = "short"
+                b = 2
+            elif "BYTE PTR" in arg_str:
+                typ = "char"
+                b = 1
+            else:
+                print("unknown error")
+                f_log.add("unknown error\n")
+                return
+            try:
+                idx_start = arg_str.index("[") + 1
+                idx_end = arg_str.index("]")
+                appending_one_log = arg_str[:idx_end+1]
+                arg_str = arg_str[idx_start:idx_end]
+                arg_data_str = e.parse_and_eval(arg_str)
+
+                # remove symbol
+                if "<" in arg_data_str:
+                    idx = arg_data_str.index("<") - 1
+                    f_symbol_memo.add(hex(pc) + ": " + arg_data_str + "\n")
+                    arg_data_str = arg_data_str[:idx]
+
+                arg_reg_str = ""
+                for ch in list(arg_str):
+                    if ch in ["+", "-"]:
+                        break
+                    arg_reg_str += ch
+                arg_reg_data_str = hex(e.getreg(arg_reg_str))
+            except: # for segment register
+                idx_start = arg_str.index("PTR ") + 4
+                arg_str = arg_str[idx_start:]
+                appending_one_log = arg_str
+                arg_data_str = arg_str
+            new_arg_str = "(" + typ + "*)" + arg_data_str
+            text = text.replace("arg_str", new_arg_str)
+        # arg_str is register
+        elif arg_str in regs:
+            appending_one_log = arg_str
+            arg_data_str = e.getreg(arg_str)
+            arg_data_str = hex(arg_data_str)
+        # arg_str is imm
+        else:
+            # arg_str has symbol ( TODO: this is difficult for me now )
+            if "#" in arg_str:
+                f_symbol_memo.add(hex(pc) + ": " + arg_str + "\n")
+                arg_str_before = r_comment_before.sub("", arg_str)
+                arg_str_after = r_comment.sub("", arg_str)
+                arg_str_after = r_comment1.sub("", arg_str_after)
+                arg_str = arg_str_before
+                arg_str += "["
+                arg_str += arg_str_after
+                arg_str += "]"
+                appending_one_log = ""
+            # arg_str is normal imm
+            elif arg_str != "":
+                appending_one_log = arg_str
+                if arg_str[0] == "[":
+                    arg_str = arg_str[1:-1]
+                    arg_reg_str = ""
+                    for ch in list(arg_str):
+                        if ch in ["+", "-"]:
+                            break
+                        arg_reg_str += ch
+                    arg_reg_data_str = hex(e.getreg(arg_reg_str))
+                arg_data_str = e.parse_and_eval(arg_str)
+            # arg_str is ""
+            else:
+                arg_data_str = ""
+                appending_one_log = ""
+        return (arg_str, arg_data_str, arg_reg_str, arg_reg_data_str, b, appending_one_log)

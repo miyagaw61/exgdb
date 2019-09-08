@@ -1,3 +1,49 @@
+r_asmStr = re.compile(r"0x[0-9a-f]*\x1b\[0m\s\((.*)\)")
+r_asmStr_2 = re.compile(r"<.*>:\s*(.*)")
+r_asmStr_3 = re.compile(r"^([^\s]*)\s*(.*)")
+r_args = re.compile(r"(.*),(.*)")
+regs = sum(REGISTERS.values(), [])
+asm_ops = {};
+asm_ops["mov"] = "mov_reg_imm:mov_reg_reg:mov_reg_ptr:mov_ptr_imm:mov_ptr_reg:mov_ptr_imm"
+asm_ops["mov_reg_imm"] = "Write[arg1]:arg2"
+asm_ops["mov_reg_reg"] = "Read[arg2]:arg2_data,Write[arg1]:arg2_data"
+asm_ops["mov_reg_ptr"] = "Read[arg2_reg]:arg2_reg_data,Read[arg2_data]:main_data,Write[arg1]:main_data"
+asm_ops["mov_ptr_imm"] = "Read[arg1_reg]:arg1_reg_data,Write[arg1_data]:arg2"
+asm_ops["mov_ptr_reg"] = "Read[arg2]:arg2_data,Read[arg1_reg]:arg1_reg_data,Write[arg1_data]:arg2_data"
+asm_ops["mov_ptr_ptr"] = "Read[arg2_reg]:arg2_reg_data,Read[arg2_data]:main_data,Read[arg1_reg]:arg1_reg_data,Write[arg1_data]:main_data"
+asm_ops["lea"] = "Read[arg2_reg]:arg2_reg_data,Write[arg1]:arg2_data"
+asm_ops["cmp"] = "Read[arg1]:arg1_data"
+asm_ops["add"]     = "add_reg_reg:add_reg_imm:add_reg_ptr:add_ptr_imm:add_ptr_reg"
+asm_ops["add_reg_reg"] = "Read[arg1]:arg1_data,Read[arg2]:arg2_data,Write[arg1]:new_data"
+asm_ops["add_reg_imm"] = "Read[arg1]:arg1_data,Write[arg1]:new_data"
+asm_ops["add_reg_ptr"] = "Read[arg1]:arg1_data,Read[arg2_reg]:arg2_reg_data,Read[arg2_data]:org_data,Write[arg1]:new_data"
+asm_ops["add_ptr_imm"] = ""
+asm_ops["add_ptr_reg"] = ""
+asm_ops["sub"]     = "sub_reg_reg:sub_reg_imm:sub_reg_ptr:sub_ptr_imm:sub_ptr_reg"
+asm_ops["sub_reg_reg"] = "Read[arg1]:arg1_data,Read[arg2]:arg2_data,Write[arg1]:new_data"
+asm_ops["sub_reg_imm"] = "Read[arg1]:arg1_data,Write[arg1]:new_data"
+asm_ops["sub_reg_ptr"] = "Read[arg1]:arg1_data,Read[arg2_reg]:arg2_reg_data,Read[arg2_data]:org_data,Write[arg1]:new_data"
+asm_ops["sub_ptr_imm"] = ""
+asm_ops["sub_ptr_reg"] = ""
+asm_ops["nop"] = ""
+(arch, bits) = peda.getarch()
+if bits == 64:
+    asm_ops["push"] = "Read[rsp]:sp_addr,Write[rsp]:new_sp_addr,Read[rsp]:new_sp_addr,Write[new_sp_addr]:arg1_data"
+if bits == 32:
+    asm_ops["push"] = "Read[esp]:sp_addr,Write[esp]:new_sp_addr,Read[esp]:new_sp_addr,Write[new_sp_addr]:arg1_data"
+if bits == 64:
+    asm_ops["ret"] = "Read[rsp]:sp_addr,Read[sp_addr]:sp_data,Write[rip]:sp_data,Read[rsp]:sp_addr,Write[rsp]new_sp_addr"
+else:
+    asm_ops["ret"] = "Read[esp]:sp_addr,Read[sp_addr]:sp_data,Write[rip]:sp_data,Read[esp]:sp_addr,Write[esp]new_sp_addr"
+if bits == 64:
+    asm_ops["leave"] = "Read[rbp]:bp_addr,Write[rsp]:bp_addr,Read[rsp]:sp_addr,Read[sp_addr]:sp_data,Write[rbp]:sp_data,Read[rsp]:sp_addr,Write[rsp]new_sp_addr"
+else:
+    asm_ops["leave"] = "Read[ebp]:bp_addr,Write[esp]:bp_addr,Read[esp]:sp_addr,Read[sp_addr]:sp_data,Write[ebp]:sp_data,Read[esp]:sp_addr,Write[esp]:new_sp_addr"
+#r_comment = re.compile(r"\s*#.*$")
+r_comment_before = re.compile(r"\[.*$")
+r_comment = re.compile(r".*#\s")
+r_comment2 = re.compile(r"\s.*$")
+
 class BpRetHandler(gdb.FinishBreakpoint):
     def __init__(self, id_str, stop=False, fn=None, source=None, debug=False):
         gdb.FinishBreakpoint.__init__(self, gdb.newest_frame(), internal=True)
@@ -1324,3 +1370,234 @@ class ExgdbCmdMethods(object):
         config.Option.set("clearscr", clearscr)
         config.Option.set("context", context_opts)
 
+    def tracelog(self, *arg):
+        """
+        tracing continue
+        Usage:
+            MYNAME log_filename
+        """
+        (log_filename, ) = utils.normalize_argv(arg, 1)
+        f_log = File(log_filename)
+        symbol_memo = "symbol_memo.txt"
+        f_symbol_memo = File(symbol_memo)
+        if not f_log.exist():
+            f_log.create()
+        if not f_symbol_memo.exist():
+            f_symbol_memo.create()
+        pc = e.getreg("pc")
+        chain = e.examine_mem_reference(pc)
+        text = utils.format_reference_chain(chain)
+        asm_str = r_asmStr.findall(text)
+        if len(asm_str) > 0:
+            asm_str = asm_str[0]
+        else:
+            print("error")
+            return
+        if asm_str[0] == "<":
+            asm_str = r_asmStr_2.findall(asm_str)
+            if len(asm_str) > 0:
+                asm_str = asm_str[0]
+        asm_str = r_asmStr_3.findall(asm_str)
+        arg1 = ""
+        arg2 = ""
+        if len(asm_str) > 0:
+            asm_op = asm_str[0][0]
+            asm_args = asm_str[0][1]
+            asm_arg1_arg2 = r_args.findall(asm_args)
+            if asm_arg1_arg2 == []:
+                arg1 = asm_args
+            if len(asm_arg1_arg2) > 0:
+                (arg1, arg2) = asm_arg1_arg2[0]
+            if asm_args == "":
+                one_log = hex(pc) + "!" + asm_op
+            else:
+                one_log = hex(pc) + "!" + asm_op + " "
+        else:
+            print("error")
+            return
+
+        # TEST CASE
+        #asm_op = "cmp"
+        #arg1 = "rax"
+        #arg2 = "DWORD PTR [eip+0x20093a]"
+
+        try:
+            # asm_op convert
+            if asm_op == "mov":
+                if arg1 in regs:
+                    asm_op += "_reg"
+                elif "PTR" in arg1:
+                    asm_op += "_ptr"
+                else:
+                    asm_op += "_imm"
+                if arg2 in regs:
+                    asm_op += "_reg"
+                elif "PTR" in arg2:
+                    asm_op += "_ptr"
+                else:
+                    asm_op += "_imm"
+            elif asm_op == "add":
+                if arg1 in regs:
+                    asm_op += "_reg"
+                elif "PTR" in arg1:
+                    asm_op += "_ptr"
+                else:
+                    asm_op += "_imm"
+                if arg2 in regs:
+                    asm_op += "_reg"
+                elif "PTR" in arg2:
+                    asm_op += "_ptr"
+                else:
+                    asm_op += "_imm"
+            elif asm_op == "sub":
+                if arg1 in regs:
+                    asm_op += "_reg"
+                elif "PTR" in arg1:
+                    asm_op += "_ptr"
+                else:
+                    asm_op += "_imm"
+                if arg2 in regs:
+                    asm_op += "_reg"
+                elif "PTR" in arg2:
+                    asm_op += "_ptr"
+                else:
+                    asm_op += "_imm"
+
+            text = asm_ops[asm_op]
+
+            (arg1, arg1_data, arg1_reg, arg1_reg_data, b, appending_one_log) = \
+                e.parse_arg(arg1, text, f_log, f_symbol_memo)
+            one_log += appending_one_log
+            (arg2, arg2_data, arg2_reg, arg2_reg_data, b, appending_one_log) = \
+                e.parse_arg(arg2, text, f_log, f_symbol_memo)
+            if appending_one_log != "":
+                one_log += "," + appending_one_log
+
+            # uniq args handling for "asm_op"
+            if asm_op in asm_ops["mov"].split(":"):
+                main_data = e.read_int(int(arg2_data, 0))
+                if main_data == None:
+                    main_data = "CAN NOT ACCESS MEMORY"
+                else:
+                    main_data = hex(main_data)
+                text = text.replace("main_data", main_data)
+            elif asm_op in ["lea"]:
+                pass
+            elif asm_op in asm_ops["add"].split(":"):
+                org_data = e.read_int(int(arg2_data, 0))
+                if org_data != None:
+                    new_data = int(arg1_data, 0) + org_data
+                else:
+                    org_data = ""
+                    new_data = int(arg1_data, 0) + int(arg2_data, 0)
+                new_data = hex(new_data)
+                text = text.replace("new_data", new_data)
+            elif asm_op in asm_ops["sub"].split(":"):
+                new_data = int(arg1_data, 0) - int(arg2_data, 0)
+                new_data = hex(new_data)
+                text = text.replace("new_data", new_data)
+            elif asm_op == "push":
+                text = asm_ops[asm_op]
+                (arch, bits) = e.getarch()
+                if bits == 64:
+                    sp_addr = e.getreg("rsp")
+                else:
+                    sp_addr = e.getreg("esp")
+                capsize = bits / 8
+                new_sp_addr = int(sp_addr + capsize)
+                new_sp_addr = hex(new_sp_addr)
+                sp_addr = hex(sp_addr)
+                text = text.replace("new_sp_addr", new_sp_addr)
+                text = text.replace("sp_addr", sp_addr)
+                text = text.replace("arg1_data", arg1_data)
+            elif asm_op == "ret":
+                text = asm_ops[asm_op]
+                (arch, bits) = e.getarch()
+                if bits == 64:
+                    sp_addr = e.getreg("rsp")
+                else:
+                    sp_addr = e.getreg("esp")
+                capsize = bits / 8
+                new_sp_addr = int(sp_addr + capsize)
+                sp_data = e.read_int(sp_addr)
+                sp_addr = hex(sp_addr)
+                new_sp_addr = hex(new_sp_addr)
+                sp_data = hex(sp_data)
+                text = text.replace("new_sp_addr", new_sp_addr)
+                text = text.replace("sp_addr", sp_addr)
+                text = text.replace("sp_data", sp_data)
+            elif asm_op == "leave":
+                text = asm_ops[asm_op]
+                (arch, bits) = e.getarch()
+                if bits == 64:
+                    bp_addr = e.getreg("rbp")
+                else:
+                    bp_addr = e.getreg("ebp")
+                sp_addr = bp_addr
+                capsize = bits / 8
+                new_sp_addr = int(sp_addr + capsize)
+                sp_data = e.read_int(sp_addr)
+                sp_addr = hex(sp_addr)
+                new_sp_addr = hex(new_sp_addr)
+                sp_data = hex(sp_data)
+                bp_addr = hex(bp_addr)
+                text = text.replace("new_sp_addr", new_sp_addr)
+                text = text.replace("sp_addr", sp_addr)
+                text = text.replace("sp_data", sp_data)
+                text = text.replace("bp_addr", bp_addr)
+            elif asm_op == "cmp":
+                arg1_data = int(arg1_data, 16)
+                arg2_data = int(arg2_data, 16)
+                subed = arg1_data - arg2_data
+                #of = 0
+                sf = 0
+                zf = 0
+                #af = 0
+                #pf = 0
+                #cf = 0
+                #max_nr = int(2**bits / 2)
+                #if subed > max_nr or subed < -1 * max_nr:
+                #    of = 1
+                if subed < 0:
+                    sf = 1
+                if subed == 0:
+                    zf = 1
+                one_log += ",Write[sf]:" + str(sf) + ",Write[zf]:" + str(zf)
+            text = text.replace("arg1_reg_data", arg1_reg_data)
+            text = text.replace("arg1_reg", arg1_reg)
+            text = text.replace("arg2_reg_data", arg2_reg_data)
+            text = text.replace("arg2_reg", arg2_reg)
+            text = text.replace("arg1_data", arg1_data)
+            text = text.replace("arg1", arg1)
+            text = text.replace("arg2_data", arg2_data)
+            text = text.replace("arg2", arg2)
+            # finish
+            if text != "":
+                one_log += "!" + text
+        # unknown asm_op
+        except:
+            if not asm_op in ["call"]:
+                print("not implemented:", repr(asm_op), repr(arg1), repr(arg2))
+            if "#" in arg1:
+                f_symbol_memo.add(hex(pc) + ": " + arg1 + "\n")
+                arg1_before = r_comment_before.sub("", arg1)
+                arg1_after = r_comment.sub("", arg1)
+                arg1_after = r_comment1.sub("", arg1_after)
+                arg1 = arg1_before
+                arg1 += "["
+                arg1 += arg1_after
+                arg1 += "]"
+            if "#" in arg2:
+                f_symbol_memo.add(hex(pc) + ": " + arg2 + "\n")
+                arg2_before = r_comment_before.sub("", arg2)
+                arg2_after = r_comment.sub("", arg2)
+                arg2_after = r_comment2.sub("", arg2_after)
+                arg2 = arg2_before
+                arg2 += "["
+                arg2 += arg2_after
+                arg2 += "]"
+            if arg1 != "":
+                one_log += arg1
+                if arg2 != "":
+                    one_log += "," + arg2
+        f_log.add(one_log + "\n")
