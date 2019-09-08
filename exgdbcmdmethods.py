@@ -1337,7 +1337,7 @@ class ExgdbCmdMethods(object):
                 else:
                     sp_addr = e.getreg("esp")
                 capsize = bits / 8
-                new_sp_addr = int(sp_addr + capsize)
+                new_sp_addr = int(sp_addr - capsize)
                 new_sp_addr = hex(new_sp_addr)
                 sp_addr = hex(sp_addr)
                 text = text.replace("new_sp_addr", new_sp_addr)
