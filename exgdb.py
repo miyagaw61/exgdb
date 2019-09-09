@@ -86,14 +86,14 @@ class ExgdbCmdWrapper(gdb.Command):
         super(ExgdbCmdWrapper,self).__init__("exgdb",gdb.COMMAND_USER)
         self.cmds = cmds
 
-    def invoke(self,args,from_tty):
+    def invoke(self,arg,from_tty):
         self.dont_repeat()
-        arg = e.string_to_argv(args)
-        if len(arg) > 0 :
-            cmd = arg[0]
+        args = e.string_to_argv(arg)
+        if len(args) > 0 :
+            cmd = args[0]
             if cmd in self.cmds:
                 func = getattr(c,cmd)
-                func(*arg[1:])
+                func(*args[1:])
             else :
                 print("Unknown command")
         else :
