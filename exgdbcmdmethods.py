@@ -119,6 +119,18 @@ class ExgdbCmdMethods(object):
 
     setattr(ExgdbCmd, "_is_running", _is_running)
 
+    def start(self, *arg):
+        """
+        Start debugging
+        Usage:
+            start [buf filename]
+        """
+        (script_name, ) = utils.normalize_argv(arg, 1)
+        if script_name == None:
+            gdb.execute("start")
+        else:
+            gdb.execute("start < " + script_name)
+
     def st(self):
         """
         Start debugging with ./gdbrc.py

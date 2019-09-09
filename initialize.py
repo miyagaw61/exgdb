@@ -11,7 +11,7 @@ def load_to_exgdbcmd():
 
 def register_gdbcmd(cmds):
     for cmd in cmds:
-        if not cmd in ["next", "step", "nexti", "stepi", "n", "s", "ni", "si"]:
+        if not cmd in ["next", "step", "nexti", "stepi", "n", "s", "ni", "si", "start"]:
             ExgdbAlias(cmd,"exgdb %s" % cmd)
     ExgdbCmdWrapper()
 
