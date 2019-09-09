@@ -13,12 +13,12 @@ def register_gdbcmd(cmds):
     for cmd in cmds:
         if not cmd in ["next", "step", "nexti", "stepi", "n", "s", "ni", "si", "start"]:
             ExgdbAlias(cmd,"exgdb %s" % cmd)
-    ExgdbCmdWrapper()
+    ExgdbCmdWrapper(cmds)
 
 def register_repeat_gdbcmd(repeat_commands):
     for cmd in repeat_commands:
         RepeatExgdbAlias(cmd,"rexgdb %s" % cmd)
-    RepeatExgdbCmdWrapper()
+    RepeatExgdbCmdWrapper(repeat_commands)
 
 load_to_exgdb()
 cmds = load_to_exgdbcmd()

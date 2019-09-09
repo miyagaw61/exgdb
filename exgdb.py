@@ -82,15 +82,16 @@ def import_other_plugins():
     import_from_importFile()
 
 class ExgdbCmdWrapper(gdb.Command):
-    def __init__(self):
+    def __init__(self, cmds):
         super(ExgdbCmdWrapper,self).__init__("exgdb",gdb.COMMAND_USER)
+        self.cmds = cmds
 
     def invoke(self,args,from_tty):
         self.dont_repeat()
         arg = e.string_to_argv(args)
         if len(arg) > 0 :
             cmd = arg[0]
-            if cmd in c.commands :
+            if cmd in self.cmds:
                 func = getattr(c,cmd)
                 func(*arg[1:])
             else :
@@ -109,15 +110,16 @@ class ExgdbAlias(gdb.Command):
         gdb.execute("%s %s" % (self.command,args))
 
 class RepeatExgdbCmdWrapper(gdb.Command):
-    def __init__(self):
+    def __init__(self, cmds):
         super(RepeatExgdbCmdWrapper,self).__init__("rexgdb",gdb.COMMAND_USER)
+        self.cmds = cmds
 
     def invoke(self,args,from_tty):
         #self.dont_repeat()
         arg = e.string_to_argv(args)
         if len(arg) > 0 :
             cmd = arg[0]
-            if cmd in c.repeat_commands :
+            if cmd in self.cmds:
                 func = getattr(c,cmd)
                 func(*arg[1:])
             else :
