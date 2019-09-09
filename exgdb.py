@@ -15,6 +15,7 @@ import utils
 import exutils
 
 class Exgdb():
+    THISDIR = ""
     def __init__(self):
         pass
 
@@ -33,18 +34,19 @@ def import_topFunctions(fname):
             new_function = eval(code)
             setattr(Exgdb, function_name, new_function)
 
-def import_from_importFile():
-    importFile_names = Shell("ls -1 %s/plugins/*/import_to_exgdb.py" % exgdbpath).readlines()[0]
-    if len(importFile_names) < 1: return
-    for importFile_name in importFile_names:
-        if not File(importFile_name).exist(): continue
-        plugin_name_chrs = list(importFile_name.replace("%s/plugins/" % exgdbpath, ""))
+def import_from_exportFile():
+    exportFile_paths = Shell("ls -1 %s/plugins/*/export_to_exgdb.py" % exgdbpath).readlines()[0]
+    if len(exportFile_paths) < 1: return
+    for exportFile_path in exportFile_paths:
+        if not File(exportFile_path).exist(): continue
+        plugin_name_chrs = list(exportFile_path.replace("%s/plugins/" % exgdbpath, ""))
         plugin_name = ""
         for ch in plugin_name_chrs:
             if ch == "/": break
             plugin_name += ch
         if len(plugin_name) > len(".disabled") and plugin_name[-9:] == ".disabled": continue
-        gdb.execute("source %s" % importFile_name)
+        Exgdb.THISDIR = "%s/plugins/%s" % (exgdbpath, plugin_name)
+        gdb.execute("source %s" % exportFile_path)
 
 def import_other_plugins():
     if "PwnCmd" in globals():
@@ -79,7 +81,7 @@ def import_other_plugins():
                 cmd_obj = getattr(AngelHeapCmd, cmd)
                 setattr(ExgdbCmd, cmd, cmd_obj)
 
-    import_from_importFile()
+    import_from_exportFile()
 
 class ExgdbCmdWrapper(gdb.Command):
     def __init__(self):

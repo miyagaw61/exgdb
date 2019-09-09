@@ -230,17 +230,17 @@ Pwngdb: enabled
 
 ### 1. Prepare new plugin:
 
-You need "{any name}.py" and "import_to_exgdb.py".
+You need "{any name}.py" and "export_to_exgdb.py".
 
 - {any name}.py: main script of your plugin.
-- import_to_exgdb.py: setattr your functions to Exgdb or ExgdbCmd
+- export_to_exgdb.py: setattr your functions to Exgdb or ExgdbCmd
 
 ```
 $ pwd
 /path/to/myplugin
 $ ls
-myplugin.py import_to_exgdb.py
-$ cat import_to_exgdb.py
+myplugin.py export_to_exgdb.py
+$ cat export_to_exgdb.py
 cmds = [cmd for cmd in dir(MyPlugin) if callable(getattr(MyPlugin, cmd))]
 for cmd in cmds:
     if not cmd.startswith("_"):

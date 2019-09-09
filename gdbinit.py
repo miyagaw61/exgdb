@@ -9,7 +9,6 @@ pluginpath = exgdbpath + "/plugins"
 
 peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
 pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
-#yourplugin_is_enabled = os.path.exists("%s/yourplugin" % pluginpath)
 
 if peda_is_enabled:
     __file__ = "%s/peda/peda.py" % pluginpath
@@ -20,8 +19,6 @@ if pwngdb_is_enabled:
     gdb.execute("source %s/Pwngdb/angelheap/gdbinit.py" % pluginpath)
     gdb.execute("source %s/Pwngdb/angelheap/command_wrapper.py" % pluginpath)
     gdb.execute("source %s/Pwngdb/angelheap/angelheap.py" % pluginpath)
-#if yourplugin_is_enabled:
-#    gdb.execute("source %s/yourplugin/gdbinit.py" % pluginpath)
 
 if os.path.exists("%s/exgdb.py" % exgdbpath):
     gdb.execute("source %s/exgdb.py" % exgdbpath)
