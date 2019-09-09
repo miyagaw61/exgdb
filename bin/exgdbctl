@@ -129,6 +129,10 @@ elif args.command == "install":
                 exit()
             Shell("git clone %s %s" % (plugin_url, EXGDBPATH)).call()
         else:
+            if File("%s/%s" % (PLUGINS, plugin_name)).exist():
+                print("%s is already installed" % plugin_name)
+                print("try \"update\" or \"delete\"")
+                exit()
             Shell("git clone %s %s/%s" % (plugin_url, PLUGINS, plugin_name)).call()
     f_plugin = File("%s/%s" % (PLUGINS, plugin_name))
     install_successful_exgdb = plugin_name == "exgdb" and File(EXGDBPATH).exist()
