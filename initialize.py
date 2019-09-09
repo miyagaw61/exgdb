@@ -9,24 +9,24 @@ def load_to_exgdbcmd():
         setattr(ExgdbCmd, cmd, getattr(ExgdbCmdMethods, cmd))
     return cmds
 
-def register_gdbcmd(cmds):
-    for cmd in cmds:
+def register_gdbcmd():
+    for cmd in c.cmds:
         if not cmd in ["next", "step", "nexti", "stepi", "n", "s", "ni", "si", "start"]:
             ExgdbAlias(cmd,"exgdb %s" % cmd)
-    ExgdbCmdWrapper(cmds)
+    ExgdbCmdWrapper()
 
-def register_repeat_gdbcmd(repeat_commands):
-    for cmd in repeat_commands:
+def register_repeat_gdbcmd():
+    for cmd in c.repeat_cmds:
         RepeatExgdbAlias(cmd,"rexgdb %s" % cmd)
-    RepeatExgdbCmdWrapper(repeat_commands)
+    RepeatExgdbCmdWrapper()
 
 load_to_exgdb()
 cmds = load_to_exgdbcmd()
 
 e = Exgdb()
 c = ExgdbCmd()
-c.commands = cmds
-c.repeat_commands = ["radvance", "rad"]
+c.cmds = cmds
+c.repeat_cmds = ["radvance", "rad"]
 
-register_gdbcmd(c.commands)
-register_repeat_gdbcmd(c.repeat_commands)
+register_gdbcmd()
+register_repeat_gdbcmd()
