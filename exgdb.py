@@ -82,13 +82,11 @@ def import_other_plugins():
     import_from_importFile()
 
 class ExgdbCmdWrapper(gdb.Command):
-    """ Exgdb command wrapper """
     def __init__(self):
         super(ExgdbCmdWrapper,self).__init__("exgdb",gdb.COMMAND_USER)
 
     def invoke(self,args,from_tty):
         self.dont_repeat()
-        #arg = args.split()
         arg = e.string_to_argv(args)
         if len(arg) > 0 :
             cmd = arg[0]
@@ -102,7 +100,6 @@ class ExgdbCmdWrapper(gdb.Command):
         return
 
 class ExgdbAlias(gdb.Command):
-    """ Exgdb Alias """
     def __init__(self,alias,command):
         self.command = command
         super(ExgdbAlias,self).__init__(alias,gdb.COMMAND_NONE)
@@ -112,13 +109,11 @@ class ExgdbAlias(gdb.Command):
         gdb.execute("%s %s" % (self.command,args))
 
 class RepeatExgdbCmdWrapper(gdb.Command):
-    """ Exgdb command wrapper """
     def __init__(self):
         super(RepeatExgdbCmdWrapper,self).__init__("rexgdb",gdb.COMMAND_USER)
 
     def invoke(self,args,from_tty):
         #self.dont_repeat()
-        #arg = args.split()
         arg = e.string_to_argv(args)
         if len(arg) > 0 :
             cmd = arg[0]
@@ -132,7 +127,6 @@ class RepeatExgdbCmdWrapper(gdb.Command):
         return
 
 class RepeatExgdbAlias(gdb.Command):
-    """ Exgdb Alias """
     def __init__(self,alias,command):
         self.command = command
         super(RepeatExgdbAlias,self).__init__(alias,gdb.COMMAND_NONE)
