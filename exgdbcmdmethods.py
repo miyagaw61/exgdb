@@ -715,7 +715,16 @@ class ExgdbCmdMethods(object):
             MYNAME address
             MYNAME register [reg1 reg2]
         """
-        text = e.get_infox_text(*arg, color=color)
+        (address, regname, color) = utils.normalize_argv(arg, 3)
+        if address == None:
+            print("error: missing arguments")
+            return
+        if regname != None and regname[:6] == "color=":
+            regname = None
+            color = regname[6:]
+        if color != None and color[:6] == "color=":
+            color = color[6:]
+        text = e.get_infox_text(address, regname=regname, color=color)
         utils.msg(text)
         return
 
