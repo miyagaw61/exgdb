@@ -115,7 +115,7 @@ class ExgdbMethods():
             intsize = e.intsize()
         value = e.readmem(address, intsize)
         if value == 0:
-            return [0]*capsize
+            return [0]*intsize
         if value:
             byte_list = bin2ints(value)
             return byte_list
