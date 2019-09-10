@@ -238,6 +238,10 @@ class ExgdbMethods():
         f = File(disass_file)
         if not f.exist():
             codebase, codeend = codeaddr()
+            if start_addr == None:
+                codebase = start_addr
+            if end_addr == None:
+                codeend = end_addr
             disass_data = e.disassemble(hex(codebase), hex(codeend))
             print(disass_data)
             f.write(disass_data)
@@ -251,7 +255,7 @@ class ExgdbMethods():
             addr = int(line, 16)
             if start_addr == None and end_addr == None:
                 addrs.append(addr)
-            elif start_addr < addr < end_addr:
+            elif start_addr <= addr <= end_addr:
                 addrs.append(addr)
         return addrs
 
