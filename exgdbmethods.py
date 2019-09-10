@@ -162,7 +162,7 @@ class ExgdbMethods():
             arch = getarch()
         chunkaddr = victim
         if(victim < 100):
-            lst = getchunklist()
+            lst = get_chunklist()
             chunkaddr = lst[victim]
         if not get_heap_info() :
             print("Can't find heap info")
@@ -204,7 +204,7 @@ class ExgdbMethods():
         PI = size & 1
         return {'next': chunkaddr + aligned_size, 'prev_size': prev_size, 'aligned_size': aligned_size, 'nextsize': nextsize, 'used_flag': used_flag, 'fast_flag': fast_flag, 'size': size, 'showsize': showsize, 'NM': NM, 'IM': IM, 'PI': PI, 'fd': fd, 'bk': bk}
 
-    def getchunklist(self):
+    def get_chunklist(self):
         if capsize == 0 :
             arch = getarch()
         addr = getheapbase()

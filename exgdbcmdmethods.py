@@ -1002,7 +1002,7 @@ class ExgdbCmdMethods(object):
             arch = getarch()
         chunkaddr = victim
         if(victim < 100):
-            lst = getchunklist()
+            lst = get_chunklist()
             chunkaddr = lst[victim]
         if not get_heap_info() :
             print("Can't find heap info")
@@ -1115,7 +1115,7 @@ class ExgdbCmdMethods(object):
     sc = showchunk
 
     def showchunks(self):
-        chunklist = e.getchunklist()
+        chunklist = e.get_chunklist()
         for chunk_addr in chunklist:
             c.showchunk(chunk_addr)
 
@@ -1128,7 +1128,7 @@ class ExgdbCmdMethods(object):
     sch = showchunkheader
 
     def showchunkheaders(self, *arg):
-        chunklist = e.getchunklist()
+        chunklist = e.get_chunklist()
         for chunk_addr in chunklist:
             c.showchunkheader(chunk_addr)
 
