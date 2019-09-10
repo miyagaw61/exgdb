@@ -122,7 +122,7 @@ class ExgdbMethods():
         else:
             return None
 
-    def read_byte(self, address, intsize=None):
+    def read_byte(self, address):
         """
         Read one byte
 
@@ -133,8 +133,6 @@ class ExgdbMethods():
         Returns:
             - one byte data (Int)
         """
-        if not intsize:
-            intsize = e.intsize()
         value = e.read_int_bytes(address)[0]
         if value == 0:
             return 0
