@@ -141,18 +141,18 @@ class ExgdbMethods():
         else:
             return None
 
-    def read_bytes(self, addr, n):
+    def read_bytes(self, address, n):
         capsize = e.intsize()
         loopcnt = int(n/capsize)
         rem = n % capsize
         bytes_list = []
         for i in range(loopcnt):
-            for x in e.read_int_bytes(addr+capsize*i):
+            for x in e.read_int_bytes(address+capsize*i):
                 bytes_list.append(x)
         if rem == 0:
             return bytes_list
         for i in range(rem):
-            byte = e.read_byte(addr+i)
+            byte = e.read_byte(address+i)
             bytes_list.append(byte)
         return bytes_list
 
