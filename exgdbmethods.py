@@ -238,9 +238,9 @@ class ExgdbMethods():
         f = File(disass_file)
         if not f.exist():
             codebase, codeend = codeaddr()
-            if start_addr == None:
+            if start_addr != None:
                 codebase = start_addr
-            if end_addr == None:
+            if end_addr != None:
                 codeend = end_addr
             disass_data = e.disassemble(hex(codebase), hex(codeend))
             print(disass_data)
