@@ -156,7 +156,7 @@ class ExgdbMethods():
             bytes_list.append(byte)
         return bytes_list
 
-    def getchunkinfo(self, victim, showsize=None):
+    def get_chunkinfo(self, victim, showsize=None):
         global fastchunk
         if capsize == 0 :
             arch = getarch()
@@ -211,14 +211,14 @@ class ExgdbMethods():
         addr = addr + capsize*2
         lst = []
         lst.append(addr)
-        chunkinfo = e.getchunkinfo(addr)
+        chunkinfo = e.get_chunkinfo(addr)
         if chunkinfo == None:
             return lst
         addr = chunkinfo['next']
         size = chunkinfo['aligned_size']
         while(addr != -1 and size != 0):
             lst.append(addr)
-            chunkinfo = e.getchunkinfo(addr)
+            chunkinfo = e.get_chunkinfo(addr)
             if chunkinfo == None:
                 return lst
             addr = chunkinfo['next']

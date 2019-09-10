@@ -1007,7 +1007,7 @@ class ExgdbCmdMethods(object):
         if not get_heap_info() :
             print("Can't find heap info")
             return None
-        cinfo = e.getchunkinfo(victim)
+        cinfo = e.get_chunkinfo(victim)
         if cinfo != None:
             prev_size = cinfo['prev_size']
             size = cinfo['size']
