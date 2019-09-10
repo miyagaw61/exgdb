@@ -257,8 +257,13 @@ class ExgdbMethods():
                 addrs.append(addr)
         return addrs
 
-    def to_bytes(self, i, size):
-        byte_data = i.to_bytes(size, 'little')
+    def to_bytes(self, i, size=None, endian=None):
+        if size == None:
+            capsize = e.intsize()
+            size = capsize
+        if endian == None:
+            endian = 'little'
+        byte_data = i.to_bytes(size, endian)
         bytes_list = list(byte_data)
         return bytes_list
 
