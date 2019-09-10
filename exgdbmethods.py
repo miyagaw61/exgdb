@@ -1,16 +1,11 @@
 class ExgdbMethods():
-    def get_infox_text(self, *arg, color=None):
+    def get_infox_text(self, address, regname=None, color=None):
         """
         Customized xinfo command from https://github.com/longld/peda
         Usage:
             MYNAME address
             MYNAME register [reg1 reg2]
         """
-
-        (address, regname) = utils.normalize_argv(arg, 2)
-        if address is None:
-            pedacmd._missing_argument()
-
         text = ""
         #if not self._is_running():
         if False:
@@ -163,9 +158,8 @@ class ExgdbMethods():
             bytes_list.append(byte)
         return bytes_list
 
-    def getchunkinfo(self, *arg):
+    def getchunkinfo(self, victim, showsize=None):
         global fastchunk
-        (victim, showsize) = utils.normalize_argv(arg, 2)
         if capsize == 0 :
             arch = getarch()
         chunkaddr = victim
