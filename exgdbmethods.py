@@ -852,3 +852,42 @@ class ExgdbMethods():
                     if name in k:
                         result[k] = v
         return result
+
+    def get_function_args(self, addr=None, argc=None):
+        """
+        Customized get_function_args from https://github.com/longld/peda
+
+        Args:
+            - argc: force to get specific number of arguments (Int)
+
+        Returns:
+            - list of arguments (List)
+        """
+
+        args = []
+        regs = self.getregs()
+        if regs is None:
+            return []
+
+        (arch, bits) = self.getarch()
+        if addr == None:
+            pc = self.getreg("pc")
+        else:
+            pc = addr
+        prev_insts = self.prev_inst(pc, 12)
+
+        code = ""
+        if not prev_insts:
+            return []
+
+        for (addr, inst) in prev_insts[::-1]:
+            if "call" in inst.strip().split()[0]:
+                break
+            code = "0x%x:%s\n" % (addr, inst) + code
+
+        if "i386" in arch:
+            args = peda._get_function_args_32(code, argc)
+        if "64" in arch:
+            args = peda._get_function_args_64(code, argc)
+
+        return args
