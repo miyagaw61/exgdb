@@ -39,6 +39,7 @@ class ExgdbMethods():
             print("not a register nor an address")
         else:
             # Address
+            address = utils.to_int(address)
             chain = e.examine_mem_reference(address)
             #text += '\n'
             #text += 'info: '
