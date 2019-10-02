@@ -1490,3 +1490,11 @@ class ExgdbCmdMethods(object):
         if log_filename == exgdbpath + "/.cache/memtrace.tmp":
             one_log = one_log.split("!")[2]
             print(one_log)
+
+    def autosavemode(self, *arg):
+        """
+        set autosave option
+        """
+        (mode, ) = utils.normalize_argv(arg, 1)
+        config.Option.set("autosave", mode)
+
