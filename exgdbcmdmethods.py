@@ -900,7 +900,10 @@ class ExgdbCmdMethods(object):
         context_infonow
         """
         print(red("======================================inow======================================", "bold"))
-        c.infonow()
+        try:
+            c.infonow()
+        except:
+            pass
         print(red("================================================================================", "bold"))
 
     def context_memtrace(self):
@@ -908,7 +911,10 @@ class ExgdbCmdMethods(object):
         context_memtrace
         """
         print(red("======================================memt======================================", "bold"))
-        c.memtrace()
+        try:
+            c.memtrace()
+        except:
+            pass
         print(red("================================================================================", "bold"))
 
     def context_memt_inow(self):
@@ -920,7 +926,10 @@ class ExgdbCmdMethods(object):
             c.memtrace()
         except:
             pass
-        c.infonow()
+        try:
+            c.infonow()
+        except:
+            pass
         print(red("================================================================================", "bold"))
 
     def context(self, *arg):
@@ -1497,4 +1506,3 @@ class ExgdbCmdMethods(object):
         """
         (mode, ) = utils.normalize_argv(arg, 1)
         config.Option.set("autosave", mode)
-
