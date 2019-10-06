@@ -1273,7 +1273,7 @@ class ExgdbCmdMethods(object):
         if log_filename == None:
             log_filename = exgdbpath + "/.cache/memtrace.tmp"
         f_log = File(log_filename)
-        symbol_memo = "symbol_memo.txt"
+        symbol_memo = "/tmp/symbol_memo.tmp"
         f_symbol_memo = File(symbol_memo)
         if not f_log.exist():
             f_log.create()
