@@ -41,7 +41,7 @@ def repoUrl_to_repoName(repo_url):
     return repo_name
 
 plugin_dict = {
-        "exgdb": {"url": "https://github.com/miyagaw61/exgdb", "path": EXGDBPATH + "/exgdb.py"},
+        "exgdb": {"url": "https://github.com/miyagi1024/exgdb", "path": EXGDBPATH + "/exgdb.py"},
         "peda": {"url": "https://github.com/longld/peda", "path": PLUGINS + "/peda"},
         "Pwngdb": {"url": "https://github.com/scwuaptx/Pwngdb", "path": PLUGINS + "/Pwngdb"}
 }
