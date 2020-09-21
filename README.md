@@ -14,7 +14,7 @@ ExGDB - Extension for GDB
 * `read_int_bytes(addr, intsize=None)` -- Read bytes as intsize list
 * `read_byte(addr, intsize=None)` -- Read one byte
 * `read_bytes(addr, size)` -- Read bytes as any size list
-* ... and all commands of peda and Pwngdb.
+* ... and all methods of peda and Pwngdb.
 
 ## Methods of ExgdbCmd:
 
@@ -96,7 +96,7 @@ gdb-peda$ grep 'pdisass' '.*call.*'
 
 ```
 $ cat gdbrc.py
-c.start()
+c.start() # c: ExgdbCmd(), e: Exgdb()
 c.contextmode("infonow,code,stack")
 c.radvance("call")
 c.grep("pdisass", ".*call.*")
@@ -316,4 +316,4 @@ You can issue Pull Request such as this patch.
 
 ## If you have any demands or questions
 
-Please ask everything [here](https://peing.net/ja/miyase256)
+Please ask everything [here](https://twitter.com/miyase256)
