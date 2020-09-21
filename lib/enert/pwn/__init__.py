@@ -7,4 +7,4 @@ try:
     log = pwnlib3.log.getLogger('pwnlib3.exploit')
     args = pwnlib3.args.args
 except:
-    print('[+]Try this:\npip install git+https://github.com/miyagi1024/pwnlib3#egg=pwnlib3')
+    print('[+]Try this:\npip install git+https://github.com/miyase256/pwnlib3#egg=pwnlib3')

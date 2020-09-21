@@ -1,6 +1,6 @@
-#       enert - miyagi1024's python library
+#       enert - miyase256's python library
 #
-#       Copyright (C) 2017 Taisei Miyagawa <Twitter: @miyagi1024, WebPage: miyagi1024.github.io>
+#       Copyright (C) 2017 Taisei Miyagawa <Twitter: @miyase256, WebPage: miyase256.github.io>
 #
 #       License: MIT
 

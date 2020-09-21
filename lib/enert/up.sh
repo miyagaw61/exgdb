@@ -1,2 +1,2 @@
 git2 acp . develop
-pip install --upgrade 'git+https://github.com/miyagi1024/enert@develop#egg=enert'
+pip install --upgrade 'git+https://github.com/miyase256/enert@develop#egg=enert'

@@ -44,7 +44,7 @@ ExGDB - Extension for GDB
 ### 1. Clone:
 
 ```
-$ git clone https://github.com/miyagi1024/exgdb.git /path/to/exgdb
+$ git clone https://github.com/miyase256/exgdb.git /path/to/exgdb
 ```
 
 "/path/to/" is any directory.
@@ -154,7 +154,7 @@ You have to install peda and Pwngdb.
 
 ```
 $ exgdbctl install peda
-Cloning into '/home/miyagi1024/src/github.com/miyagi1024/exgdb/plugins/peda'...
+Cloning into '/home/miyase256/src/github.com/miyase256/exgdb/plugins/peda'...
 remote: Enumerating objects: 351, done.
 remote: Total 351 (delta 0), reused 0 (delta 0), pack-reused 351
 Receiving objects: 100% (351/351), 279.51 KiB | 580.00 KiB/s, done.
@@ -164,7 +164,7 @@ exgdb: enabled
 peda: enabled
 Pwngdb: not installed!!
 $ exgdbctl install Pwngdb
-Cloning into '/home/miyagi1024/src/github.com/miyagi1024/exgdb/plugins/Pwngdb'...
+Cloning into '/home/miyase256/src/github.com/miyase256/exgdb/plugins/Pwngdb'...
 remote: Enumerating objects: 29, done.
 remote: Counting objects: 100% (29/29), done.
 remote: Compressing objects: 100% (21/21), done.
@@ -180,8 +180,8 @@ Pwngdb: enabled
 You can install any plugin from repository url
 
 ```
-$ exgdbctl install https://github.com/miyagi1024/sample_plugin
-Cloning into '/home/miyagi1024/src/github.com/miyagi1024/exgdb/plugins/sample_plugin'...
+$ exgdbctl install https://github.com/miyase256/sample_plugin
+Cloning into '/home/miyase256/src/github.com/miyase256/exgdb/plugins/sample_plugin'...
 remote: Enumerating objects: 4, done.
 remote: Counting objects: 100% (4/4), done.
 remote: Compressing objects: 100% (3/3), done.
@@ -198,7 +198,7 @@ delete a plugin
 
 ```
 $ exgdbctl delete sample_plugin
-[+]deleting /home/miyagi1024/src/github.com/miyagi1024/exgdb/plugins/sample_plugin
+[+]deleting /home/miyase256/src/github.com/miyase256/exgdb/plugins/sample_plugin
 [+]delete successful
 exgdb: enabled
 peda: enabled
@@ -316,4 +316,4 @@ You can issue Pull Request such as this patch.
 
 ## If you have any demands or questions
 
-Please ask everything [here](https://peing.net/ja/miyagi1024)
+Please ask everything [here](https://peing.net/ja/miyase256)
