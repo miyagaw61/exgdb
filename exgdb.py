@@ -17,13 +17,31 @@ import exutils
 class Exgdb():
     THISDIR = ""
     def __init__(self):
+        """
+        Initialize the object
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
 class ExgdbCmd():
     def __init__(self):
+        """
+        Initialize the object
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
 def import_topFunctions(fname):
+    """
+    Import all top - level.
+
+    Args:
+        fname: (str): write your description
+    """
     cmd = r"grep -o '^def.*:' " + fname + " | sed -E 's@^def (.*)\((.*)\) *:@\\1:\\2@g'"
     stdout, stderr = Shell(cmd).readlines()
     functions = stdout
@@ -35,6 +53,11 @@ def import_topFunctions(fname):
             setattr(Exgdb, function_name, new_function)
 
 def import_from_exportFile():
+    """
+    Import plugin from a file.
+
+    Args:
+    """
     exportFile_paths = Shell("ls -1 %s/plugins/*/export_to_exgdb.py" % exgdbpath).readlines()[0]
     if len(exportFile_paths) < 1: return
     for exportFile_path in exportFile_paths:
@@ -49,6 +72,11 @@ def import_from_exportFile():
         gdb.execute("source %s" % exportFile_path)
 
 def import_other_plugins():
+    """
+    Imports all available plugins.
+
+    Args:
+    """
     if "PwnCmd" in globals():
         import_topFunctions("%s/plugins/Pwngdb/pwngdb.py" % exgdbpath)
         import_topFunctions("%s/plugins/Pwngdb/angelheap/angelheap.py" % exgdbpath)
@@ -85,9 +113,23 @@ def import_other_plugins():
 
 class ExgdbCmdWrapper(gdb.Command):
     def __init__(self):
+        """
+        Initialize gdb
+
+        Args:
+            self: (todo): write your description
+        """
         super(ExgdbCmdWrapper,self).__init__("exgdb",gdb.COMMAND_USER)
 
     def invoke(self,arg,from_tty):
+        """
+        Invoke a command from the given arguments.
+
+        Args:
+            self: (todo): write your description
+            arg: (str): write your description
+            from_tty: (todo): write your description
+        """
         self.dont_repeat()
         args = e.string_to_argv(arg)
         if len(args) > 0 :
@@ -103,18 +145,46 @@ class ExgdbCmdWrapper(gdb.Command):
 
 class ExgdbAlias(gdb.Command):
     def __init__(self,alias,command):
+        """
+        Initialize a command.
+
+        Args:
+            self: (todo): write your description
+            alias: (str): write your description
+            command: (str): write your description
+        """
         self.command = command
         super(ExgdbAlias,self).__init__(alias,gdb.COMMAND_NONE)
 
     def invoke(self,args,from_tty):
+        """
+        Invoke the command.
+
+        Args:
+            self: (todo): write your description
+            from_tty: (todo): write your description
+        """
         self.dont_repeat()
         gdb.execute("%s %s" % (self.command,args))
 
 class RepeatExgdbCmdWrapper(gdb.Command):
     def __init__(self):
+        """
+        Initialize gdb
+
+        Args:
+            self: (todo): write your description
+        """
         super(RepeatExgdbCmdWrapper,self).__init__("rexgdb",gdb.COMMAND_USER)
 
     def invoke(self,args,from_tty):
+        """
+        Invoke a command.
+
+        Args:
+            self: (todo): write your description
+            from_tty: (todo): write your description
+        """
         #self.dont_repeat()
         arg = e.string_to_argv(args)
         if len(arg) > 0 :
@@ -130,10 +200,25 @@ class RepeatExgdbCmdWrapper(gdb.Command):
 
 class RepeatExgdbAlias(gdb.Command):
     def __init__(self,alias,command):
+        """
+        Initialize a command.
+
+        Args:
+            self: (todo): write your description
+            alias: (str): write your description
+            command: (str): write your description
+        """
         self.command = command
         super(RepeatExgdbAlias,self).__init__(alias,gdb.COMMAND_NONE)
 
     def invoke(self,args,from_tty):
+        """
+        Invoke a command.
+
+        Args:
+            self: (todo): write your description
+            from_tty: (todo): write your description
+        """
         #self.dont_repeat()
         gdb.execute("%s %s" % (self.command,args))
 
