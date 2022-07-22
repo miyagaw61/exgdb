@@ -16,14 +16,21 @@ ExGDB - Extension for GDB
 * `read_bytes(addr, size)` -- Read bytes as any size list
 * ... and all methods of peda and Pwngdb.
 
-## Methods of ExgdbCmd:
+## Commands / Methods of ExgdbCmd:
 
-* `ctn, c` -- Execute continue command
-* `brk, b <symbol>` -- Execute break command
-* `next, n, [count]` -- Execute next command
-* `step, s [count]` -- Execute step command
-* `nexti, ni [count]` -- Execute nexti command
-* `stepi, si [count]` -- Execute stepi command
+* `ctn, c` -- Execute continue command of gdb
+* `brk, b <symbol>` -- Execute break command of gdb
+* `next, n, [count]` -- Execute next command of gdb
+* `step, s [count]` -- Execute step command of gdb
+* `nexti, ni [count]` -- Execute nexti command of gdb
+* `stepi, si [count]` -- Execute stepi command of gdb
+* `infox <addr>` -- Customized xinfo command of peda
+* `patch <addr> <value> [size]` -- Customized patch command of peda
+* `parseheap` -- Customized parseheap command of Pwngdb
+* ... and all commands of peda and Pwngdb.
+
+## New Commands / Methods of ExgdbCmd:
+
 * `nextnow, nn <count>` -- Show instructions after now program-counter
 * `prevnow, pn <count>` -- Show instructions before now program-counter
 * `grep <command> <regex>` -- Grep command output
@@ -34,10 +41,6 @@ ExGDB - Extension for GDB
 * `stepcalluntil <regex>` -- Execute nextcall and step command until given regexp and given depth
 * `infonow, inow` -- Show detail information of the instruction now specified program-counter
 * `contextmode <mode>` -- Set context mode (e.g. `contextmode reg,code`, `contextmode infonow` )
-* `infox <addr>` -- Customized xinfo command of peda
-* `patch <addr> <value> [size]` -- Customized patch command of peda
-* `parseheap` -- Customized parseheap command of Pwngdb
-* ... and all commands of peda and Pwngdb.
 
 ## Installation
 
