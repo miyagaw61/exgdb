@@ -24,8 +24,8 @@ ExGDB - Extension for GDB
 * `step, s [count]` -- Execute step command
 * `nexti, ni [count]` -- Execute nexti command
 * `stepi, si [count]` -- Execute stepi command
-* `afterpc, af <count>` -- Show instructions after now program-counter
-* `beforepc, bef <count>` -- Show instructions before now program-counter
+* `nextnow, nn <count>` -- Show instructions after now program-counter
+* `prevnow, pn <count>` -- Show instructions before now program-counter
 * `grep <command> <regex>` -- Grep command output
 * `allstack` -- Show all stack data
 * `nuntil <regex>` -- Execute nexti command until given regexp
