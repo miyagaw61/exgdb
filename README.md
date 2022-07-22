@@ -16,7 +16,7 @@ ExGDB - Extension for GDB
 * `read_bytes(addr, size)` -- Read bytes as any size list
 * ... and all methods of peda and Pwngdb.
 
-## Commands / Methods of ExgdbCmd:
+## Commands / Methods of ExgdbCmd (from other plugins):
 
 * `ctn, c` -- Execute continue command of gdb
 * `brk, b <symbol>` -- Execute break command of gdb
@@ -29,7 +29,7 @@ ExGDB - Extension for GDB
 * `parseheap` -- Customized parseheap command of Pwngdb
 * ... and all commands of peda and Pwngdb.
 
-## New Commands / Methods of ExgdbCmd:
+## New Commands / New Methods of ExgdbCmd:
 
 * `nextnow, nn <count>` -- Show instructions after now program-counter
 * `prevnow, pn <count>` -- Show instructions before now program-counter
@@ -41,6 +41,21 @@ ExGDB - Extension for GDB
 * `stepcalluntil <regex>` -- Execute nextcall and step command until given regexp and given depth
 * `infonow, inow` -- Show detail information of the instruction now specified program-counter
 * `contextmode <mode>` -- Set context mode (e.g. `contextmode reg,code`, `contextmode infonow` )
+* `lpout` -- continue until leave from loop
+* `hexpatch` -- hex patch
+* `strpatch` -- string patch
+* `wordpatch` -- word patch
+* `radvance` -- regex advance
+* `rbreak` -- regex breakpoint 
+* `rtracepoint` -- regex tracepoint
+* `tracepoint`
+* `edit`
+* `memtrace`
+* `showchunk`
+* `showchunkheader`
+* `showchunkheaders`
+* `tracecontinue`
+* `tracemode`
 
 ## Installation
 
