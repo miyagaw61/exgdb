@@ -40,7 +40,7 @@ ExGDB - Extension for GDB
 * `nextcalluntil <regex>` -- Execute nextcall command until given regexp
 * `stepcalluntil <regex>` -- Execute nextcall and step command until given regexp and given depth
 * `infonow, inow` -- Show detail information of the instruction now specified program-counter
-* `contextmode <mode>` -- Set context mode (e.g. `contextmode reg,code`, `contextmode infonow` )
+* `contextmode <mode>` -- Set context mode (e.g. `contextmode reg,code`, `contextmode infonow`, `contextmode memtrace,infonow`)
 * `lpout` -- continue until leave from loop
 * `hexpatch` -- hex patch
 * `strpatch` -- string patch
@@ -81,11 +81,12 @@ $ echo "export EXGDBPATH=$PWD" >> ~/.bashrc
 $ cp -a $EXGDBPATH/bin/exgdbctl /usr/local/bin/
 ```
 
-### 4. Install some plugins:
+### 4. Install any plugins you want:
 
 ```
 $ exgdbctl install peda # git clone https://github.com/longld/peda.git $EXGDBPATH/plugins/peda
 $ exgdbctl install Pwngdb # git clone https://github.com/scwuaptx/Pwngdb.git $EXGDBPATH/plugins/Pwngdb
+$ exgdbctl install gdb-dashboard # git clone https://github.com/cyrus-and/gdb-dashboard.git $EXGDBPATH/plugins/gdb-dashboard
 ```
 
 ### 5. Prepare .gdbinit
@@ -287,8 +288,10 @@ $ cat $EXGDBPATH/gdbinit.py
 
 ・・・
 
+exgdb_is_enabled = os.path.exists("%s/exgdb.py" % exgdbpath)
 peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
 pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
+dashboard_is_enabled = os.path.exists("%s/gdb-dashboard" % pluginpath)
 #yourplugin_is_enabled = os.path.exists("%s/yourplugin" % pluginpath)
 
 if peda_is_enabled:
@@ -300,6 +303,8 @@ if pwngdb_is_enabled:
     gdb.execute("source %s/Pwngdb/angelheap/gdbinit.py" % pluginpath)
     gdb.execute("source %s/Pwngdb/angelheap/command_wrapper.py" % pluginpath)
     gdb.execute("source %s/Pwngdb/angelheap/angelheap.py" % pluginpath)
+if dashboard_is_enabled:
+    gdb.execute("source %s/gdb-dashboard/.gdbinit" % pluginpath)
 #if yourplugin_is_enabled:
 #    gdb.execute("source %s/yourplugin/gdbinit.py" % pluginpath)
 
@@ -310,8 +315,10 @@ $ cat $EXGDBPATH/gdbinit.py
 
 ・・・
 
+exgdb_is_enabled = os.path.exists("%s/exgdb.py" % exgdbpath)
 peda_is_enabled = os.path.exists("%s/peda" % pluginpath)
 pwngdb_is_enabled = os.path.exists("%s/Pwngdb" % pluginpath)
+dashboard_is_enabled = os.path.exists("%s/gdb-dashboard" % pluginpath)
 myplugin_is_enabled = os.path.exists("%s/myplugin" % pluginpath)
 
 if peda_is_enabled:
@@ -323,6 +330,8 @@ if pwngdb_is_enabled:
     gdb.execute("source %s/Pwngdb/angelheap/gdbinit.py" % pluginpath)
     gdb.execute("source %s/Pwngdb/angelheap/command_wrapper.py" % pluginpath)
     gdb.execute("source %s/Pwngdb/angelheap/angelheap.py" % pluginpath)
+if dashboard_is_enabled:
+    gdb.execute("source %s/gdb-dashboard/.gdbinit" % pluginpath)
 if myplugin_is_enabled:
     gdb.execute("source %s/myplugin/myplugin.py" % pluginpath)
 

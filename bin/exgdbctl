@@ -43,7 +43,8 @@ def repoUrl_to_repoName(repo_url):
 plugin_dict = {
         "exgdb": {"url": "https://github.com/miyase256/exgdb", "path": EXGDBPATH + "/exgdb.py"},
         "peda": {"url": "https://github.com/longld/peda", "path": PLUGINS + "/peda"},
-        "Pwngdb": {"url": "https://github.com/scwuaptx/Pwngdb", "path": PLUGINS + "/Pwngdb"}
+        "Pwngdb": {"url": "https://github.com/scwuaptx/Pwngdb", "path": PLUGINS + "/Pwngdb"},
+        "gdb-dashboard": {"url": "https://github.com/cyrus-and/gdb-dashboard", "path": PLUGINS + "/gdb-dashboard"}
 }
 out, err = Shell("ls -1 %s/" % PLUGINS).readlines()
 fnames = out
@@ -68,11 +69,11 @@ plugin_list = [key for key in plugin_dict.keys()]
 
 usage = """%s <command> [args]
 command: list
-         install <peda/Pwngdb/ANY PLUGIN URL>
-         delete  <peda/Pwngdb/ANY PLUGIN NAME>
-         update  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
-         enable  <exgdb/peda/Pwngdb/ANY PLUGIN NAME>
-         disable <exgdb/peda/Pwngdb/ANY PLUGIN NAME>""" % os.path.basename(sys.argv[0])
+         install <peda/Pwngdb/gdb-dashboard/ANY PLUGIN URL>
+         delete  <peda/Pwngdb/gdb-dashboard/ANY PLUGIN NAME>
+         update  <exgdb/peda/Pwngdb/gdb-dashboard/ANY PLUGIN NAME>
+         enable  <exgdb/peda/Pwngdb/gdb-dashboard/ANY PLUGIN NAME>
+         disable <exgdb/peda/Pwngdb/gdb-dashboard/ANY PLUGIN NAME>""" % os.path.basename(sys.argv[0])
 
 if len(sys.argv) > 1 and sys.argv[1] in ["-h", "--help"]:
     print(usage)
