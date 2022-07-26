@@ -334,7 +334,7 @@ if myplugin_is_enabled:
 
 ```
 
-You can issue Pull Request such as this patch.
+You can issue Pull Request like this patch.
 
 ## contact
 
