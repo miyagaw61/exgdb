@@ -245,8 +245,12 @@ gdb-dashboard: not installed
 
 You need "{any name}.py" (or gdb script like ".gdbinit") and "export_to_exgdb.py".
 
-- {any name}.py: main (top) script of your plugin. You can prepare gdb script like ".gdbinit" instead of python script.
-- export_to_exgdb.py: setattr your functions to Exgdb or ExgdbCmd
+- {any name}.py
+    - main (top) script of your plugin
+    - You can prepare gdb script like ".gdbinit" instead of python script.
+- export_to_exgdb.py
+    - import (setattr) your functions to Exgdb or ExgdbCmd
+    - You don't have to understand this script. You only have to try imitating this sample.
 
 ```
 $ pwd
