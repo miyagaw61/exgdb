@@ -165,8 +165,9 @@ show plugins information
 ```
 $ exgdbctl list
 exgdb: enabled
-peda: not installed!!
-Pwngdb: not installed!!
+peda: not installed
+Pwngdb: not installed
+gdb-dashboard: not installed
 ```
 
 You have to install peda and Pwngdb.
@@ -181,7 +182,8 @@ Resolving deltas: 100% (220/220), done.
 [+]install successful
 exgdb: enabled
 peda: enabled
-Pwngdb: not installed!!
+Pwngdb: not installed
+gdb-dashboard: not installed
 $ exgdbctl install Pwngdb
 Cloning into '/home/miyase256/src/github.com/miyase256/exgdb/plugins/Pwngdb'...
 remote: Enumerating objects: 29, done.
@@ -194,6 +196,7 @@ Resolving deltas: 100% (284/284), done.
 exgdb: enabled
 peda: enabled
 Pwngdb: enabled
+gdb-dashboard: not installed
 ```
 
 You can install any plugin from repository url
@@ -210,6 +213,7 @@ Unpacking objects: 100% (4/4), done.
 exgdb: enabled
 peda: enabled
 Pwngdb: enabled
+gdb-dashboard: not installed
 sample_plugin: enabled
 ```
 
@@ -222,6 +226,7 @@ $ exgdbctl delete sample_plugin
 exgdb: enabled
 peda: enabled
 Pwngdb: enabled
+gdb-dashboard: not installed
 ```
 
 
@@ -233,6 +238,7 @@ $ exgdbctl disable peda
 exgdb: enabled
 peda: disabled
 Pwngdb: enabled
+gdb-dashboard: not installed
 ```
 
 enable a plugin
@@ -243,6 +249,7 @@ $ exgdbctl enable peda
 exgdb: enabled
 peda: enabled
 Pwngdb: enabled
+gdb-dashboard: not installed
 ```
 
 ## Add New Plugin

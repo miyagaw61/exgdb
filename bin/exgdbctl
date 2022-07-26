@@ -97,7 +97,7 @@ if args.command == "list":
         elif File(plugin_path + ".disabled").exist():
             print(red("%s: disabled" % plugin_name, "bold"))
         else:
-            print(red("%s: not installed!!" % plugin_name, "bold"))
+            print(red("%s: not installed" % plugin_name, "bold"))
 elif args.command == "install":
     if len(args.args) < 1:
         print("error: invalid arguments")
