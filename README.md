@@ -170,7 +170,7 @@ Pwngdb: not installed
 gdb-dashboard: not installed
 ```
 
-You have to install peda and Pwngdb.
+You can install peda, Pwngdb and gdb-dashboard with only each plugin name.
 
 ```
 $ exgdbctl install peda
@@ -183,19 +183,6 @@ Resolving deltas: 100% (220/220), done.
 exgdb: enabled
 peda: enabled
 Pwngdb: not installed
-gdb-dashboard: not installed
-$ exgdbctl install Pwngdb
-Cloning into '/home/miyase256/src/github.com/miyase256/exgdb/plugins/Pwngdb'...
-remote: Enumerating objects: 29, done.
-remote: Counting objects: 100% (29/29), done.
-remote: Compressing objects: 100% (21/21), done.
-remote: Total 451 (delta 14), reused 20 (delta 8), pack-reused 422
-Receiving objects: 100% (451/451), 196.36 KiB | 430.00 KiB/s, done.
-Resolving deltas: 100% (284/284), done.
-[+]install successful
-exgdb: enabled
-peda: enabled
-Pwngdb: enabled
 gdb-dashboard: not installed
 ```
 
@@ -212,7 +199,7 @@ Unpacking objects: 100% (4/4), done.
 [+]install successful
 exgdb: enabled
 peda: enabled
-Pwngdb: enabled
+Pwngdb: not installed
 gdb-dashboard: not installed
 sample_plugin: enabled
 ```
@@ -225,7 +212,7 @@ $ exgdbctl delete sample_plugin
 [+]delete successful
 exgdb: enabled
 peda: enabled
-Pwngdb: enabled
+Pwngdb: not installed
 gdb-dashboard: not installed
 ```
 
@@ -237,7 +224,7 @@ $ exgdbctl disable peda
 [+]disabled peda
 exgdb: enabled
 peda: disabled
-Pwngdb: enabled
+Pwngdb: not installed
 gdb-dashboard: not installed
 ```
 
@@ -248,7 +235,7 @@ $ exgdbctl enable peda
 [+]enabled peda
 exgdb: enabled
 peda: enabled
-Pwngdb: enabled
+Pwngdb: not installed
 gdb-dashboard: not installed
 ```
 
@@ -285,6 +272,7 @@ $ exgdbctl install https://github.com/username/myplugin.git
 exgdb: enabled
 peda: enabled
 Pwngdb: enabled
+gdb-dashboard: enabled
 myplugin: enabled
 ```
 
@@ -348,6 +336,7 @@ if myplugin_is_enabled:
 
 You can issue Pull Request such as this patch.
 
-## If you have any demands or questions
+## contact
 
-Please ask everything [here](https://twitter.com/miyase256)
+Please feel free to ask -> [twitter](https://twitter.com/miyase256)
+
