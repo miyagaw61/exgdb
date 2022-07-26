@@ -243,9 +243,9 @@ gdb-dashboard: not installed
 
 ### 1. Prepare new plugin:
 
-You need "{any name}.py" and "export_to_exgdb.py".
+You need "{any name}.py" (or gdb script like ".gdbinit") and "export_to_exgdb.py".
 
-- {any name}.py: main script of your plugin.
+- {any name}.py: main (top) script of your plugin. You can prepare gdb script like ".gdbinit" instead of python script.
 - export_to_exgdb.py: setattr your functions to Exgdb or ExgdbCmd
 
 ```
