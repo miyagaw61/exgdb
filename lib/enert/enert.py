@@ -253,6 +253,13 @@ def lines_delete(n):
 #    lst.append(shutil_get_terminal_size.get_terminal_size()[0])
 #    return lst
 
+def get(x, key):
+    try:
+        val = x[key]
+        return val
+    except:
+        return None
+
 def clear():
     shell('clear').call()
 

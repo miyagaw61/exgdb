@@ -1,4 +1,16 @@
 class ExgdbMethods():
+    def get_lang(self):
+        """
+        get language used in source code
+        Usage:
+            get_lang
+        """
+        out = gdb.execute("show language", to_string=True)
+        idx = out.index("currently")
+        lang = out[out.index("currently")+len("currently")+1:]
+        lang = lang[:lang.index('"')]
+        return lang
+
     def get_infox_text(self, address, regname=None, color=None):
         """
         Customized xinfo command from https://github.com/longld/peda
@@ -854,9 +866,6 @@ class ExgdbMethods():
                     if name in k:
                         result[k] = v
         return result
-
-    if "PEDA" in globals():
-        setattr(PEDA, "elfheader_solib", elfheader_solib)
 
     def get_function_args(self, addr=None, argc=None):
         """

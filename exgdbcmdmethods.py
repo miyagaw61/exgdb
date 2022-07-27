@@ -1,3 +1,5 @@
+from enert import *
+
 r_asmStr = re.compile(r"0x[0-9a-f]*\x1b\[0m\s\((.*)\)")
 r_asmStr_2 = re.compile(r"<.*>:\s*(.*)")
 r_asmStr_3 = re.compile(r"^([^\s]*)\s*(.*)")
@@ -43,6 +45,15 @@ else:
 r_comment_before = re.compile(r"\[.*$")
 r_comment = re.compile(r".*#\s")
 r_comment2 = re.compile(r"\s.*$")
+
+peda_context = "reg,code,stack"
+dashboard_context = "asm,bp,expr,hist,mem,reg_dashboard,src,bt,thr,var"
+peda_dashboard_context = "reg,stack,asm,bp,expr,hist,mem,src,bt,thr,var"
+all_context = peda_context + "," + dashboard_context
+context_opt_list = {"peda": peda_context,
+                    "dashboard": dashboard_context,
+                    "peda_dashboard": peda_dashboard_context,
+                    "all": all_context}
 
 class BpRetHandler(gdb.FinishBreakpoint):
     def __init__(self, id_str, stop=False, fn=None, source=None, debug=False):
@@ -736,10 +747,18 @@ class ExgdbCmdMethods(object):
         Usage:
             MYNAME options
         """
-        (opt, ) = utils.normalize_argv(arg, 1)
-        if opt == None:
+        if len(arg) == 0:
             config.Option.set("context", "None")
             return
+        if len(arg) == 1:
+            opt = arg[0]
+        else:
+            lang = arg[0]
+            opt = arg[1]
+            if opt in ["peda", "dashboard", "peda_dashboard", "all"]:
+                opt = context_opt_list[opt]
+            context_opt_list[lang] = opt
+        (opt, ) = utils.normalize_argv(arg, 1)
         config.Option.set("context", opt)
 
     def clearmode(self, *arg):
@@ -923,89 +942,126 @@ class ExgdbCmdMethods(object):
             pass
         print(red("================================================================================", "bold"))
 
-    def context_src(self):
+    def context_dashboard_module(self, module_name):
         """
-        context_src
+        context_dashboard_module <module_name>
         """
         try:
+            d = {}
             for module in dashboard.modules:
-                if module.name == "source":
+                if module.name == module_name:
+                    d[module.name] = module.enabled
                     module.enabled = True
                 else:
+                    d[module.name] = module.enabled
                     module.enabled = False
+            clear_screen_bak = Dashboard.clear_screen
+            Dashboard.clear_screen = exutils.return_emptystr
             dashboard.redisplay()
+            Dashboard.clear_screen = clear_screen_bak
+            for module in dashboard.modules:
+                module.enabled = d[module.name]
         except:
             pass
 
-    def context_bt(self):
+    def context_asm(self):
         """
-        context_bt
+        context_asm
         """
-        try:
-            for module in dashboard.modules:
-                if module.name == "stack":
-                    module.enabled = True
-                else:
-                    module.enabled = False
-            dashboard.redisplay()
-        except:
-            pass
+        c.context_dashboard_module("assembly")
 
     def context_bp(self):
         """
         context_bp
         """
-        try:
-            for module in dashboard.modules:
-                if module.name == "breakpoints":
-                    module.enabled = True
-                else:
-                    module.enabled = False
-            dashboard.redisplay()
-        except:
-            pass
-
-    def context_thr(self):
-        """
-        context_thr
-        """
-        try:
-            for module in dashboard.modules:
-                if module.name == "threads":
-                    module.enabled = True
-                else:
-                    module.enabled = False
-            dashboard.redisplay()
-        except:
-            pass
-
-    def context_var(self):
-        """
-        context_var
-        """
-        try:
-            for module in dashboard.modules:
-                if module.name == "variables":
-                    module.enabled = True
-                else:
-                    module.enabled = False
-            dashboard.redisplay()
-        except:
-            pass
+        c.context_dashboard_module("breakpoints")
 
     def context_expr(self):
         """
         context_expr
         """
-        try:
-            for module in dashboard.modules:
-                if module.name == "expressions":
-                    module.enabled = True
-                else:
-                    module.enabled = False
-            dashboard.redisplay()
-        except:
-            pass
+        c.context_dashboard_module("expressions")
+
+    def context_hist(self):
+        """
+        context_hist
+        """
+        c.context_dashboard_module("history")
+
+    def context_mem(self):
+        """
+        context_mem
+        """
+        c.context_dashboard_module("memory")
+
+    def context_reg_dashboard(self):
+        """
+        context_reg_dashboard
+        """
+        c.context_dashboard_module("registers")
+
+    def context_src(self):
+        """
+        context_src
+        """
+        c.context_dashboard_module("source")
+
+    def context_bt(self):
+        """
+        context_bt
+        """
+        c.context_dashboard_module("stack")
+
+    def context_thr(self):
+        """
+        context_thr
+        """
+        c.context_dashboard_module("threads")
+
+    def context_var(self):
+        """
+        context_var
+        """
+        c.context_dashboard_module("variables")
+
+    def context_defined_context(self, context_name):
+        """
+        context_defined_context
+        """
+        opt_list = context_opt_list[context_name].split(",")
+        for opt in opt_list:
+            if opt == "reg":
+                c.context_register()
+            elif opt == "reg_dashboard":
+                c.context_reg_dashboard()
+            elif opt == "code":
+                c.context_code(8)
+            else:
+                eval("c.context_" + opt + "()")
+
+    def context_peda(self):
+        """
+        context_peda
+        """
+        c.context_defined_context("peda")
+
+    def context_dashboard(self):
+        """
+        context_dashboard
+        """
+        c.context_defined_context("dashboard")
+
+    def context_peda_dashboard(self):
+        """
+        context_peda_dashboard
+        """
+        c.context_defined_context("peda_dashboard")
+
+    def context_all(self):
+        """
+        context_all
+        """
+        c.context_defined_context("all")
 
     def context(self, *arg):
         """
@@ -1016,9 +1072,14 @@ class ExgdbCmdMethods(object):
         if utils.to_int(count) is None:
             count = 8
         if opt is None:
-            opt = config.Option.get("context")
+            lang = e.get_lang()
+            defined_opt = get(context_opt_list, lang)
+            if defined_opt:
+                opt = defined_opt
+            else:
+                opt = config.Option.get("context")
         if opt == "all":
-            opt = "register,code,stack"
+            opt = context_list["all"]
 
         opt = opt.replace(" ", "").split(",")
 
@@ -1039,6 +1100,8 @@ class ExgdbCmdMethods(object):
 
         status = peda.get_status()
 
+        c.dashboard.on_continue(None)
+
         # display registers
         if "none" in opt or "None" in opt:
             c.context_none()
@@ -1055,9 +1118,18 @@ class ExgdbCmdMethods(object):
         elif "infonow" in opt or "inow" in opt:
             c.context_infonow()
 
+        # display stack content, forced in case SIGSEGV
+        if "stack" in opt or "SIGSEGV" in status:
+            c.context_stack(count)
+            #if "infonow" in opt:
+            #    msg("[%s]" % ("-"*78), "blue", "light")
+            #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+
         # display assembly code
         if "code" in opt:
             c.context_code(count)
+        if "asm" in opt:
+            c.context_asm()
 
         # display source code by gdb-dashboard function
         if "src" in opt:
@@ -1070,13 +1142,6 @@ class ExgdbCmdMethods(object):
         # display expressions by gdb-dashboard function
         if "expr" in opt:
             c.context_expr()
-
-        # display stack content, forced in case SIGSEGV
-        if "stack" in opt or "SIGSEGV" in status:
-            c.context_stack(count)
-            #if "infonow" in opt:
-            #    msg("[%s]" % ("-"*78), "blue", "light")
-            #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
 
         # display backtrace by gdb-dashboard function
         if "bt" in opt:
@@ -1096,9 +1161,16 @@ class ExgdbCmdMethods(object):
             msg("Stopped reason: %s" % red(status))
 
         return
-
-    if "PEDACmd" in globals():
-        setattr(PEDACmd, "context", context)
+    
+    def showcontext(self):
+        """
+        showcontext
+        """
+        opt = config.Option.get("context")
+        if opt in context_opt_list.keys():
+            print(opt, end=": ")
+            opt = context_opt_list[opt]
+            print(opt)
 
     def showchunk(self, *arg, is_only_header=False):
         global fastchunk

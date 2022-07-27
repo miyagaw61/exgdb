@@ -24,7 +24,7 @@ class ExgdbCmd():
         pass
 
 def import_topFunctions(fname):
-    cmd = r"grep -o '^def.*:' " + fname + " | sed -E 's@^def (.*)\((.*)\) *:@\\1:\\2@g'"
+    cmd = "grep -o '^def.*:' " + fname + " | sed -E 's@^def (.*)\((.*)\) *:@\\1:\\2@g'"
     stdout, stderr = Shell(cmd).readlines()
     functions = stdout
     for function in functions:
@@ -60,24 +60,36 @@ def import_other_plugins():
 
     if "PEDA" in globals():
         cmds = [cmd for cmd in dir(PEDA) if cmd != "SAVED_COMMANDS" and callable(getattr(PEDA, cmd))]
+        cmd_to_get_exgdb_functions = "grep -o ' *def.*:' %s/exgdbmethods.py | sed -E 's@ *def (.*)\((.*)\) *:@\\1:\\2@g'" % exgdbpath
+        stdout, stderr = Shell(cmd_to_get_exgdb_functions).readlines()
+        exgdb_functions = stdout
+        exgdb_functions = list(map(lambda x: x.split(":")[0], exgdb_functions))
         for cmd in cmds:
             if cmd.startswith("_"):
                 continue
             if hasattr(ExgdbCmd, cmd):
                 continue
             if hasattr(gdb.Command, cmd):
+                continue
+            if cmd in exgdb_functions:
                 continue
             cmd_obj = getattr(PEDA, cmd)
             setattr(Exgdb, cmd, cmd_obj)
 
     if "PEDACmd" in globals():
         cmds = [cmd for cmd in dir(PEDACmd) if callable(getattr(PEDACmd, cmd))]
+        cmd_to_get_exgdb_functions = "grep -o ' *def.*:' %s/exgdbcmdmethods.py | sed -E 's@ *def (.*)\((.*)\) *:@\\1:\\2@g'" % exgdbpath
+        stdout, stderr = Shell(cmd_to_get_exgdb_functions).readlines()
+        exgdb_functions = stdout
+        exgdb_functions = list(map(lambda x: x.split(":")[0], exgdb_functions))
         for cmd in cmds:
             if cmd.startswith("_"):
                 continue
             if hasattr(ExgdbCmd, cmd):
                 continue
             if hasattr(gdb.Command, cmd):
+                continue
+            if cmd in exgdb_functions:
                 continue
             cmd_obj = getattr(PEDACmd, cmd)
             setattr(ExgdbCmd, cmd, cmd_obj)

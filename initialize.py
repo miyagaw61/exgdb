@@ -3,9 +3,7 @@ def load_to_exgdb():
     for cmd in cmds:
         if cmd.startswith("_"):
             continue
-        if hasattr(ExgdbCmd, cmd):
-            continue
-        if hasattr(gdb.Command, cmd):
+        if hasattr(Exgdb, cmd):
             continue
         setattr(Exgdb, cmd, getattr(ExgdbMethods, cmd))
 
@@ -17,6 +15,7 @@ def load_to_exgdbcmd():
         if hasattr(ExgdbCmd, cmd):
             continue
         if hasattr(gdb.Command, cmd):
+            print(cmd)
             continue
         setattr(ExgdbCmd, cmd, getattr(ExgdbCmdMethods, cmd))
     return cmds
@@ -50,21 +49,15 @@ register_repeat_gdbcmd()
 #        #dashboard.on_stop(_)
 #        #c.context_stack()
 #        c.context()
-#
-#exgdb_context = ExgdbContext()
 
 if "dashboard" in globals():
-    def return_emptystr():
-        return ""
-
-    #Dashboard.clear_screen = return_emptystr
-    #gdb.events.stop.disconnect(dashboard.on_stop)
-    #gdb.events.cont.disconnect(dashboard.on_continue)
-    #gdb.events.exited.disconnect(dashboard.on_exit)
-    #c.contextmode("reg,code,src,stack,bt,thr")
-
-    #e.define_user_command("hook-stop", "exgdb context\n" "session autosave")
-
-    utils.clearscreen = return_emptystr
-    c.contextmode("reg,stack")
-    #c.contextmode("none")
+    #Dashboard.clear_screen = exutils.return_emptystr
+    utils.clearscreen = exutils.return_emptystr
+    gdb.events.stop.disconnect(dashboard.on_stop)
+    e.define_user_command("hook-stop", "exgdb context\n" "session autosave")
+    lang = e.get_lang()
+    c.contextmode("c", "peda_dashboard")
+    c.contextmode("rust", "dashboard")
+elif "PEDA" in globals():
+    c.contextmode("c", "peda")
+    c.contextmode("rust", "peda")

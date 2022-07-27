@@ -7,6 +7,9 @@ sys.path.insert(0, os.path.dirname(EXGDBFILE) + "/lib/")
 import utils
 from enert import *
 
+def return_emptystr():
+    return ""
+
 def clearscreen():
     """
     Customized clearscreen from https://github.com/longld/peda
