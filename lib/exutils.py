@@ -11,6 +11,8 @@ def clearscreen():
     """
     Customized clearscreen from https://github.com/longld/peda
     """
-    print("\x1b[2J\x1b[H")
+    buf = "\x1b[2J\x1b[H"
+    print(buf)
+    return buf
 
 utils.clearscreen = clearscreen

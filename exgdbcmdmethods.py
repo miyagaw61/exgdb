@@ -694,6 +694,8 @@ class ExgdbCmdMethods(object):
 
         # display "Return value" routine
         data = gdb.execute("prevnow 2", to_string=True)
+        if len(data) == 0:
+            return
         before_inst = data.split("\n")[0]
         before_inst = before_inst.split()[3]
         if before_inst == "call":
@@ -708,7 +710,7 @@ class ExgdbCmdMethods(object):
 
     inow = infonow
 
-    def infox(self, *arg, color=None):
+    def infox(self, *arg, regname=None, color=None):
         """
         Customized xinfo command from https://github.com/longld/peda
         Usage:
@@ -895,17 +897,6 @@ class ExgdbCmdMethods(object):
 
         return 0
 
-    def context_infonow(self):
-        """
-        context_infonow
-        """
-        print(red("======================================inow======================================", "bold"))
-        try:
-            c.infonow()
-        except:
-            pass
-        print(red("================================================================================", "bold"))
-
     def context_memtrace(self):
         """
         context_memtrace
@@ -931,6 +922,90 @@ class ExgdbCmdMethods(object):
         except:
             pass
         print(red("================================================================================", "bold"))
+
+    def context_src(self):
+        """
+        context_src
+        """
+        try:
+            for module in dashboard.modules:
+                if module.name == "source":
+                    module.enabled = True
+                else:
+                    module.enabled = False
+            dashboard.redisplay()
+        except:
+            pass
+
+    def context_bt(self):
+        """
+        context_bt
+        """
+        try:
+            for module in dashboard.modules:
+                if module.name == "stack":
+                    module.enabled = True
+                else:
+                    module.enabled = False
+            dashboard.redisplay()
+        except:
+            pass
+
+    def context_bp(self):
+        """
+        context_bp
+        """
+        try:
+            for module in dashboard.modules:
+                if module.name == "breakpoints":
+                    module.enabled = True
+                else:
+                    module.enabled = False
+            dashboard.redisplay()
+        except:
+            pass
+
+    def context_thr(self):
+        """
+        context_thr
+        """
+        try:
+            for module in dashboard.modules:
+                if module.name == "threads":
+                    module.enabled = True
+                else:
+                    module.enabled = False
+            dashboard.redisplay()
+        except:
+            pass
+
+    def context_var(self):
+        """
+        context_var
+        """
+        try:
+            for module in dashboard.modules:
+                if module.name == "variables":
+                    module.enabled = True
+                else:
+                    module.enabled = False
+            dashboard.redisplay()
+        except:
+            pass
+
+    def context_expr(self):
+        """
+        context_expr
+        """
+        try:
+            for module in dashboard.modules:
+                if module.name == "expressions":
+                    module.enabled = True
+                else:
+                    module.enabled = False
+            dashboard.redisplay()
+        except:
+            pass
 
     def context(self, *arg):
         """
@@ -984,6 +1059,18 @@ class ExgdbCmdMethods(object):
         if "code" in opt:
             c.context_code(count)
 
+        # display source code by gdb-dashboard function
+        if "src" in opt:
+            c.context_src()
+
+        # display variables by gdb-dashboard function
+        if "var" in opt:
+            c.context_var()
+
+        # display expressions by gdb-dashboard function
+        if "expr" in opt:
+            c.context_expr()
+
         # display stack content, forced in case SIGSEGV
         if "stack" in opt or "SIGSEGV" in status:
             c.context_stack(count)
@@ -991,9 +1078,18 @@ class ExgdbCmdMethods(object):
             #    msg("[%s]" % ("-"*78), "blue", "light")
             #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
 
-        if "reg" in opt or "code" in opt or "stack" in opt:
-            msg("[%s]" % ("-"*78), "blue", "light")
-            msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+        # display backtrace by gdb-dashboard function
+        if "bt" in opt:
+            c.context_bt()
+
+        # display threads by gdb-dashboard function
+        if "thr" in opt:
+            c.context_thr()
+
+        # tmp remove
+        #if "reg" in opt or "code" in opt or "stack" in opt:
+        #    msg("[%s]" % ("-"*78), "blue", "light")
+        #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
 
         # display stopped reason
         if "SIG" in status:

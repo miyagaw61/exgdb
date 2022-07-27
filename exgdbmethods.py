@@ -21,7 +21,8 @@ class ExgdbMethods():
         (arch, bits) = e.getarch()
         if str(address).startswith("r"):
             # Register
-            regs = e.getregs(" ".join(arg[1:]))
+            #regs = e.getregs(" ".join([1:]))
+            regs = e.getregs()
             if regname is None:
                 for r in REGISTERS[bits]:
                     if r in regs:
@@ -313,7 +314,7 @@ class ExgdbMethods():
             binmap = e.get_vmmap("binary")
         else:
             maps = e.get_vmmap(pid=pid)
-            binmap = e.get_vmmap(pid=pid, name="binary")
+            binmap = e.get_vmmap(name="binary", pid=pid)
 
         (arch, bits) = self.getarch()
         if not e.is_address(value, pid=pid): # a value
@@ -330,9 +331,9 @@ class ExgdbMethods():
 
         elif e.is_executable(value, pid=pid): # code/rodata address
             if self.is_address(value, binmap):
-                headers = e.elfheader(pid=pid)
+                headers = self.elfheader(pid=pid)
             else:
-                headers = e.elfheader_solib(mapname, pid=pid)
+                headers = self.elfheader_solib(mapname, pid=pid)
 
             if headers:
                 headers = sorted(headers.items(), key=lambda x: x[1][1])
@@ -508,7 +509,7 @@ class ExgdbMethods():
                 appending_one_log = ""
         return (arg_str, arg_data_str, arg_reg_str, arg_reg_data_str, b, appending_one_log)
 
-    def get_vmmap(self, pid=None, name=None):
+    def get_vmmap(self, name=None, pid=None):
         """
         Cutomized get_vmmap from https://github.com/longld/peda
 
@@ -801,7 +802,7 @@ class ExgdbMethods():
         }
 
         @memoized
-        def _elfheader_solib_all():
+        def _elfheader_solib_all(*args, **kwargs):
             out = self.execute_redirect("info files")
             if not out:
                 return None
@@ -824,7 +825,7 @@ class ExgdbMethods():
         if solib is None:
             return headers
 
-        vmap = e.get_vmmap(solib, pid=pid)
+        vmap = e.get_vmmap(solib, pid)
         elfbase = vmap[0][0] if vmap else 0
 
         for (start, end, hname, libname) in headers:
@@ -853,6 +854,9 @@ class ExgdbMethods():
                     if name in k:
                         result[k] = v
         return result
+
+    if "PEDA" in globals():
+        setattr(PEDA, "elfheader_solib", elfheader_solib)
 
     def get_function_args(self, addr=None, argc=None):
         """

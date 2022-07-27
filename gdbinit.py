@@ -27,5 +27,6 @@ if dashboard_is_enabled:
 if exgdb_is_enabled:
     gdb.execute("source %s/exgdb.py" % exgdbpath)
 
-if exgdb_is_enabled and peda_is_enabled and dashboard_is_enabled:
-    gdb.execute("contextmode")
+#if exgdb_is_enabled and peda_is_enabled and dashboard_is_enabled:
+#    #gdb.execute("contextmode None")
+#    pass
