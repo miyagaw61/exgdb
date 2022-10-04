@@ -59,40 +59,27 @@ ExGDB - Extension for GDB
 
 ## Installation
 
-### 1. Clone:
-
 ```
-$ git clone https://github.com/miyase256/exgdb.git /path/to/exgdb
-```
+$ git clone https://github.com/miyase256/exgdb ~/exgdb
+$ ~/exgdb/install.sh
+[EXECUTED] echo "export EXGDBPATH=/path/to/exgdb" | sudo tee -a ~/.bashrc
+export EXGDBPATH=/path/to/exgdb
+[EXECUTED] echo "export PATH=$PATH:$EXGDBPATH/bin" | sudo tee -a ~/.bashrc
+export PATH=\$PATH:\$EXGDBPATH/bin
+[EXECUTED] echo "source /path/to/exgdb/gdbinit.py" | sudo tee -a ~/.gdbinit
+source /path/to/exgdb/gdbinit.py
 
-"/path/to/" is any directory.
+[!] Please execute this command: source ~/.bashrc
 
-### 2. Export EXGDBPATH
-
-```
-$ cd /path/to/exgdb/
-$ export EXGDBPATH=$PWD
-$ echo "export EXGDBPATH=$PWD" >> ~/.bashrc
-```
-
-### 3. Install Plugin Manager (exgdbctl) :
-
-```
-$ cp -a $EXGDBPATH/bin/exgdbctl /usr/local/bin/
+$ source ~/.bashrc
 ```
 
-### 4. Install any plugins you want:
+## Install any plugins you want
 
 ```
 $ exgdbctl install peda # git clone https://github.com/longld/peda.git $EXGDBPATH/plugins/peda
 $ exgdbctl install Pwngdb # git clone https://github.com/scwuaptx/Pwngdb.git $EXGDBPATH/plugins/Pwngdb
 $ exgdbctl install gdb-dashboard # git clone https://github.com/cyrus-and/gdb-dashboard.git $EXGDBPATH/plugins/gdb-dashboard
-```
-
-### 5. Prepare .gdbinit
-
-```
-$ echo "source $EXGDBPATH/gdbinit.py" >> ~/.gdbinit
 ```
 
 ## Usage of ExGDB
