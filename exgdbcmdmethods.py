@@ -1100,8 +1100,6 @@ class ExgdbCmdMethods(object):
 
         status = peda.get_status()
 
-        c.dashboard.on_continue(None)
-
         # display registers
         if "none" in opt or "None" in opt:
             c.context_none()
