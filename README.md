@@ -90,6 +90,20 @@ $ exgdbctl install gdb-dashboard # git clone https://github.com/cyrus-and/gdb-da
 
 ## Usage of ExGDB
 
+You have some example binaries.
+
+```
+$ exgdbctl install peda
+$ exgdbctl install gdb-dashboard
+$ cd rust-gdb-example
+$ make hoge
+$ ./hoge
+$ gdb hoge
+$ cargo build --example basic
+$ ./target/debug/examples/basic
+$ gdb ./target/debug/examples/basic -x gdbrc.py
+```
+
 ### Usage when just debugging:
 
 ```
