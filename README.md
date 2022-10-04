@@ -74,6 +74,8 @@ source /path/to/exgdb/gdbinit.py
 $ source ~/.bashrc
 ```
 
+You can use any path instead of `~/exgdb` .
+
 ## Install any plugins you want
 
 ```
