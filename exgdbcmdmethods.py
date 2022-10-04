@@ -1,5 +1,12 @@
 from enert import *
 
+dashboard_is_enabled = False
+peda_is_enabled = False
+if "dashboard" in globals():
+    dashboard_is_enabled = True
+elif "PEDA" in globals():
+    peda_is_enabled = True
+
 r_asmStr = re.compile(r"0x[0-9a-f]*\x1b\[0m\s\((.*)\)")
 r_asmStr_2 = re.compile(r"<.*>:\s*(.*)")
 r_asmStr_3 = re.compile(r"^([^\s]*)\s*(.*)")
@@ -1081,82 +1088,84 @@ class ExgdbCmdMethods(object):
         if opt == "all":
             opt = context_list["all"]
 
-        opt = opt.replace(" ", "").split(",")
+        opt_list = opt.replace(" ", "").split(",")
 
-        if not opt:
+        if not opt_list:
             return
 
         # do not display
-        if "none" in opt or "None" in opt:
+        if "none" in opt_list or "None" in opt_list:
             return
 
         #if not self._is_running():
         if False:
             return
 
-        clearscr = config.Option.get("clearscr")
-        if clearscr == "on":
-            utils.clearscreen()
+        if dashboard_is_enabled:
+            clearscr = config.Option.get("clearscr")
+            if clearscr == "on":
+                utils.clearscreen()
 
         status = peda.get_status()
 
-        # display registers
-        if "none" in opt or "None" in opt:
-            c.context_none()
+        for opt in opt_list:
+            # display registers
+            if "none" in opt or "None" in opt:
+                c.context_none()
 
-        # display registers
-        if "reg" in opt or "register" in opt:
-            c.context_register()
+            # display registers
+            if "reg" in opt or "register" in opt:
+                c.context_register()
 
-        # display memtrace and infonow
-        if ("memtrace" in opt or "memt" in opt) and ("infonow" in opt or "inow" in opt):
-            c.context_memt_inow()
-        elif "memtrace" in opt or "memt" in opt:
-            c.context_memtrace()
-        elif "infonow" in opt or "inow" in opt:
-            c.context_infonow()
+            # display memtrace and infonow
+            if ("memtrace" in opt or "memt" in opt) and ("infonow" in opt or "inow" in opt):
+                c.context_memt_inow()
+            elif "memtrace" in opt or "memt" in opt:
+                c.context_memtrace()
+            elif "infonow" in opt or "inow" in opt:
+                c.context_infonow()
 
-        # display stack content, forced in case SIGSEGV
-        if "stack" in opt or "SIGSEGV" in status:
-            c.context_stack(count)
-            #if "infonow" in opt:
+            # display stack content, forced in case SIGSEGV
+            if "stack" in opt or "SIGSEGV" in status:
+                c.context_stack(count)
+                #if "infonow" in opt:
+                #    msg("[%s]" % ("-"*78), "blue", "light")
+                #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
+
+            # display assembly code
+            if "code" in opt:
+                c.context_code(count)
+            if "asm" in opt:
+                c.context_asm()
+
+            # display source code by gdb-dashboard function
+            if "src" in opt:
+                c.context_src()
+
+            # display variables by gdb-dashboard function
+            if "var" in opt:
+                c.context_var()
+
+            # display expressions by gdb-dashboard function
+            if "expr" in opt:
+                c.context_expr()
+
+            # display backtrace by gdb-dashboard function
+            if "bt" in opt:
+                c.context_bt()
+
+            # display threads by gdb-dashboard function
+            if "thr" in opt:
+                c.context_thr()
+
+            # tmp remove
+            #if "reg" in opt or "code" in opt or "stack" in opt:
             #    msg("[%s]" % ("-"*78), "blue", "light")
             #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
 
-        # display assembly code
-        if "code" in opt:
-            c.context_code(count)
-        if "asm" in opt:
-            c.context_asm()
-
-        # display source code by gdb-dashboard function
-        if "src" in opt:
-            c.context_src()
-
-        # display variables by gdb-dashboard function
-        if "var" in opt:
-            c.context_var()
-
-        # display expressions by gdb-dashboard function
-        if "expr" in opt:
-            c.context_expr()
-
-        # display backtrace by gdb-dashboard function
-        if "bt" in opt:
-            c.context_bt()
-
-        # display threads by gdb-dashboard function
-        if "thr" in opt:
-            c.context_thr()
-
-        # tmp remove
-        #if "reg" in opt or "code" in opt or "stack" in opt:
-        #    msg("[%s]" % ("-"*78), "blue", "light")
-        #    msg("Legend: %s, %s, %s, value" % (red("code"), blue("data"), green("rodata")))
-
-        # display stopped reason
-        if "SIG" in status:
-            msg("Stopped reason: %s" % red(status))
+            # display stopped reason
+            if "SIG" in status:
+                msg("Stopped reason: %s" % red(status))
 
         return
     

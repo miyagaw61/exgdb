@@ -54,10 +54,11 @@ if "dashboard" in globals():
     #Dashboard.clear_screen = exutils.return_emptystr
     utils.clearscreen = exutils.return_emptystr
     gdb.events.stop.disconnect(dashboard.on_stop)
-    e.define_user_command("hook-stop", "exgdb context\n" "session autosave")
     lang = e.get_lang()
     c.contextmode("c", "peda_dashboard")
     c.contextmode("rust", "dashboard")
 elif "PEDA" in globals():
     c.contextmode("c", "peda")
     c.contextmode("rust", "peda")
+
+e.define_user_command("hook-stop", "exgdb context\n" "session autosave")
