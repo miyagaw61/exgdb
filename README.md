@@ -69,7 +69,11 @@ export PATH=\$PATH:\$EXGDBPATH/bin
 [EXECUTED] echo "source /path/to/exgdb/gdbinit.py" | sudo tee -a ~/.gdbinit
 source /path/to/exgdb/gdbinit.py
 
+#################################################
 [!] Please execute this command: source ~/.bashrc
+#################################################
+
+[INFO] You can use exgdbctl command after executing above command.
 
 $ source ~/.bashrc
 ```

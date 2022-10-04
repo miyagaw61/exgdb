@@ -7,8 +7,16 @@ if [ "$1" != "-h" -a "$1" != "--help" ] ;then
     echo "[EXECUTED] echo \"source $SCRIPT_DIR/gdbinit.py\" | sudo tee -a ~/.gdbinit"
     echo "source $SCRIPT_DIR/gdbinit.py" | sudo tee -a ~/.gdbinit
     echo ""
+    echo "#################################################"
     echo "[!] Please execute this command: source ~/.bashrc"
+    echo "#################################################"
+    echo ""
+    echo "[INFO] You can use exgdbctl command after executing above command."
     echo ""
 else
     echo "Usage: install.sh [-h|--help]"
+    echo "Installation: "
+    echo "  $ ./install.sh"
+    echo "  $ source ~/.bashrc"
+    echo "  $ exgdbctl -h"
 fi
