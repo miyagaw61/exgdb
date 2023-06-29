@@ -222,7 +222,6 @@ class ExgdbMethods():
         if capsize == 0 :
             arch = getarch()
         addr = getheapbase()
-        addr = addr + capsize*2
         lst = []
         lst.append(addr)
         chunkinfo = e.get_chunkinfo(addr)

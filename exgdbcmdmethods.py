@@ -1284,24 +1284,18 @@ class ExgdbCmdMethods(object):
         else:
             print(
                 yellow("prev| ")
-                #+ white(hex(chunkaddr), "bold")
-                #+ " --> "
-                #+ white(hex(prev_size))
                 + e.get_infox_text(chunkaddr, color="gray")
             )
             print(
                 yellow("size| ")
-                #+ white(hex(chunkaddr+capsize), "bold")
-                #+ " --> "
-                #+ white(hex(showsize))
                 + e.get_infox_text(chunkaddr+capsize, color="gray")
                 + white(" ( next: ", "bold")
                 + yellow(hex(chunkaddr+showsize), "bold")
                 + white(" )", "bold")
             )
             gdb.execute("tel " + hex(chunkaddr+capsize*2) + " 2")
-            if not is_only_header:
-                gdb.execute("tel " + hex(chunkaddr+capsize*4) + " " + hex(int(showsize/capsize-4)))
+            #if not is_only_header:
+            #    gdb.execute("tel " + hex(chunkaddr+capsize*4) + " " + hex(int(showsize/capsize-4)))
         return {'next': chunkaddr + aligned_size, 'nextsize': nextsize, 'used_flag': used_flag, 'fast_flag': fast_flag, 'size': showsize, 'NM': NM, 'IM': IM, 'PI': PI, 'fd': fd, 'bk': bk}
 
     sc = showchunk
