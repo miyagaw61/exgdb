@@ -923,6 +923,17 @@ class ExgdbCmdMethods(object):
 
         return 0
 
+    def context_infonow(self):
+        """
+        context_infonow
+        """
+        print(red("======================================inow======================================", "bold"))
+        try:
+            c.infonow()
+        except:
+            pass
+        print(red("================================================================================", "bold"))
+
     def context_memtrace(self):
         """
         context_memtrace
@@ -1079,19 +1090,16 @@ class ExgdbCmdMethods(object):
         if utils.to_int(count) is None:
             count = 8
         if opt is None:
-            lang = e.get_lang()
-            defined_opt = get(context_opt_list, lang)
-            if defined_opt:
-                opt = defined_opt
-            else:
-                opt = config.Option.get("context")
-        if opt == "all":
-            opt = context_list["all"]
+            opt = config.Option.get("context")
+
+        if opt in context_opt_list:
+            opt = context_opt_list[opt]
 
         opt_list = opt.replace(" ", "").split(",")
 
         if not opt_list:
             return
+
 
         # do not display
         if "none" in opt_list or "None" in opt_list:
