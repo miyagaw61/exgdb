@@ -172,6 +172,7 @@ class ExgdbMethods():
 
     def get_chunkinfo(self, victim, showsize=None):
         global fastchunk
+        global all_tcache_entry
         if capsize == 0 :
             arch = getarch()
         chunkaddr = victim
@@ -202,7 +203,7 @@ class ExgdbMethods():
             used_flag = 0
             fast_flag = 0
             if status:
-                if chunkaddr in fastchunk :
+                if chunkaddr in fastchunk or chunkaddr in all_tcache_entry:
                     used_flag = 0
                     fast_flag = 1
                 else :
