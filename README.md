@@ -60,7 +60,7 @@ ExGDB - Extension for GDB
 ## Installation
 
 ```
-$ git clone https://github.com/miyase256/exgdb ~/exgdb
+$ git clone https://github.com/miyagaw61/exgdb ~/exgdb
 $ ~/exgdb/install.sh
 [EXECUTED] echo "export EXGDBPATH=/path/to/exgdb" | sudo tee -a ~/.bashrc
 export EXGDBPATH=/path/to/exgdb
@@ -181,7 +181,7 @@ You can install peda, Pwngdb and gdb-dashboard with only each plugin name.
 
 ```
 $ exgdbctl install peda
-Cloning into '/home/miyase256/src/github.com/miyase256/exgdb/plugins/peda'...
+Cloning into '/home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/peda'...
 remote: Enumerating objects: 351, done.
 remote: Total 351 (delta 0), reused 0 (delta 0), pack-reused 351
 Receiving objects: 100% (351/351), 279.51 KiB | 580.00 KiB/s, done.
@@ -196,8 +196,8 @@ gdb-dashboard: not installed
 You can install any plugin from repository url
 
 ```
-$ exgdbctl install https://github.com/miyase256/sample_plugin
-Cloning into '/home/miyase256/src/github.com/miyase256/exgdb/plugins/sample_plugin'...
+$ exgdbctl install https://github.com/miyagaw61/sample_plugin
+Cloning into '/home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/sample_plugin'...
 remote: Enumerating objects: 4, done.
 remote: Counting objects: 100% (4/4), done.
 remote: Compressing objects: 100% (3/3), done.
@@ -215,7 +215,7 @@ delete a plugin
 
 ```
 $ exgdbctl delete sample_plugin
-[+]deleting /home/miyase256/src/github.com/miyase256/exgdb/plugins/sample_plugin
+[+]deleting /home/miyagaw61/src/github.com/miyagaw61/exgdb/plugins/sample_plugin
 [+]delete successful
 exgdb: enabled
 peda: enabled
@@ -349,5 +349,5 @@ You can issue Pull Request like this patch.
 
 ## contact
 
-Please feel free to ask -> [twitter](https://twitter.com/miyase256)
+Please feel free to ask -> [twitter](https://twitter.com/miyagaw61)
 
