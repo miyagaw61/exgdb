@@ -492,19 +492,26 @@ class ExgdbCmdMethods(object):
         """
         (regex, ) = utils.normalize_argv(arg, 1)
         regex = str(regex)
-        addrs = e.get_addrs_by_regex(regex)
-        if addrs == []:
+        lang = e.get_lang()
+        if lang == "c":
+            addrs_or_linenrs = e.get_addrs_by_regex(regex)
+        else:
+            addrs_or_linenrs = e.get_linenrs_by_regex(regex)
+        if addrs_or_linenrs == []:
             print("Not found")
             return -1
         bp_nrs = []
-        addr = addrs[0]
-        gdb.execute("break *" + hex(addr), to_string=silent)
+        addr_or_linenr = addrs_or_linenrs[0]
+        if lang == "c":
+            gdb.execute("break *" + hex(addr_or_linenr), to_string=silent)
+        else:
+            gdb.execute("break " + addr_or_linenr)
         bp_info_list = e.get_breakpoints()
         last_binfo = bp_info_list[-1]
         bp_nr = int(last_binfo[0])
         bp_nrs.append(bp_nr)
-        for addr in addrs[1:]:
-            gdb.execute("break *" + hex(addr), to_string=silent)
+        for addr_or_linenr in addrs_or_linenrs[1:]:
+            gdb.execute("break " + addr_or_linenr)
             bp_nr += 1
             bp_nrs.append(bp_nr)
         return bp_nrs

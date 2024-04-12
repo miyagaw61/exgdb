@@ -259,7 +259,7 @@ class ExgdbMethods():
             disass_data = e.disassemble(hex(codebase), hex(codeend))
             print(disass_data)
             f.write(disass_data)
-        cmd = "cat " + disass_file + " | grep -E ':.*" + regex + "' | grep -o -E '^ *0x[0-9a-f]+'"
+        cmd = "cat " + disass_file + " | grep -E ':.*" + regex + "' | grep -o -E '^ *0x[0-9a-f]+'" # TODO: support ripgrep like get_linenrs_by_regex()
         lines = Shell(cmd).readlines()[0]
         if lines == []:
             return lines
@@ -272,6 +272,17 @@ class ExgdbMethods():
             elif start_addr <= addr <= end_addr:
                 addrs.append(addr)
         return addrs
+
+    def get_linenrs_by_regex(self, regex, start_addr=None, end_addr=None):
+        pwd = os.getcwd()
+        rg_path_arr = Shell("which rg").readlines()[0]
+        rg_exists = len(rg_path_arr) > 0
+        if rg_exists:
+            cmd = "rg -n --only-matching --no-heading '" + regex + "' -g '*.rs' " + pwd + " | cut -d':' -f1-2"
+        else:
+            cmd = "grep -nr '" + regex + "' --include='*.rs' " + pwd + " | cut -d':' -f1-2"
+        lines = Shell(cmd).readlines()[0]
+        return lines
 
     def to_bytes(self, i, size=None, endian=None):
         if size == None:
